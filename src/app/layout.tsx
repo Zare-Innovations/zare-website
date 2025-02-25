@@ -6,6 +6,7 @@ import { NavBar } from "./_components/nav-bar";
 
 // core styles are required for all packages
 import '@mantine/core/styles.css';
+import '@mantine/carousel/styles.css';
 import Footer from "./_components/footer";
 
 

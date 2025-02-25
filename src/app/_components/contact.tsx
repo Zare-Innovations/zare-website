@@ -1,6 +1,6 @@
-import { Button, Flex, Stack } from "@mantine/core";
-import React from "react";
+import { Flex, Stack } from "@mantine/core";
 import Map from "./map.png";
+import ContactUsForm from "./contact-us";
 
 export default function Contact() {
   return (
@@ -22,7 +22,9 @@ export default function Contact() {
           Elevate your business with our diverse BPO services tailored to
           perfection – where quality meets affordability.
         </p>
-        <Button className="w-fit mx-auto" size="lg">Contact Us</Button>
+        <div className="mx-auto">
+        <ContactUsForm/>
+        </div>
       </Flex>
     </Stack>
   );

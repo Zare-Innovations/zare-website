@@ -34,7 +34,7 @@ export default function Empowering() {
         diffuse: 1.2,
         mapSamples: 16000,
         mapBrightness: 6,
-        baseColor: [0.9, 0.9, 0.3],
+        baseColor: [10 / 255, 41 / 255, 59 / 255], // Updated base color (#0A293B)
         markerColor: [0.1, 0.8, 1],
         glowColor: [1, 1, 1],
         markers: [
