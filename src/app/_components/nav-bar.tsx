@@ -114,7 +114,13 @@ export function NavBar() {
           </Group>
 
           <Group visibleFrom="sm">
-            <Button>Book a consultation</Button>
+            <Link
+              href="https://calendly.com/emanuel-ypgh/30min?month=2025-02"
+              className="mx-auto md:ml-0"
+              target="_blank"
+            >
+              <Button>Book a consultation</Button>
+            </Link>
           </Group>
 
           <Burger

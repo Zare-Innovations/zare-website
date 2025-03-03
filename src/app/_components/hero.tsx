@@ -18,11 +18,11 @@ export default function Hero() {
         className="-mb-16 ml-6"
       />
 
-      <p className="absolute right-10 mt-10 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
+      <p className="absolute  right-10 mt-10 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
         Built on Reputation
       </p>
 
-      <p className="text-7xl w-[80%] font-bold text-center mx-auto">
+      <p className="text-7xl w-[80%] font-bold text-center mx-auto z-10">
         Revolutionize Your Business with{' '}
         <span className="text-cyan-500"> Zare Innovations</span>
       </p>
