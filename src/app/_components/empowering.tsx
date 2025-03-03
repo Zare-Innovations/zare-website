@@ -1,8 +1,8 @@
-"use client";
-import { Button, Flex, Stack } from "@mantine/core";
-import Link from "next/link";
-import React, { useEffect, useRef } from "react";
-import createGlobe from "cobe";
+'use client';
+import { Button, Flex, Stack } from '@mantine/core';
+import Link from 'next/link';
+import React, { useEffect, useRef } from 'react';
+import createGlobe from 'cobe';
 
 export default function Empowering() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -19,7 +19,7 @@ export default function Empowering() {
       }
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize();
 
     const globe =
@@ -38,9 +38,22 @@ export default function Empowering() {
         markerColor: [0.1, 0.8, 1],
         glowColor: [1, 1, 1],
         markers: [
-          // longitude latitude
-          { location: [37.7595, -122.4367], size: 0.03 },
-          { location: [40.7128, -74.006], size: 0.1 },
+          // east africa
+          { location: [9.019, 38.75], size: 0.05 },
+          { location: [-1.2921, 37.8219], size: 0.05 },
+          // west africa
+          { location: [13.5317, -12.4604], size: 0.05 },
+          // south africa
+          { location: [-25.746, 28.187], size: 0.05 },
+          // europe
+          { location: [51.5074, -0.1278], size: 0.05 },
+          // north america
+          { location: [37.7595, -122.4367], size: 0.08 },
+          { location: [40.7128, -74.006], size: 0.05 },
+          { location: [38.7128, -76.006], size: 0.05 },
+          { location: [35.7128, -78.006], size: 0.05 },
+          // israel
+          { location: [31.771959, 35.217018], size: 0.05 },
         ],
         onRender: (state) => {
           // Called on every animation frame.
@@ -54,7 +67,7 @@ export default function Empowering() {
       if (globe) {
         globe.destroy();
       }
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   return (
@@ -64,14 +77,14 @@ export default function Empowering() {
           <canvas
             ref={canvasRef}
             style={{
-              width: "100%",
-              height: "auto",
+              width: '100%',
+              height: 'auto',
               maxWidth: 600,
               aspectRatio: 1,
             }}
           />
         </div>
-        <div className="flex flex-col gap-12 md:gap-4 md:w-1/2">
+        <div className="flex flex-col gap-12 md:gap-4 md:w-1/2 pr-8">
           <p className="text-4xl text-center md:text-left md:text-6xl font-semibold">
             Empowering Growth,
             <span className="text-cyan-500"> Bridging Global Gaps</span>

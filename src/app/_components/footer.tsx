@@ -1,8 +1,8 @@
-import { Flex, Stack } from "@mantine/core";
-import { IconMapPinFilled } from "@tabler/icons-react";
-import Image from "next/image";
-import Link from "next/link";
-import BottomFooter from "./footer-bottom";
+import { Flex, Stack } from '@mantine/core';
+import { IconMapPinFilled } from '@tabler/icons-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import BottomFooter from './footer-bottom';
 
 export default function Footer() {
   return (
@@ -10,7 +10,7 @@ export default function Footer() {
       <Stack className="p-6 py-10 bg-[#0A293B]">
         <Flex className="w-full gap-6 text-white">
           <Image
-            src={"/zare-logo-footer.svg"}
+            src={'/zare-logo-footer.svg'}
             width={100}
             height={100}
             alt="Zare Logo"
@@ -18,14 +18,14 @@ export default function Footer() {
           />
           <Flex className="flex gap-4 w-[15%] flex-col">
             <p className="text-lg font-semibold">Explore</p>
-            <Link href={"/#about"}>ABOUT</Link>
-            <Link href={"/#services"}>SERVICES</Link>
-            <Link href={"/#clients"}>CLIENTS & PROJECTS</Link>
-            <Link href={"/#careers"}>CAREERS</Link>
+            <Link href={'/#about'}>ABOUT</Link>
+            <Link href={'/#services'}>SERVICES</Link>
+            <Link href={'/#clients'}>CLIENTS & PROJECTS</Link>
+            <Link href={'/#careers'}>CAREERS</Link>
           </Flex>
           <Flex className="flex gap-2 w-[15%] flex-col">
             <p className="text-lg font-semibold">Send Us An Email</p>
-            <Link href={"mailto:info@zareinnovations.com"}>
+            <Link href={'mailto:careers@zareinnovations.com'}>
               info@zareinnovations.com
             </Link>
           </Flex>
@@ -54,8 +54,8 @@ export default function Footer() {
             </Flex>
             <p className="text-lg font-semibold">Ethiopia</p>
             <Flex className="gap-2">
-              <IconMapPinFilled />
-              5Meskel Flower, Aster Plaza 3rd Floor,Addis Ababa, Ethiopia
+              <IconMapPinFilled />5 Meskel Flower, Aster Plaza 3rd Floor,Addis
+              Ababa, Ethiopia
             </Flex>
           </Flex>
         </Flex>

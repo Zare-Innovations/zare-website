@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   IconBook,
   IconChartPie3,
@@ -7,7 +7,7 @@ import {
   IconCoin,
   IconFingerprint,
   IconNotification,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 import {
   Box,
   Burger,
@@ -22,41 +22,42 @@ import {
   ThemeIcon,
   UnstyledButton,
   useMantineTheme,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import classes from "./nav-bar.module.css";
-import Image from "next/image";
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import classes from './nav-bar.module.css';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const mockdata = [
   {
     icon: IconCode,
-    title: "Open source",
-    description: "This Pokémon’s cry is very loud and distracting",
+    title: 'Open source',
+    description: 'This Pokémon’s cry is very loud and distracting',
   },
   {
     icon: IconCoin,
-    title: "Free for everyone",
-    description: "The fluid of Smeargle’s tail secretions changes",
+    title: 'Free for everyone',
+    description: 'The fluid of Smeargle’s tail secretions changes',
   },
   {
     icon: IconBook,
-    title: "Documentation",
-    description: "Yanma is capable of seeing 360 degrees without",
+    title: 'Documentation',
+    description: 'Yanma is capable of seeing 360 degrees without',
   },
   {
     icon: IconFingerprint,
-    title: "Security",
-    description: "The shell’s rounded shape and the grooves on its.",
+    title: 'Security',
+    description: 'The shell’s rounded shape and the grooves on its.',
   },
   {
     icon: IconChartPie3,
-    title: "Analytics",
-    description: "This Pokémon uses its flying ability to quickly chase",
+    title: 'Analytics',
+    description: 'This Pokémon uses its flying ability to quickly chase',
   },
   {
     icon: IconNotification,
-    title: "Notifications",
-    description: "Combusken battles with the intensely hot flames it spews",
+    title: 'Notifications',
+    description: 'Combusken battles with the intensely hot flames it spews',
   },
 ];
 
@@ -85,27 +86,29 @@ export function NavBar() {
   ));
 
   return (
-    <Box pb={120}>
+    <Box>
       <header className={classes.header}>
-        <Group justify="space-between" h="100%">
-          <Image
-            src={"/zare-logo.svg"}
-            width={100}
-            height={100}
-            alt="Zare Logo"
-          />
+        <Group justify="space-between" h="100%" px={40}>
+          <Link href="/">
+            <Image
+              src={'/zare-logo.svg'}
+              width={100}
+              height={100}
+              alt="Zare Logo"
+            />
+          </Link>
 
           <Group h="100%" gap={0} visibleFrom="sm">
-            <a href="#" className={classes.link}>
+            <a href="#aboutUs" className={classes.link}>
               About Us
             </a>
-            <a href="#" className={classes.link}>
+            <a href="#services" className={classes.link}>
               Our Services
             </a>
-            <a href="#" className={classes.link}>
+            <a href="/our-works" className={classes.link}>
               Our Work
             </a>
-            <a href="#" className={classes.link}>
+            <a href="#contact-us" className={classes.link}>
               Contact Us
             </a>
           </Group>

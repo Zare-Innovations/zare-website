@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   ActionIcon,
   Button,
@@ -7,23 +7,29 @@ import {
   Stack,
   Textarea,
   TextInput,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import {
   IconBrandInstagram,
   IconBrandTelegram,
   IconBrandTwitter,
   IconMapPinFilled,
-} from "@tabler/icons-react";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+} from '@tabler/icons-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
 export default function ContactUsForm() {
   const [opened, { open, close }] = useDisclosure(false);
+
   return (
     <Stack>
-      <Modal opened={opened} onClose={close} size={2000} withCloseButton={false}>
+      <Modal
+        opened={opened}
+        onClose={close}
+        size={2000}
+        withCloseButton={false}
+      >
         <Flex>
           <Flex className="text-white bg-[#0a293b] w-1/2 flex-col gap-12 rounded-md p-8">
             <Flex className="flex-col">
@@ -46,7 +52,7 @@ export default function ContactUsForm() {
                 </Flex>
               </Flex>
               <Flex className="flex gap-2 flex-col">
-                <Link href={"mailto:info@zareinnovations.com"}>
+                <Link href={'mailto:careers@zareinnovations.com'}>
                   info@zareinnovations.com
                 </Link>
               </Flex>
@@ -59,8 +65,8 @@ export default function ContactUsForm() {
                 </Flex>
                 <p className="text-lg font-semibold">Ethiopia</p>
                 <Flex className="gap-2">
-                  <IconMapPinFilled />
-                  5Meskel Flower, Aster Plaza 3rd Floor,Addis Ababa, Ethiopia
+                  <IconMapPinFilled />5 Meskel Flower, Aster Plaza 3rd
+                  Floor,Addis Ababa, Ethiopia
                 </Flex>
               </Flex>
             </Flex>
@@ -77,7 +83,13 @@ export default function ContactUsForm() {
             </Flex>
           </Flex>
           <Flex className="w-full flex-col gap-12 p-8">
-            <Image src={"/zare-logo.svg"} width={100} height={100} alt="Zare logo" className="ml-auto"/>
+            <Image
+              src={'/zare-logo.svg'}
+              width={100}
+              height={100}
+              alt="Zare logo"
+              className="ml-auto"
+            />
             <Flex className="flex gap-8 ">
               <TextInput
                 label="First Name"
@@ -91,12 +103,27 @@ export default function ContactUsForm() {
               />
             </Flex>
             <Flex className="flex gap-8">
-              <TextInput label="Email" placeholder="Enter email" className="w-1/2"/>
-              <TextInput label="Phone Number" placeholder="Enter Phone Number" className="w-1/2"/>
+              <TextInput
+                label="Email"
+                placeholder="Enter email"
+                className="w-1/2"
+              />
+              <TextInput
+                label="Phone Number"
+                placeholder="Enter Phone Number"
+                className="w-1/2"
+              />
             </Flex>
 
-            <Textarea minRows={6} autosize={true} label="Message" placeholder="Enter your message here" />
-            <Button size="md" className="ml-auto">Send Message</Button>
+            <Textarea
+              minRows={6}
+              autosize={true}
+              label="Message"
+              placeholder="Enter your message here"
+            />
+            <Button size="md" className="ml-auto">
+              Send Message
+            </Button>
           </Flex>
         </Flex>
       </Modal>

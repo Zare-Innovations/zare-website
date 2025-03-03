@@ -1,29 +1,29 @@
-import { Flex, Stack } from "@mantine/core";
-import Illustration from "./illustration.png";
-import Image from "next/image";
-import { IconCircleCheckFilled } from "@tabler/icons-react";
+import { Flex, Stack } from '@mantine/core';
+import Illustration from './illustration.png';
+import Image from 'next/image';
+import { IconCircleCheckFilled } from '@tabler/icons-react';
 
 const promises = [
   {
-    title: "Tailored Solutions for Your Growth",
+    title: 'Tailored Solutions for Your Growth',
     description:
-      "Our solutions are designed to evolve with your business, ensuring continuous growth and efficiency.",
+      'Our solutions are designed to evolve with your business, ensuring continuous growth and efficiency.',
   },
   {
-    title: "Consistent Quality",
+    title: 'Consistent Quality',
     description:
-      "From customer support to software development, we offer end-to-end services to streamline your operations.",
+      'From customer support to software development, we offer end-to-end services to streamline your operations.',
   },
   {
-    title: "Client-Focused Approach",
+    title: 'Client-Focused Approach',
     description:
-      "Your success is our priority. We take the time to understand your goals and work tirelessly to help you achieve them.",
+      'Your success is our priority. We take the time to understand your goals and work tirelessly to help you achieve them.',
   },
 ];
 
 export default function Promise() {
   return (
-    <Stack className="px-24">
+    <Stack className="px-24" id="about">
       <Flex className="flex-row gap-6 items-center">
         <Stack className="gap-4 w-1/2">
           <p className="text-4xl md:text-6xl font-semibold">

@@ -1,28 +1,42 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import RootStyleRegistry from "./mantine";
-import { NavBar } from "./_components/nav-bar";
+import type { Metadata } from 'next';
+
+import './globals.css';
+import RootStyleRegistry from './mantine';
+import { NavBar } from './_components/nav-bar';
 
 // core styles are required for all packages
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
-import Footer from "./_components/footer";
+import Footer from './_components/footer';
 
+import localFont from 'next/font/local';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const gotham = localFont({
+  src: [
+    {
+      path: './fonts/Gotham-Light.otf',
+      weight: '200',
+      style: 'light',
+    },
+    {
+      path: './fonts/Gotham-Book.otf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './fonts/Gotham-Medium.otf',
+      weight: '500',
+    },
+    {
+      path: './fonts/Gotham-Bold.otf',
+      weight: '700',
+    },
+  ],
 });
 
 export const metadata: Metadata = {
-  title: "Zare Innovations",
-  description: "Zare Innovations | Revolutionize Your Business",
+  title: 'Zare Innovations',
+  description: 'Zare Innovations | Revolutionize Your Business',
 };
 
 export default function RootLayout({
@@ -33,12 +47,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <RootStyleRegistry>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-            <NavBar/>
+        <body className={`${gotham.className}  antialiased`}>
+          <NavBar />
           {children}
-          <Footer/>
+          <Footer />
         </body>
       </RootStyleRegistry>
     </html>

@@ -1,36 +1,36 @@
-"use client";
-import { Carousel } from "@mantine/carousel";
-import { Divider, Flex, Stack } from "@mantine/core";
-import Image from "next/image";
+'use client';
+import { Carousel } from '@mantine/carousel';
+import { Divider, Flex, Stack } from '@mantine/core';
+import Image from 'next/image';
 
 const testmonialsData = [
   {
-    logo: "/testimonials/ubutix.png",
+    logo: '/testimonials/ubutix.png',
     description:
-      "The UI/UX designer just gets it. What you see on the surface is a quiet, methodical guy that absorbs carefully and asks a few considered questions. But good lord - it’s underpinned by a profound depth of knowledge and vigilant understanding of what we’re trying to achieve on a strategic level. That means the output is incredibly considered and bang on the money the first time. He does a lot of thinking for us, and for that we’re hugely grateful and proud to have him on the team.",
-    backgroundColor: "#0a293b",
-    textColor: "white",
+      'The UI/UX designer just gets it. What you see on the surface is a quiet, methodical guy that absorbs carefully and asks a few considered questions. But good lord - it’s underpinned by a profound depth of knowledge and vigilant understanding of what we’re trying to achieve on a strategic level. That means the output is incredibly considered and bang on the money the first time. He does a lot of thinking for us, and for that we’re hugely grateful and proud to have him on the team.',
+    backgroundColor: '#0a293b',
+    textColor: 'white',
   },
   {
-    logo: "/testimonials/exelia.png",
+    logo: '/testimonials/exelia.png',
     description:
-      "Wanted to give you feedback on the UI/UX Designer we hired through Zare, we are all very impressed with his designs, his professionalism, and how well he manages relationships with our clients. He is a diamond and we are extremely happy to have him as part of the Exelia family, thank you",
-    backgroundColor: "#c2410c",
-    textColor: "white",
+      'Wanted to give you feedback on the UI/UX Designer we hired through Zare, we are all very impressed with his designs, his professionalism, and how well he manages relationships with our clients. He is a diamond and we are extremely happy to have him as part of the Exelia family, thank you',
+    backgroundColor: '#c2410c',
+    textColor: 'white',
   },
   {
-    logo: "/testimonials/keysquare.png",
+    logo: '/testimonials/keysquare.png',
     description:
       "Great experience with Zare; we have one of the most talented engineers to work with, couldn't be happier!",
-    backgroundColor: "#137bb3",
-    textColor: "white",
+    backgroundColor: '#137bb3',
+    textColor: 'white',
   },
   {
-    logo: "/testimonials/pickrell.png",
+    logo: '/testimonials/pickrell.png',
     description:
-      "The front-end developer we hired through Zare Innovations has been a great addition to our team—reliable, skilled, and a solid contributor. We’ve also been impressed with how Zare proactively managed performance, making sure their developers meet expectations. A great partner to work with!",
-    backgroundColor: "#a6aca9",
-    textColor: "black",
+      'The front-end developer we hired through Zare Innovations has been a great addition to our team—reliable, skilled, and a solid contributor. We’ve also been impressed with how Zare proactively managed performance, making sure their developers meet expectations. A great partner to work with!',
+    backgroundColor: '#a6aca9',
+    textColor: 'black',
   },
 ];
 
@@ -55,13 +55,13 @@ export default function Testimonials() {
             indicators: {
               bottom: '-40px',
               gap: '5px',
-              fill: "black",
-            //   backgroundColor: "black",
-              width: "fit-content",
-              margin: "auto",
+              fill: 'black',
+              //   backgroundColor: "black",
+              width: 'fit-content',
+              margin: 'auto',
             },
             indicator: {
-                backgroundColor: "#0a293b",
+              backgroundColor: '#0a293b',
             },
           }}
         >
@@ -82,11 +82,11 @@ export default function Testimonials() {
                     unoptimized
                   />
                   <Image
-                    src={"/testimonials/quote-mark.png"}
+                    src={'/testimonials/quote-mark.png'}
                     height={200}
                     width={150}
                     alt="logo-2"
-                    className="w-40"
+                    className="w-40 opacity-25"
                     unoptimized
                   />
                 </Flex>
