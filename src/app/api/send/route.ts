@@ -2,7 +2,7 @@
 import { EmailTemplate } from '@/app/_components/email-template';
 import { Resend } from 'resend';
 
-const resend = new Resend('re_a5cESMYv_DQgSpGmK1bmgT9kMBufzsVPX');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface RawData {
     name: string,
