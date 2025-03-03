@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function Hero() {
   return (
-    <div className="md:text-[40px] font-medium flex flex-col justify-center items-center min-h-[278px] bg-red-00 relative text-white text-center text-[28px]">
+    <div className="bg-[#0a293b] md:text-[40px] font-medium flex flex-col justify-center items-center min-h-[278px] bg-red-00 relative text-white text-center text-[28px]">
       <Image
         src={'/our-work/hero.svg'}
         alt="Hero image"
