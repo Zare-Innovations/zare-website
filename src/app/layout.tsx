@@ -37,6 +37,9 @@ const gotham = localFont({
 export const metadata: Metadata = {
   title: 'Zare Innovations',
   description: 'Zare Innovations | Revolutionize Your Business',
+  icons: {
+    icon: '/zare-logo.svg',
+  },
 };
 
 export default function RootLayout({
