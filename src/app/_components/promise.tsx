@@ -23,10 +23,10 @@ const promises = [
 
 export default function Promise() {
   return (
-    <Stack className="px-24" id="about">
-      <Flex className="flex-row gap-6 items-center">
-        <Stack className="gap-4 w-1/2">
-          <p className="text-4xl md:text-6xl font-semibold">
+    <Stack className="px-4 md:px-24" id="about">
+      <Flex className="md:flex-row flex-col gap-6 items-center">
+        <Stack className="gap-4 md:w-1/2">
+          <p className="text-4xl md:text-6xl font-semibold text-center md:text-start">
             Our <span className="text-cyan-500">Promise</span> To You
           </p>
           <Stack className="gap-4 mt-4">

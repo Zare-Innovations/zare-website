@@ -36,7 +36,7 @@ const works = [
 export default function Works() {
   return (
     <Stack
-      className="min-h-[40dvh] w-full p-8 items-center text-white"
+      className="min-h-[40dvh] w-full p-3 md:p-8 items-center text-white overflow-hidden"
       style={{
         backgroundImage: `url(${WorksBg.src})`,
         backgroundPosition: 'center',
@@ -120,25 +120,6 @@ export default function Works() {
             </Carousel.Slide>
           ))}
         </Carousel>
-
-        {/* <Flex className="relative flex-col gap-4 w-[33%] h-full border-white/40 border-2 rounded-3xl">
-          <p className="p-4 text-xl font-semibold">HR Outsourcing</p>
-          <Divider size="sm" className="bg-white/40"/>
-          <Image src={WorksFrame1.src} width={200} height={200} alt="Frame 1" className="w-full"/>
-          <Box className="w-36 h-36 flex items-center justify-center rounded-tl-full absolute bottom-0 right-0 bg-[#0c111a] z-10"><IconArrowUpRight size={40} className="ml-10 mt-6 " color="cyan"/></Box>
-        </Flex>
-        <Flex className="relative flex-col gap-4 w-[33%] h-full border-white/40 border-2 rounded-3xl">
-          <p className="p-4 text-xl font-semibold">Software Development</p>
-          <Divider size="sm" className="bg-white/40"/>
-          <Image src={WorksFrame2.src} width={200} height={200} alt="Frame 1" className="w-full"/>
-          <Box className="w-36 h-36 flex items-center justify-center rounded-tl-full absolute bottom-0 right-0 bg-[#0c111a] z-10"><IconArrowUpRight size={40} className="ml-10 mt-6 " color="cyan"/></Box>
-        </Flex>
-        <Flex className="relative flex-col gap-4 w-[33%] h-full border-white/40 border-2 rounded-3xl">
-          <p className="p-4 text-xl font-semibold">Data Engineering</p>
-          <Divider size="sm" className="bg-white/40"/>
-          <Image src={WorksFrame3.src} width={200} height={200} alt="Frame 1" className="w-full"/>
-          <Box className="w-36 h-36 flex items-center justify-center rounded-tl-full absolute bottom-0 right-0 bg-[#0c111a] z-10"><IconArrowUpRight size={40} className="ml-10 mt-6 " color="cyan"/></Box>
-        </Flex> */}
       </Flex>
     </Stack>
   );

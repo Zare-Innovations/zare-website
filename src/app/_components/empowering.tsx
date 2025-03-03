@@ -72,7 +72,7 @@ export default function Empowering() {
   }, []);
   return (
     <Stack id="aboutUs">
-      <Flex className="gap-8 items-center">
+      <Flex className="gap-8 flex-col md:flex-row items-center">
         <div className="w-full flex md:w-1/2">
           <canvas
             ref={canvasRef}
@@ -84,7 +84,7 @@ export default function Empowering() {
             }}
           />
         </div>
-        <div className="flex flex-col gap-12 md:gap-4 md:w-1/2 pr-8">
+        <div className="flex flex-col gap-12 md:gap-4 md:w-1/2 md:pr-8 px-4">
           <p className="text-4xl text-center md:text-left md:text-6xl font-semibold">
             Empowering Growth,
             <span className="text-cyan-500"> Bridging Global Gaps</span>

@@ -1,7 +1,6 @@
 import { Button, Stack } from '@mantine/core';
 import Image from 'next/image';
 import Hero1 from './hero1.png';
-import Hero2 from './hero2.png';
 import Link from 'next/link';
 import Counter from './counter';
 
@@ -18,13 +17,11 @@ export default function Hero() {
         height={200}
         className="-mb-16 ml-6"
       />
-      <Image
-        src={Hero2.src}
-        alt="Hero image"
-        width={200}
-        height={200}
-        className="-mb-24 ml-auto mr-6"
-      />
+
+      <p className="absolute right-10 mt-10 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
+        Built on Reputation
+      </p>
+
       <p className="text-7xl w-[80%] font-bold text-center mx-auto">
         Revolutionize Your Business with{' '}
         <span className="text-cyan-500"> Zare Innovations</span>

@@ -36,7 +36,7 @@ const testmonialsData = [
 
 export default function Testimonials() {
   return (
-    <Stack className="items-center p-12">
+    <Stack className="items-center p-3 md:p-12 w-full overflow-hidden">
       <Flex className="flex-col gap-2 mx-auto">
         <p className="text-center font-bold text-2xl">Testimonials</p>
         <p className="font-semibold">What Our Clients Say About Us</p>
@@ -58,6 +58,7 @@ export default function Testimonials() {
               fill: 'black',
               //   backgroundColor: "black",
               width: 'fit-content',
+              height: 'min-h-[8px]',
               margin: 'auto',
             },
             indicator: {
@@ -99,14 +100,14 @@ export default function Testimonials() {
           <Flex className="justify-between items-center">
             <Image
               alt="logo-2"
-              src={"/testimonials/ubutix.png"}
+              src={'/testimonials/ubutix.png'}
               width={200}
               height={100}
               className="w-1/3"
               unoptimized
             />
             <Image
-              src={"/testimonials/quote-mark.png"}
+              src={'/testimonials/quote-mark.png'}
               height={200}
               width={150}
               alt="logo-2"
@@ -114,9 +115,7 @@ export default function Testimonials() {
               unoptimized
             />
           </Flex>
-          <p>
-          {testmonialsData[1].description}
-          </p>
+          <p>{testmonialsData[1].description}</p>
         </Flex> */}
       </Flex>
     </Stack>

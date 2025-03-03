@@ -1,3 +1,6 @@
+'use client';
+
+import useContactForm from '@/hooks/useForm';
 import { ActionIcon, Button, Flex, Textarea, TextInput } from '@mantine/core';
 import {
   IconBrandInstagram,
@@ -12,8 +15,11 @@ import Link from 'next/link';
 import React from 'react';
 
 export default function ContactUs() {
+  const { loading, formData, formErrors, handleChange, handleSendEmail } =
+    useContactForm();
+
   return (
-    <div className="my-12 bg-white lg:px-16 lg:py-2">
+    <div className="my-12 bg-white lg:px-16 lg:py-2" id="contact-us">
       <Flex className="w-full shadow-lg p-3 rounded-lg flex-col lg:flex-row">
         <Flex className="text-white bg-[#0a293b] outline flex-col gap-12 rounded-md p-8 px-10 w-full lg:w-3/5 relative overflow-hidden">
           <div className="absolute bottom-12 right-10 rounded-full bg-white opacity-[12%] w-[148px] h-[148px]"></div>
@@ -88,33 +94,89 @@ export default function ContactUs() {
             className="ml-auto"
           />
           <Flex className="flex gap-8 ">
-            <TextInput
-              label="First Name"
-              placeholder="Jane"
-              className="w-1/2"
-            />
-            <TextInput label="Last Name" placeholder="Doe" className="w-1/2" />
+            <div className="w-1/2 flex flex-col gap-2">
+              <TextInput
+                onChange={handleChange}
+                name="firstName"
+                label="First Name"
+                value={formData['firstName']}
+                placeholder="Jane"
+              />
+              {formErrors?.['firstName'] && (
+                <span className="text-red-400 text-sm">
+                  {formErrors?.['firstName']}
+                </span>
+              )}
+            </div>
+            <div className="w-1/2 flex flex-col gap-2">
+              <TextInput
+                onChange={handleChange}
+                value={formData['lastName']}
+                name="lastName"
+                label="Last Name"
+                placeholder="Doe"
+              />
+              {formErrors?.['lastName'] && (
+                <span className="text-red-400 text-sm">
+                  {formErrors?.['lastName']}
+                </span>
+              )}
+            </div>
           </Flex>
           <Flex className="flex gap-8">
-            <TextInput
-              label="Email"
-              placeholder="Enter email"
-              className="w-1/2"
-            />
-            <TextInput
-              label="Phone Number"
-              placeholder="Enter Phone Number"
-              className="w-1/2"
-            />
+            <div className="w-1/2 flex flex-col gap-2">
+              <TextInput
+                onChange={handleChange}
+                value={formData['email']}
+                name="email"
+                label="Email"
+                placeholder="Enter email"
+              />
+              {formErrors?.['email'] && (
+                <span className="text-red-400 text-sm">
+                  {formErrors?.['email']}
+                </span>
+              )}
+            </div>
+
+            <div className="w-1/2 flex flex-col gap-2">
+              <TextInput
+                onChange={handleChange}
+                value={formData['phoneNumber']}
+                name="phoneNumber"
+                label="Phone Number"
+                placeholder="Enter Phone Number"
+              />
+              {formErrors?.['phoneNumber'] && (
+                <span className="text-red-400 text-sm">
+                  {formErrors?.['phoneNumber']}
+                </span>
+              )}
+            </div>
           </Flex>
 
-          <Textarea
-            minRows={6}
-            autosize={true}
-            label="Message"
-            placeholder="Enter your message here"
-          />
-          <Button size="md" className="ml-auto">
+          <div className="flex flex-col gap-2">
+            <Textarea
+              minRows={6}
+              value={formData['message']}
+              onChange={handleChange}
+              autosize={true}
+              label="Message"
+              name="message"
+              placeholder="Enter your message here"
+            />
+            {formErrors?.['message'] && (
+              <span className="text-red-400 text-sm">
+                {formErrors?.['message']}
+              </span>
+            )}
+          </div>
+          <Button
+            size="md"
+            className="ml-auto"
+            onClick={handleSendEmail}
+            disabled={loading}
+          >
             Send Message
           </Button>
         </Flex>

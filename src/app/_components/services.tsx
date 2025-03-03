@@ -50,17 +50,17 @@ const services = [
 export default function Services() {
   return (
     <Stack
-      className="bg-[#0A293B] p-12 gap-3 text-white items-center"
+      className="bg-[#0A293B] md:p-12 gap-3 text-white items-center"
       id="services"
     >
       <Flex className="flex flex-col mx-auto gap-2">
-        <p className="text-2xl mx-auto font-bold">WHAT WE DO</p>
+        <p className="text-2xl mx-auto font-bold mt-8 md:mt-0">WHAT WE DO</p>
         <Divider size="sm" className="w-full" color="cyan" />
       </Flex>
-      <Flex className="flex-row gap-6 items-center flex-wrap mx-auto">
+      <Flex className="flex-col md:flex-row gap-6 items-center flex-wrap mx-auto">
         {services.map((service, index) => (
           <Flex
-            className="flex-col border-r-[1px]  border-gray-600 w-[calc(33%-1rem)] p-6 gap-4"
+            className="flex-col border-r-[1px]  border-gray-600 w-full md:w-[calc(33%-1rem)] p-6 gap-4"
             key={index}
           >
             <service.icon color="cyan" />

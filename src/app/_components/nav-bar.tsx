@@ -99,15 +99,15 @@ export function NavBar() {
           </Link>
 
           <Group h="100%" gap={0} visibleFrom="sm">
-            <a href="#aboutUs" className={classes.link}>
+            <Link href="/#aboutUs" className={classes.link}>
               About Us
-            </a>
-            <a href="#services" className={classes.link}>
+            </Link>
+            <Link href="/#services" className={classes.link}>
               Our Services
-            </a>
-            <a href="/our-works" className={classes.link}>
+            </Link>
+            <Link href="/our-works" className={classes.link}>
               Our Work
-            </a>
+            </Link>
             <a href="#contact-us" className={classes.link}>
               Contact Us
             </a>
