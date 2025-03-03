@@ -9,10 +9,10 @@ export default function Hero() {
         alt="Hero image"
         width={2000}
         height={278}
-        className="absolute top-0 -z-10 object-cover h-full"
+        className="absolute top-0 z-10 object-cover h-full"
       />
-      <h1>Our Work</h1>
-      <p>Transformative Projects & Success Stories</p>
+      <h1 className="z-10">Our Work</h1>
+      <p className="z-10">Transformative Projects & Success Stories</p>
     </div>
   );
 }
