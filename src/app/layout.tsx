@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   title: 'Zare Innovations',
   description: 'Zare Innovations | Revolutionize Your Business',
   icons: {
-    icon: '/zare-logo.svg',
+    icon: '/zare-logo-footer.svg',
   },
 };
 
