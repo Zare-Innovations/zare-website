@@ -1,11 +1,9 @@
 'use client';
 
 import useContactForm from '@/hooks/useForm';
-import { ActionIcon, Button, Flex, Textarea, TextInput } from '@mantine/core';
+import { Button, Flex, Textarea, TextInput } from '@mantine/core';
 import {
-  IconBrandInstagram,
-  IconBrandTelegram,
-  IconBrandTwitter,
+  IconBrandLinkedin,
   IconMail,
   IconMapPinFilled,
   IconPhoneCall,
@@ -71,15 +69,19 @@ export default function ContactUs() {
             </Flex>
           </Flex>
           <Flex className="flex gap-4">
-            <ActionIcon variant="subtle" color="cyan">
-              <IconBrandTwitter />
-            </ActionIcon>
-            <ActionIcon variant="subtle" color="cyan">
-              <IconBrandInstagram />
-            </ActionIcon>
-            <ActionIcon variant="subtle" color="cyan">
-              <IconBrandTelegram />
-            </ActionIcon>
+            <Link
+              className="rounded-full p-2 bg-[#00A9AB] hover:bg-white group"
+              href="https://www.linkedin.com/company/zare-innovations"
+            >
+              <IconBrandLinkedin
+                className="block group-hover:hidden"
+                color="white"
+              />
+              <IconBrandLinkedin
+                className="hidden group-hover:block"
+                color="#00A9AB"
+              />
+            </Link>
           </Flex>
         </Flex>
 
