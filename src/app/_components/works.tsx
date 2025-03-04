@@ -26,14 +26,14 @@ const works = [
   },
   {
     title: 'Technology Consulting',
-    image: WorksFrame3,
     // image: '/our-work/technical-consulting.png',
+    image: WorksFrame4,
     anchor: 'technology-consulting',
   },
   {
     title: 'Data Engineering',
+    image: WorksFrame3,
     // image: '/our-work/data-engineering.png',
-    image: WorksFrame4,
     anchor: 'data-engineering',
   },
 ];
