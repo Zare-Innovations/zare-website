@@ -10,13 +10,9 @@ export default function Hero() {
       className="h-full w-full flex items-center justify-center gap-12 relative mb-10"
       pt={120}
     >
-      <Image
-        src={Hero1.src}
-        alt="Hero image"
-        width={200}
-        height={200}
-        className="absolute top-30 left-10"
-      />
+      <div className="absolute top-20 left-10">
+        <Image src={Hero1.src} alt="Hero image" width={200} height={200} />
+      </div>
 
       <p className="absolute shadow-lg  right-10 top-40 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
         Built on Reputation
