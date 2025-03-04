@@ -15,14 +15,10 @@ export default function Hero() {
         alt="Hero image"
         width={200}
         height={200}
-        className="absolute left-10"
+        className="absolute top-30 left-10"
       />
 
-      <p className="absolute  right-10 mt-10 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
-        Built on Reputation
-      </p>
-
-      <p className="absolute shadow-lg  right-10 mt-10 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
+      <p className="absolute shadow-lg  right-10 top-40 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
         Built on Reputation
       </p>
 
