@@ -77,6 +77,9 @@ export default function Works() {
             controls: {
               scale: '105%',
             },
+            control: {
+              backgroundColor: 'white',
+            },
           }}
         >
           {works?.map((work, index) => (

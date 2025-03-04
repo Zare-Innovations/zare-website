@@ -68,6 +68,9 @@ export default function Testimonials() {
             controls: {
               scale: '105%',
             },
+            control: {
+              backgroundColor: 'white',
+            },
           }}
         >
           {testmonialsData?.map((testimonial, index) => (
