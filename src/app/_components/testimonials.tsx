@@ -70,6 +70,7 @@ export default function Testimonials() {
             },
             control: {
               backgroundColor: 'white',
+              color: 'black',
             },
           }}
         >
