@@ -6,7 +6,7 @@ export default function Contact() {
   return (
     <Stack
       id="contact-us"
-      className="h-[60dvh] flex items-center justify-center gap-4"
+      className="lg:h-[60dvh] py-8 flex items-center justify-center gap-4"
       style={{
         backgroundImage: `url(${Map.src})`,
         backgroundPosition: 'center',
@@ -14,7 +14,7 @@ export default function Contact() {
         backgroundSize: 'contain',
       }}
     >
-      <Flex className="flex-col gap-4 my-auto">
+      <Flex className="flex-col gap-4 my-auto ">
         <p className="text-6xl text-center w-[70%] mx-auto">
           Revolutionize Your Business with
           <span className="text-cyan-400"> Zare Innovations.</span>

@@ -1,20 +1,12 @@
 'use client';
 import useContactForm from '@/hooks/useForm';
-import {
-  ActionIcon,
-  Button,
-  Flex,
-  Modal,
-  Stack,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
+import { Button, Flex, Modal, Stack, Textarea, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
-  IconBrandInstagram,
-  IconBrandTelegram,
-  IconBrandTwitter,
+  IconBrandLinkedin,
+  IconMail,
   IconMapPinFilled,
+  IconPhoneCall,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -34,55 +26,69 @@ export default function ContactUsForm() {
         withCloseButton={false}
       >
         <Flex>
-          <Flex className="text-white bg-[#0a293b] w-1/2 flex-col gap-12 rounded-md p-8">
+          <Flex className="text-white bg-[#0a293b] outline flex-col gap-12 rounded-md p-8 px-10 w-full lg:w-3/5 relative overflow-hidden">
+            <div className="absolute bottom-12 right-10 rounded-full bg-white opacity-[12%] w-[148px] h-[148px]"></div>
+            <div className="absolute -bottom-32 -right-36 rounded-full bg-white opacity-[12%] w-[288px] h-[288px]"></div>
+
             <Flex className="flex-col">
               <p className="font-bold text-xl">Contact Us</p>
-              <p>Reach out to work with us or just say hello </p>
+              <p className="font-light my-2 text-gray-300">
+                Reach out to work with us or just say hello :)
+              </p>
             </Flex>
             <Flex className="flex-col gap-12">
-              <Flex className="flex gap-2 flex-col">
-                <Flex className="gap-4">
-                  <Flex className="w-1/2 gap-2 flex-col">
+              <Flex className="flex gap-4">
+                <IconPhoneCall className="w-6 h-6" />
+
+                <Flex className="gap-6">
+                  <Flex className=" gap-2 flex-col">
                     <p className="text-lg font-semibold">USA</p>
-                    <p>+1 703 395 5235</p>
-                    <p>+1 703 395 5235</p>
+                    <p className="text-sm">+1 703 395 5235</p>
                   </Flex>
-                  <Flex className="w-1/2 gap-2 flex-col">
+                  <Flex className="gap-2 flex-col">
                     <p className="text-lg font-semibold">Ethiopia</p>
-                    <p>+251 93 816 9380</p>
-                    <p>+251 93 215 2547</p>
+                    <p className="text-sm">+251 93 816 9380</p>
                   </Flex>
                 </Flex>
               </Flex>
               <Flex className="flex gap-2 flex-col">
-                <Link href={'mailto:careers@zareinnovations.com'}>
-                  info@zareinnovations.com
+                <Link
+                  href={'mailto:careers@zareinnovations.com'}
+                  className="flex gap-4 items-center"
+                >
+                  <IconMail className="h-6 w-6" />
+                  <span className="underline">info@zareinnovations.com</span>
                 </Link>
               </Flex>
-              <Flex className="flex gap-2 flex-col">
-                <p className="text-lg font-semibold">USA</p>
-                <Flex className="gap-2">
-                  <IconMapPinFilled />
-                  5501 Seminary Road, Falls Church VA, 22041,Unit 1710 South,
-                  22041, United States
-                </Flex>
-                <p className="text-lg font-semibold">Ethiopia</p>
-                <Flex className="gap-2">
-                  <IconMapPinFilled />5 Meskel Flower, Aster Plaza 3rd
-                  Floor,Addis Ababa, Ethiopia
+              <Flex className="gap-4">
+                <IconMapPinFilled className="w-8 h-8" />
+                <Flex className="flex gap-2 flex-col">
+                  <p className="text-lg font-semibold">USA</p>
+                  <Flex className="gap-2 text-sm">
+                    5501 Seminary Road, Falls Church VA, 22041, Apt 1710 South,
+                    22041, United States
+                  </Flex>
+                  <p className="text-lg font-semibold">Ethiopia</p>
+                  <Flex className="gap-2 text-sm z-10">
+                    Meskel Flower, Aster Plaza 3rd Floor, Addis Ababa, Ethiopia
+                  </Flex>
                 </Flex>
               </Flex>
             </Flex>
             <Flex className="flex gap-4">
-              <ActionIcon variant="subtle" color="cyan">
-                <IconBrandTwitter />
-              </ActionIcon>
-              <ActionIcon variant="subtle" color="cyan">
-                <IconBrandInstagram />
-              </ActionIcon>
-              <ActionIcon variant="subtle" color="cyan">
-                <IconBrandTelegram />
-              </ActionIcon>
+              <Link
+                className="rounded-full p-2 bg-[#00A9AB] hover:bg-white group"
+                href="https://www.linkedin.com/company/zare-innovations"
+              >
+                <IconBrandLinkedin
+                  className="block group-hover:hidden"
+                  color="white"
+                />
+                <IconBrandLinkedin
+                  className="hidden group-hover:block"
+                  color="#00A9AB"
+                />
+              </Link>
             </Flex>
           </Flex>
           <Flex className="w-full flex-col gap-12 p-8">

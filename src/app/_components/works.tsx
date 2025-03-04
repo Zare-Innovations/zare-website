@@ -9,25 +9,30 @@ import WorksBg from './works-bg.png';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { Carousel } from '@mantine/carousel';
 import Link from 'next/link';
+import carouselClassNames from './our-work.module.css';
 
 const works = [
   {
     title: 'HR Outsourcing',
     image: WorksFrame1,
+    // image: '/our-work/recruitment.png',
     anchor: 'hr-outsourcing',
   },
   {
     title: 'Software Development',
     image: WorksFrame2,
+    // image: '/our-work/dashboard-overview.png',
     anchor: 'software-development',
   },
   {
     title: 'Technology Consulting',
     image: WorksFrame3,
+    // image: '/our-work/technical-consulting.png',
     anchor: 'technology-consulting',
   },
   {
     title: 'Data Engineering',
+    // image: '/our-work/data-engineering.png',
     image: WorksFrame4,
     anchor: 'data-engineering',
   },
@@ -48,32 +53,37 @@ export default function Works() {
       <p className="text-4xl font-semibold text-center">Our Work</p>
       <Flex className="w-full gap-16 py-8 mt-16 h-[50%]">
         <Carousel
+          classNames={carouselClassNames}
+          controlSize={40}
+          loop={true}
           align="start"
+          withControls={true}
           withIndicators
-          slideSize="30%"
+          slideSize="33%"
           slideGap={100}
-          withControls={false}
           height="100%"
           style={{ flex: 1 }}
           styles={{
             indicators: {
               bottom: '-40px',
               gap: '5px',
-              fill: 'black',
-              //   backgroundColor: "black",
               width: 'fit-content',
               margin: 'auto',
             },
             indicator: {
-              backgroundColor: 'white',
+              height: '9px',
+              fill: 'white',
+            },
+            controls: {
+              scale: '105%',
             },
           }}
         >
           {works?.map((work, index) => (
             <Carousel.Slide key={index}>
               <Flex
-                key={index}
-                className="relative flex-col gap-4 h-full border-white/40 border-2 rounded-3xl bg-[#ffffff10]"
+                key={`work-${index}`}
+                className="relative flex-col gap-4 h-full border-white/40 border-2 rounded-[32px] bg-[#ffffff10]"
               >
                 <p className="p-4 text-xl font-semibold">{work.title}</p>
                 <Divider size="sm" className="bg-white/40" />

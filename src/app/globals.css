@@ -22,3 +22,8 @@ html {
   background: transparent;
   clip-path: url(#curveClip);
 }
+
+.logo-filter {
+  filter: invert(10%) sepia(39%) saturate(2691%) hue-rotate(177deg)
+    brightness(92%) contrast(92%);
+}

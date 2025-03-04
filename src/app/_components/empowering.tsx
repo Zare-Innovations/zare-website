@@ -89,14 +89,14 @@ export default function Empowering() {
             Empowering Growth,
             <span className="text-cyan-500"> Bridging Global Gaps</span>
           </p>
-          <p className="text-center md:text-left font-semibold">
+          <p className="text-center md:text-left">
             At Zare Innovations, our mission goes beyond traditional Business
             Process Outsourcing (BPO) solutions. We are dedicated to creating
             impactful opportunities by drastically reducing unemployment across
             Ethiopia, while delivering exceptional, cost-effective services to
             businesses worldwide.
           </p>
-          <p className="font-semibold">
+          <p className="">
             With a base in Addis Ababa and representation in the USA, our
             mission is twofold: driving sustainable growth across Ethiopia by
             creating jobs and connecting businesses globally through superior

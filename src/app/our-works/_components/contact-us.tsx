@@ -39,12 +39,10 @@ export default function ContactUs() {
                 <Flex className=" gap-2 flex-col">
                   <p className="text-lg font-semibold">USA</p>
                   <p className="text-sm">+1 703 395 5235</p>
-                  <p className="text-sm">+1 703 395 5235</p>
                 </Flex>
                 <Flex className="gap-2 flex-col">
                   <p className="text-lg font-semibold">Ethiopia</p>
                   <p className="text-sm">+251 93 816 9380</p>
-                  <p className="text-sm">+251 93 215 2547</p>
                 </Flex>
               </Flex>
             </Flex>
@@ -67,7 +65,7 @@ export default function ContactUs() {
                 </Flex>
                 <p className="text-lg font-semibold">Ethiopia</p>
                 <Flex className="gap-2 text-sm z-10">
-                  5 Meskel Flower, Aster Plaza 3rd Floor, Addis Ababa, Ethiopia
+                  Meskel Flower, Aster Plaza 3rd Floor, Addis Ababa, Ethiopia
                 </Flex>
               </Flex>
             </Flex>

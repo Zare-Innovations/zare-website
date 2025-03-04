@@ -2,6 +2,7 @@
 import { Carousel } from '@mantine/carousel';
 import { Divider, Flex, Stack } from '@mantine/core';
 import Image from 'next/image';
+import carouselClassNames from './testimonials.module.css';
 
 const testmonialsData = [
   {
@@ -29,7 +30,7 @@ const testmonialsData = [
     logo: '/testimonials/pickrell.png',
     description:
       'The front-end developer we hired through Zare Innovations has been a great addition to our team—reliable, skilled, and a solid contributor. We’ve also been impressed with how Zare proactively managed performance, making sure their developers meet expectations. A great partner to work with!',
-    backgroundColor: '#a6aca9',
+    backgroundColor: '#FFFFFF',
     textColor: 'black',
   },
 ];
@@ -44,33 +45,36 @@ export default function Testimonials() {
       </Flex>
       <Flex className="flex-wrap gap-20 mt-6 mb-6 h-full">
         <Carousel
+          classNames={carouselClassNames}
           align="start"
           withIndicators
           slideSize="50%"
           slideGap="lg"
-          withControls={false}
+          withControls={true}
           height="100%"
           style={{ flex: 1 }}
+          loop={true}
+          controlSize={40}
           styles={{
             indicators: {
               bottom: '-40px',
               gap: '5px',
-              fill: 'black',
-              //   backgroundColor: "black",
               width: 'fit-content',
-              height: 'min-h-[8px]',
               margin: 'auto',
             },
             indicator: {
-              backgroundColor: '#0a293b',
+              height: '9px',
+            },
+            controls: {
+              scale: '105%',
             },
           }}
         >
           {testmonialsData?.map((testimonial, index) => (
-            <Carousel.Slide key={index}>
+            <Carousel.Slide key={index} className="p-2 pb-6">
               <Flex
                 key={index}
-                className={`rounded-lg gap-12 h-full bg-[${testimonial.backgroundColor}]  flex-col text-${testimonial?.textColor} p-8`}
+                className={`rounded-lg gap-12 h-full bg-[${testimonial.backgroundColor}]  flex-col text-${testimonial?.textColor} p-8 shadow-lg`}
                 style={{ backgroundColor: testimonial?.backgroundColor }}
               >
                 <Flex className="justify-between items-center">
@@ -87,7 +91,7 @@ export default function Testimonials() {
                     height={200}
                     width={150}
                     alt="logo-2"
-                    className="w-40 opacity-25"
+                    className="w-40 opacity-25 contrast-50"
                     unoptimized
                   />
                 </Flex>
@@ -96,27 +100,6 @@ export default function Testimonials() {
             </Carousel.Slide>
           ))}
         </Carousel>
-        {/* <Flex className="rounded-lg gap-8 bg-[#0A293B] w-1/3 flex-col text-white p-8">
-          <Flex className="justify-between items-center">
-            <Image
-              alt="logo-2"
-              src={'/testimonials/ubutix.png'}
-              width={200}
-              height={100}
-              className="w-1/3"
-              unoptimized
-            />
-            <Image
-              src={'/testimonials/quote-mark.png'}
-              height={200}
-              width={150}
-              alt="logo-2"
-              className="w-1/3"
-              unoptimized
-            />
-          </Flex>
-          <p>{testmonialsData[1].description}</p>
-        </Flex> */}
       </Flex>
     </Stack>
   );

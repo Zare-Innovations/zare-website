@@ -7,7 +7,7 @@ import Counter from './counter';
 export default function Hero() {
   return (
     <Stack
-      className="h-full w-full flex items-center justify-center gap-8 relative"
+      className="h-full w-full flex items-center justify-center gap-12 relative mb-10"
       pt={120}
     >
       <Image
@@ -15,19 +15,24 @@ export default function Hero() {
         alt="Hero image"
         width={200}
         height={200}
-        className="-mb-16 ml-6"
+        className="absolute left-10"
       />
 
       <p className="absolute  right-10 mt-10 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
         Built on Reputation
       </p>
 
-      <p className="text-7xl w-[80%] font-bold text-center mx-auto z-10">
-        Revolutionize Your Business with{' '}
+      <p className="absolute shadow-lg  right-10 mt-10 w-fit font-medium text-[#0a293b] text-sm bg-[#ECFEFF] text-nowrap p-3 rounded-lg">
+        Built on Reputation
+      </p>
+
+      <p className="mt-20 text-7xl w-[80%] font-bold text-center mx-auto z-10">
+        Revolutionize Your Business <br />
+        with
         <span className="text-cyan-500"> Zare Innovations</span>
       </p>
 
-      <div className="absolute bottom-0 right-10 bg-white shadow-lg  rounded-lg p-3">
+      <div className="absolute -bottom-8 right-10 bg-white shadow-lg  rounded-lg p-3">
         <div className="-rotate-[10deg] my-2">
           <svg className="w-[20px] h-[20px] transition-[width] duration-2000 ease-in-out overflow-visible animate-profit-growth">
             <defs>
@@ -58,7 +63,7 @@ export default function Hero() {
           First Year
         </p>
       </div>
-      <p className="w-[80%] mx-auto text-center text-xl">
+      <p className="w-[80%] mx-auto text-center text-xl my-5">
         Elevate your business with our diverse BPO services tailored to
         perfection – where quality meets affordability.
       </p>
