@@ -33,6 +33,20 @@ const testmonialsData = [
     backgroundColor: '#FFFFFF',
     textColor: 'black',
   },
+  // {
+  //   logo: '/testimonials/afig.png',
+  //   description:
+  //     'Delivered comprehensive technology consulting for a half-billion-dollar private equity fund. Services included needs analysis and SAAS tool selection for a robust CRM, automating ESG data collection and reporting, enhancing investor reporting via AI and ML, custom development for an international e-commerce platform, and creating a robust platform for streamlining board meeting summary documents by integrating AI tools.',
+  //   backgroundColor: '#D97706',
+  //   textColor: 'white',
+  // },
+  // {
+  //   logo: '/testimonials/medrafa.png',
+  //   description:
+  //     'Delivered comprehensive technology consulting for a half-billion-dollar private equity fund. Services included needs analysis and SAAS tool selection for a robust CRM, automating ESG data collection and reporting, enhancing investor reporting via AI and ML, custom development for an international e-commerce platform, and creating a robust platform for streamlining board meeting summary documents by integrating AI tools.',
+  //   backgroundColor: '#D1FAE5',
+  //   textColor: '#F8FAFC',
+  // },
 ];
 
 export default function Testimonials() {
@@ -48,16 +62,16 @@ export default function Testimonials() {
           classNames={carouselClassNames}
           align="start"
           withIndicators
-          slideSize="50%"
-          slideGap="lg"
+          slideSize={{ base: '100%', md: '50%' }}
+          slideGap={{ base: 'sm', sm: 'md', md: 'lg' }}
           withControls={true}
           height="100%"
-          style={{ flex: 1 }}
+          className="w-full"
           loop={true}
           controlSize={40}
           styles={{
             indicators: {
-              bottom: '-40px',
+              bottom: '-30px',
               gap: '5px',
               width: 'fit-content',
               margin: 'auto',

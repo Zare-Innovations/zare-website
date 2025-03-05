@@ -50,7 +50,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <RootStyleRegistry>
-        <body className={`${gotham.className}  antialiased`}>
+        <body
+          className={`${gotham.className}  antialiased outline overflow-x-hidden`}
+        >
           <NavBar />
           {children}
           <Footer />

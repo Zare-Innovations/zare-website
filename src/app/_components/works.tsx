@@ -53,16 +53,16 @@ export default function Works() {
       <p className="text-4xl font-semibold text-center">Our Work</p>
       <Flex className="w-full gap-16 py-8 mt-16 h-[50%]">
         <Carousel
+          className="w-full"
           classNames={carouselClassNames}
           controlSize={40}
           loop={true}
           align="start"
           withControls={true}
           withIndicators
-          slideSize="33%"
-          slideGap={100}
+          slideSize={{ base: '100%', sm: '50%', md: '33%', lg: '33%' }}
+          slideGap={{ base: 'sm', sm: 'md', md: 'lg', lg: 100 }}
           height="100%"
-          style={{ flex: 1 }}
           styles={{
             indicators: {
               bottom: '-40px',

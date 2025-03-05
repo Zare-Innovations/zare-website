@@ -1,5 +1,9 @@
 import { Flex, Stack } from '@mantine/core';
-import { IconMail, IconMapPinFilled } from '@tabler/icons-react';
+import {
+  IconBrandLinkedin,
+  IconMail,
+  IconMapPinFilled,
+} from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import BottomFooter from './footer-bottom';
@@ -66,6 +70,22 @@ export default function Footer() {
             </Flex>
           </Flex>
         </Flex>
+
+        <div className="flex items-center w-full gap-4">
+          <Link
+            className="rounded-full p-2 bg-[#06b6d450] hover:bg-white group mx-auto"
+            href="https://www.linkedin.com/company/zare-innovations"
+          >
+            <IconBrandLinkedin
+              className="block group-hover:hidden"
+              color="white"
+            />
+            <IconBrandLinkedin
+              className="hidden group-hover:block"
+              color="#00A9AB"
+            />
+          </Link>
+        </div>
       </Stack>
       <BottomFooter />
     </Flex>

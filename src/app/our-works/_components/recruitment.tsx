@@ -10,12 +10,12 @@ export default function Recruitment() {
     >
       <ProjectCard src={'/our-work/recruitment.png'} className="scale-150" />
       <h2 className="bg-[#00A9AB] w-[331px] px-8 text-center flex items-center justify-center py-2 text-lg text-white font-medium rounded-lg my-5">
-        Recruitment Services
+        HR Outsourcing
       </h2>
 
       <p>
-        Streamlined operational processes for businesses and integrated advanced
-        tools to enhance efficiency and decision-making.
+        Connected global businesses with top talent to optimize operations and
+        drive success.
       </p>
 
       <div className="my-5 space-y-3 pr-8">

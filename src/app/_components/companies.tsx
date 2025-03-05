@@ -13,12 +13,12 @@ export default function Companies() {
             src="/our-work/logos/1.png"
           />
         </li>
-        <li className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200">
+        <li className="contrast-0 hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200">
           <Image
             width={120}
             height={120}
             alt="Company Logo"
-            src="/our-work/logos/2.png"
+            src="/our-work/logos/seed_of_life_white.svg"
           />
         </li>
         <li className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200">
@@ -127,12 +127,12 @@ export default function Companies() {
             src="/our-work/logos/1.png"
           />
         </li>
-        <li className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200">
+        <li className="contrast-0 hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200">
           <Image
             width={120}
             height={120}
             alt="Company Logo"
-            src="/our-work/logos/2.png"
+            src="/our-work/logos/seed_of_life_white.svg"
           />
         </li>
         <li className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200">

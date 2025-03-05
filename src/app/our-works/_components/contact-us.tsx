@@ -85,7 +85,7 @@ export default function ContactUs() {
           </Flex>
         </Flex>
 
-        <Flex className="w-full flex-col gap-12 p-8 px-16">
+        <Flex className="w-full flex-col gap-12 p-5 sm:p-8 md:px-16">
           <Image
             src={'/zare-logo.svg'}
             width={100}
@@ -93,8 +93,8 @@ export default function ContactUs() {
             alt="Zare logo"
             className="ml-auto"
           />
-          <Flex className="flex gap-8 ">
-            <div className="w-1/2 flex flex-col gap-2">
+          <Flex className="flex gap-8 flex-col md:flex-row">
+            <div className="w-full md:w-1/2 flex flex-col gap-2">
               <TextInput
                 onChange={handleChange}
                 name="firstName"
@@ -108,7 +108,7 @@ export default function ContactUs() {
                 </span>
               )}
             </div>
-            <div className="w-1/2 flex flex-col gap-2">
+            <div className="w-full md:w-1/2 flex flex-col gap-2">
               <TextInput
                 onChange={handleChange}
                 value={formData['lastName']}
@@ -123,8 +123,8 @@ export default function ContactUs() {
               )}
             </div>
           </Flex>
-          <Flex className="flex gap-8">
-            <div className="w-1/2 flex flex-col gap-2">
+          <Flex className="flex flex-col md:flex-row gap-8">
+            <div className="w-full md:w-1/2 flex flex-col gap-2">
               <TextInput
                 onChange={handleChange}
                 value={formData['email']}
@@ -139,7 +139,7 @@ export default function ContactUs() {
               )}
             </div>
 
-            <div className="w-1/2 flex flex-col gap-2">
+            <div className="w-full md:w-1/2 flex flex-col gap-2">
               <TextInput
                 onChange={handleChange}
                 value={formData['phoneNumber']}

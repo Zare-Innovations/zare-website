@@ -70,10 +70,11 @@ export default function Empowering() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   return (
     <Stack id="aboutUs">
-      <Flex className="gap-8 flex-col md:flex-row items-center">
-        <div className="w-full flex md:w-1/2">
+      <Flex className="gap-8 flex-col lg:flex-row items-center">
+        <div className="w-full flex lg:w-1/2 justify-center">
           <canvas
             ref={canvasRef}
             style={{
@@ -84,8 +85,8 @@ export default function Empowering() {
             }}
           />
         </div>
-        <div className="flex flex-col gap-12 md:gap-4 md:w-1/2 md:pr-8 px-4">
-          <p className="text-4xl text-center md:text-left md:text-6xl font-semibold">
+        <div className="flex flex-col gap-12 lg:gap-8 lg:w-1/2 md:pr-8 px-4">
+          <p className="text-5xl text-center lg:text-left md:text-6xl font-semibold  max-w-full break-words">
             Empowering Growth,
             <span className="text-cyan-500"> Bridging Global Gaps</span>
           </p>
@@ -96,7 +97,7 @@ export default function Empowering() {
             Ethiopia, while delivering exceptional, cost-effective services to
             businesses worldwide.
           </p>
-          <p className="">
+          <p className="text-center md:text-left">
             With a base in Addis Ababa and representation in the USA, our
             mission is twofold: driving sustainable growth across Ethiopia by
             creating jobs and connecting businesses globally through superior
