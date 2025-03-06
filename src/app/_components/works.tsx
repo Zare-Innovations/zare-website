@@ -56,9 +56,9 @@ export default function Works() {
           className="w-full"
           classNames={carouselClassNames}
           controlSize={40}
-          loop={true}
           align="start"
           withControls={true}
+          containScroll="trimSnaps"
           withIndicators
           slideSize={{ base: '100%', sm: '50%', md: '33%', lg: '33%' }}
           slideGap={{ base: 'sm', sm: 'md', md: 'lg', lg: 100 }}

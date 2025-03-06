@@ -42,7 +42,9 @@ export default function Footer() {
           </Flex>
 
           <Flex className="flex gap-2 md:w-[25%] flex-col">
-            <p className="text-lg font-semibold">Give Us A Call</p>
+            <p className="text-lg w-2/3 mx-auto font-semibold">
+              Give Us A Call
+            </p>
             <Flex className="gap-4 flex-col sm:flex-row">
               <Flex className="sm:w-1/2 gap-2 flex-col">
                 <p className="font-semibold">USA</p>

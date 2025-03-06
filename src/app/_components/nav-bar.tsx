@@ -22,14 +22,17 @@ export function NavBar() {
     <Box>
       <header className={classes.header}>
         <Group justify="space-between" h="100%" px={40}>
-          <Link href="/">
-            <Image
-              src={'/zare-logo.svg'}
-              width={100}
-              height={100}
-              alt="Zare Logo"
-            />
-          </Link>
+          <div className="w-36">
+            <Link href="/">
+              <Image
+                src={'/zare-innovations-logo.svg'}
+                width={1500}
+                height={1500}
+                className="w-full"
+                alt="Zare Logo"
+              />
+            </Link>
+          </div>
 
           <Group h="100%" gap={0} visibleFrom="md">
             <Link href="/#aboutUs" className={classes.link}>
