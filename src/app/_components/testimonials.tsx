@@ -96,6 +96,7 @@ export default function Testimonials() {
                 style={{
                   backgroundColor: testimonial?.backgroundColor,
                   color: testimonial?.textColor,
+                  maxWidth: '100%',
                 }}
               >
                 <Flex className="justify-between items-center">
