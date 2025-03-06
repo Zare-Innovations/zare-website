@@ -14,26 +14,26 @@ import carouselClassNames from './our-work.module.css';
 const works = [
   {
     title: 'HR Outsourcing',
-    image: WorksFrame1,
-    // image: '/our-work/recruitment.png',
+    src: WorksFrame1,
+    image: '/our-work/recruitment.png',
     anchor: 'hr-outsourcing',
   },
   {
     title: 'Software Development',
-    image: WorksFrame2,
-    // image: '/our-work/dashboard-overview.png',
+    src: WorksFrame2,
+    image: '/our-work/dashboard-overview.png',
     anchor: 'software-development',
   },
   {
     title: 'Technology Consulting',
-    // image: '/our-work/technical-consulting.png',
-    image: WorksFrame4,
+    image: '/our-work/technical-consulting.png',
+    src: WorksFrame4,
     anchor: 'technology-consulting',
   },
   {
     title: 'Data Engineering',
-    image: WorksFrame3,
-    // image: '/our-work/data-engineering.png',
+    src: WorksFrame3,
+    image: '/our-work/data-engineering.png',
     anchor: 'data-engineering',
   },
 ];
@@ -92,7 +92,7 @@ export default function Works() {
                 <p className="p-4 text-xl font-semibold">{work.title}</p>
                 <Divider size="sm" className="bg-white/40" />
 
-                <div className="clip-path">
+                <div className="clip-path bg-white">
                   <svg width="0" height="0">
                     <defs>
                       <clipPath
@@ -115,13 +115,14 @@ export default function Works() {
                   </svg>
 
                   <Image
-                    src={work.image.src}
-                    width={200}
-                    height={200}
+                    src={work.src.src}
+                    width={4000}
+                    height={4200}
                     alt="Frame 1"
                     className="w-full"
                   />
                 </div>
+
                 <div className="w-28 h-28 flex items-center justify-center rounded-tl-full absolute bottom-0 right-0 z-10">
                   <Link
                     href={`/our-works#${work.anchor}`}
