@@ -49,15 +49,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <RootStyleRegistry>
-        <body
-          className={`${gotham.className}  antialiased outline overflow-x-hidden`}
-        >
+      <body
+        className={`${gotham.className}  antialiased outline overflow-x-hidden`}
+      >
+        <RootStyleRegistry>
           <NavBar />
           {children}
           <Footer />
-        </body>
-      </RootStyleRegistry>
+        </RootStyleRegistry>
+      </body>
     </html>
   );
 }
