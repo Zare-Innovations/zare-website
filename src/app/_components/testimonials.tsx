@@ -66,7 +66,7 @@ export default function Testimonials() {
           slideGap={{ base: 'sm', sm: 'md', md: 'lg' }}
           withControls={true}
           height="100%"
-          className="w-full"
+          className="w-full max-w-[90vw]"
           loop={true}
           controlSize={40}
           styles={{
