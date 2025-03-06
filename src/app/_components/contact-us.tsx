@@ -25,7 +25,7 @@ export default function ContactUsForm() {
         size={2000}
         withCloseButton={false}
       >
-        <Flex>
+        <Flex className="flex-col md:flex-row">
           <Flex className="text-white bg-[#0a293b] outline flex-col gap-12 rounded-md p-8 px-10 w-full lg:w-3/5 relative overflow-hidden">
             <div className="absolute bottom-12 right-10 rounded-full bg-white opacity-[12%] w-[148px] h-[148px]"></div>
             <div className="absolute -bottom-32 -right-36 rounded-full bg-white opacity-[12%] w-[288px] h-[288px]"></div>
@@ -91,7 +91,8 @@ export default function ContactUsForm() {
               </Link>
             </Flex>
           </Flex>
-          <Flex className="w-full flex-col gap-12 p-8">
+
+          <Flex className="w-full flex-col gap-12 p-3 md:p-8">
             <Image
               src={'/zare-logo.svg'}
               width={100}
@@ -99,8 +100,8 @@ export default function ContactUsForm() {
               alt="Zare logo"
               className="ml-auto"
             />
-            <Flex className="flex gap-8 ">
-              <div className="w-1/2 flex flex-col gap-2">
+            <Flex className="flex gap-8 flex-col md:flex-row">
+              <div className="md:w-1/2 flex flex-col gap-2">
                 <TextInput
                   onChange={handleChange}
                   name="firstName"
@@ -114,7 +115,7 @@ export default function ContactUsForm() {
                   </span>
                 )}
               </div>
-              <div className="w-1/2 flex flex-col gap-2">
+              <div className="md:w-1/2 flex flex-col gap-2">
                 <TextInput
                   onChange={handleChange}
                   value={formData['lastName']}
@@ -129,8 +130,8 @@ export default function ContactUsForm() {
                 )}
               </div>
             </Flex>
-            <Flex className="flex gap-8">
-              <div className="w-1/2 flex flex-col gap-2">
+            <Flex className="flex flex-col md:flex-row gap-8">
+              <div className="md:w-1/2 flex flex-col gap-2">
                 <TextInput
                   onChange={handleChange}
                   value={formData['email']}
@@ -145,7 +146,7 @@ export default function ContactUsForm() {
                 )}
               </div>
 
-              <div className="w-1/2 flex flex-col gap-2">
+              <div className="md:w-1/2 flex flex-col gap-2">
                 <TextInput
                   onChange={handleChange}
                   value={formData['phoneNumber']}
