@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
 
 import './globals.css';
-import RootStyleRegistry from './mantine';
-import { NavBar } from './_components/nav-bar';
 
 // core styles are required for all packages
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
+import '@mantine/notifications/styles.css';
+
+import RootStyleRegistry from './mantine';
+import { NavBar } from './_components/nav-bar';
+
 import Footer from './_components/footer';
 
 import localFont from 'next/font/local';

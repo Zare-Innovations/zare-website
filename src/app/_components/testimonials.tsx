@@ -92,8 +92,11 @@ export default function Testimonials() {
             <Carousel.Slide key={index} className="p-2 pb-6">
               <Flex
                 key={index}
-                className={`rounded-lg gap-12 h-full bg-[${testimonial.backgroundColor}]  flex-col text-${testimonial?.textColor} p-8 shadow-lg`}
-                style={{ backgroundColor: testimonial?.backgroundColor }}
+                className={`rounded-lg gap-12 h-full flex-col p-8 shadow-lg`}
+                style={{
+                  backgroundColor: testimonial?.backgroundColor,
+                  color: testimonial?.textColor,
+                }}
               >
                 <Flex className="justify-between items-center">
                   <Image

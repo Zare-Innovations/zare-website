@@ -3,7 +3,6 @@
 import { MantineProvider, MantineThemeOverride } from '@mantine/core';
 import { theme as baseTheme } from './theme';
 import { Notifications } from '@mantine/notifications';
-import '@mantine/notifications/styles.css';
 
 export default function RootStyleRegistry({
   children,
