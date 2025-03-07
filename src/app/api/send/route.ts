@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
         const { data, error } = await resend.emails.send({
             from: `${rawData?.name} <contact@resend.dev>`,
-            to: ['info@zareinnovations.com'],
+            to: ['careers@zareinnovations.com'],
             subject: 'Contact Us',
             react: component,
         });
