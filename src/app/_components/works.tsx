@@ -31,7 +31,7 @@ const works = [
     anchor: 'technology-consulting',
   },
   {
-    title: 'Data Engineering',
+    title: 'Data Engineering & Insights',
     src: WorksFrame3,
     image: '/our-work/data-engineering.png',
     anchor: 'data-engineering',

@@ -107,7 +107,7 @@ export default function ContactUsForm() {
                   name="firstName"
                   label="First Name"
                   value={formData['firstName']}
-                  placeholder="Jane"
+                  placeholder="Enter first name"
                 />
                 {formErrors?.['firstName'] && (
                   <span className="text-red-400 text-sm">
@@ -121,7 +121,7 @@ export default function ContactUsForm() {
                   value={formData['lastName']}
                   name="lastName"
                   label="Last Name"
-                  placeholder="Doe"
+                  placeholder="Enter last name"
                 />
                 {formErrors?.['lastName'] && (
                   <span className="text-red-400 text-sm">
