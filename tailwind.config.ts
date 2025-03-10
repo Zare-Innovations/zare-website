@@ -12,6 +12,20 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      animation: {
+        'infinite-scroll': 'infinite-scroll 25s linear infinite',
+        "profit-growth": "profit-growth 2s ease-in-out forwards",
+      },
+      keyframes: {
+        'infinite-scroll': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-100%)' },
+        },
+        "profit-growth": {
+          "0%": { width: "20px", opacity: "0.1" },
+          "100%": { width: "120px", opacity: "1" },
+        },
+      }
     },
   },
   plugins: [],

@@ -1,8 +1,8 @@
-"use client";
-import { Button, Flex, Stack } from "@mantine/core";
-import Link from "next/link";
-import React, { useEffect, useRef } from "react";
-import createGlobe from "cobe";
+'use client';
+import { Button, Flex, Stack } from '@mantine/core';
+import Link from 'next/link';
+import React, { useEffect, useRef } from 'react';
+import createGlobe from 'cobe';
 
 export default function Empowering() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -19,7 +19,7 @@ export default function Empowering() {
       }
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize();
 
     const globe =
@@ -38,9 +38,29 @@ export default function Empowering() {
         markerColor: [0.1, 0.8, 1],
         glowColor: [1, 1, 1],
         markers: [
-          // longitude latitude
-          { location: [37.7595, -122.4367], size: 0.03 },
-          { location: [40.7128, -74.006], size: 0.1 },
+          // South Africa
+          { location: [-30.5595, 22.9375], size: 0.05 },
+
+          // USA
+          { location: [37.0902, -95.7129], size: 0.05 },
+
+          // Senegal
+          { location: [14.4974, -14.4524], size: 0.05 },
+
+          // Ethiopia
+          { location: [9.145, 40.4897], size: 0.05 },
+
+          // Cyprus
+          { location: [35.1264, 33.4299], size: 0.05 },
+
+          // United Kingdom
+          { location: [55.3781, -3.436], size: 0.05 },
+
+          // Canada
+          { location: [55.1304, -106.3468], size: 0.05 },
+
+          // West Midlands
+          { location: [52.5862, -2.1265], size: 0.05 },
         ],
         onRender: (state) => {
           // Called on every animation frame.
@@ -54,36 +74,37 @@ export default function Empowering() {
       if (globe) {
         globe.destroy();
       }
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   return (
     <Stack id="aboutUs">
-      <Flex className="gap-8 items-center">
-        <div className="w-full flex md:w-1/2">
+      <Flex className="gap-8 flex-col lg:flex-row items-center">
+        <div className="w-full flex lg:w-1/2 justify-center">
           <canvas
             ref={canvasRef}
             style={{
-              width: "100%",
-              height: "auto",
+              width: '100%',
+              height: 'auto',
               maxWidth: 600,
               aspectRatio: 1,
             }}
           />
         </div>
-        <div className="flex flex-col gap-12 md:gap-4 md:w-1/2">
-          <p className="text-4xl text-center md:text-left md:text-6xl font-semibold">
+        <div className="flex flex-col gap-12 lg:gap-8 lg:w-1/2 md:pr-8 px-4">
+          <p className="text-5xl text-center lg:text-left md:text-6xl font-semibold  max-w-full break-words">
             Empowering Growth,
             <span className="text-cyan-500"> Bridging Global Gaps</span>
           </p>
-          <p className="text-center md:text-left font-semibold">
+          <p className="text-center md:text-left">
             At Zare Innovations, our mission goes beyond traditional Business
             Process Outsourcing (BPO) solutions. We are dedicated to creating
             impactful opportunities by drastically reducing unemployment across
             Ethiopia, while delivering exceptional, cost-effective services to
             businesses worldwide.
           </p>
-          <p className="font-semibold">
+          <p className="text-center md:text-left">
             With a base in Addis Ababa and representation in the USA, our
             mission is twofold: driving sustainable growth across Ethiopia by
             creating jobs and connecting businesses globally through superior

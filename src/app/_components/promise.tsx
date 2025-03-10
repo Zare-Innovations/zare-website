@@ -1,42 +1,52 @@
-import { Flex, Stack } from "@mantine/core";
-import Illustration from "./illustration.png";
-import Image from "next/image";
-import { IconCircleCheckFilled } from "@tabler/icons-react";
+import { Flex, Stack } from '@mantine/core';
+import Illustration from './illustration.svg';
+import Image from 'next/image';
+import { IconCircleCheckFilled } from '@tabler/icons-react';
 
 const promises = [
   {
-    title: "Tailored Solutions for Your Growth",
+    title: 'Tailored Solutions for Your Growth',
     description:
-      "Our solutions are designed to evolve with your business, ensuring continuous growth and efficiency.",
+      'Our solutions are designed to evolve with your business, ensuring continuous growth and efficiency.',
   },
   {
-    title: "Consistent Quality",
+    title: 'End-to-End Expertise',
     description:
-      "From customer support to software development, we offer end-to-end services to streamline your operations.",
+      'From customer support and software development to data management and outsourcing, we deliver seamless, high-quality services designed to elevate your business.',
   },
   {
-    title: "Client-Focused Approach",
+    title: 'Client-Focused Approach',
     description:
-      "Your success is our priority. We take the time to understand your goals and work tirelessly to help you achieve them.",
+      'Your success is our priority. We take the time to understand your goals and work tirelessly to help you achieve them.',
   },
 ];
 
 export default function Promise() {
   return (
-    <Stack className="px-24">
-      <Flex className="flex-row gap-6 items-center">
-        <Stack className="gap-4 w-1/2">
-          <p className="text-4xl md:text-6xl font-semibold">
+    <Stack className="px-5 md:px-16 my-8" id="about">
+      <Flex className="lg:flex-row flex-col gap-6 items-center">
+        <Stack className="gap-4 lg:w-1/2">
+          <p className="text-5xl md:text-6xl font-semibold text-center lg:text-start">
             Our <span className="text-cyan-500">Promise</span> To You
           </p>
-          <Stack className="gap-4 mt-4">
+          <Stack className="space-y-4 px-8 lg:px-0 mt-4">
             {promises.map((promise, index) => (
-              <Flex className="gap-3 flex-col" key={index}>
-                <Flex className="gap-3 items-center">
-                  <IconCircleCheckFilled color="#0A293B" />
-                  <p className="text-xl font-semibold">{promise.title}</p>
+              <Flex
+                className="gap-3 flex-col items-center lg:items-start"
+                key={index}
+              >
+                <Flex className="gap-3 items-center text-center lg:text-start">
+                  <IconCircleCheckFilled
+                    color="#0A293B"
+                    className="md:block hidden"
+                  />
+                  <p className="text-xl font-semibold text-center lg:text-start">
+                    {promise.title}
+                  </p>
                 </Flex>
-                <p className="text-lg">{promise.description}</p>
+                <p className="text-lg text-center lg:text-start">
+                  {promise.description}
+                </p>
               </Flex>
             ))}
           </Stack>
