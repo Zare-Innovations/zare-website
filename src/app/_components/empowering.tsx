@@ -38,22 +38,29 @@ export default function Empowering() {
         markerColor: [0.1, 0.8, 1],
         glowColor: [1, 1, 1],
         markers: [
-          // east africa
-          { location: [9.019, 38.75], size: 0.05 },
-          { location: [-1.2921, 37.8219], size: 0.05 },
-          // west africa
-          { location: [13.5317, -12.4604], size: 0.05 },
-          // south africa
-          { location: [-25.746, 28.187], size: 0.05 },
-          // europe
-          { location: [51.5074, -0.1278], size: 0.05 },
-          // north america
-          { location: [37.7595, -122.4367], size: 0.08 },
-          { location: [40.7128, -74.006], size: 0.05 },
-          { location: [38.7128, -76.006], size: 0.05 },
-          { location: [35.7128, -78.006], size: 0.05 },
-          // israel
-          { location: [31.771959, 35.217018], size: 0.05 },
+          // South Africa
+          { location: [-30.5595, 22.9375], size: 0.05 },
+
+          // USA
+          { location: [37.0902, -95.7129], size: 0.05 },
+
+          // Senegal
+          { location: [14.4974, -14.4524], size: 0.05 },
+
+          // Ethiopia
+          { location: [9.145, 40.4897], size: 0.05 },
+
+          // Cyprus
+          { location: [35.1264, 33.4299], size: 0.05 },
+
+          // United Kingdom
+          { location: [55.3781, -3.436], size: 0.05 },
+
+          // Canada
+          { location: [55.1304, -106.3468], size: 0.05 },
+
+          // West Midlands
+          { location: [52.5862, -2.1265], size: 0.05 },
         ],
         onRender: (state) => {
           // Called on every animation frame.
