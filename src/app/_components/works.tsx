@@ -125,7 +125,7 @@ export default function Works() {
 
                 <div className="w-28 h-28 flex items-center justify-center rounded-tl-full absolute bottom-0 right-0 z-10">
                   <Link
-                    href={`/our-works#${work.anchor}`}
+                    href={`/our-work#${work.anchor}`}
                     className="flex items-center justify-center rounded-full bg-cyan-400 w-12 aspect-square h-12 p-2"
                   >
                     <IconArrowUpRight width={40} height={40} color="white" />

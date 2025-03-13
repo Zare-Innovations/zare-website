@@ -27,7 +27,7 @@ export default function Footer() {
             <p className="text-lg font-semibold">Explore</p>
             <Link href={'/#aboutUs'}>ABOUT</Link>
             <Link href={'/#services'}>SERVICES</Link>
-            <Link href={'/our-works'}>OUR WORK</Link>
+            <Link href={'/our-work'}>OUR WORK</Link>
           </Flex>
 
           <Flex className="flex gap-2 w-full md:w-[20%] flex-col">

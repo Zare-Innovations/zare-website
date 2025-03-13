@@ -41,7 +41,7 @@ export function NavBar() {
             <Link href="/#services" className={classes.link}>
               Our Services
             </Link>
-            <Link href="/our-works" className={classes.link}>
+            <Link href="/our-work" className={classes.link}>
               Our Work
             </Link>
             <a href="#contact-us" className={classes.link}>
@@ -98,7 +98,7 @@ export function NavBar() {
             Our Services
           </Link>
           <Link
-            href="/our-works"
+            href="/our-work"
             className={classes.link}
             onClick={toggleDrawer}
           >
