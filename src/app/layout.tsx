@@ -6,6 +6,7 @@ import './globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 
 import RootStyleRegistry from './mantine';
 import { NavBar } from './_components/nav-bar';
