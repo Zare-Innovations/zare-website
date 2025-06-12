@@ -132,7 +132,7 @@ export default function SavingModal({
                     </Text>
                     /month — that&apos;s{' '}
                     <Text component="span" fw={700}>
-                      {result.savingsPercent || '0.00'}%
+                      {result.savingsPercent || '0.00'}
                     </Text>{' '}
                     less than standard market rates.
                   </Text>

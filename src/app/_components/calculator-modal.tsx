@@ -16,8 +16,9 @@ import {
   ActionIcon,
   Box,
   Flex,
+  NumberInput,
 } from '@mantine/core';
-import { IconCalendar } from '@tabler/icons-react';
+import { IconArrowRight, IconCalendar } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { DatePickerInput } from '@mantine/dates';
 import { roleOptions } from '@/hooks/calculator.util';
@@ -39,10 +40,17 @@ export default function ZareEstimatorModal() {
   const [open, { toggle, close }] = useDisclosure();
   const [isResultOpen, { open: openResult, close: closeResult }] =
     useDisclosure(false);
+  const [
+    isCustomHourModalOpen,
+    { open: openHourModal, close: closeHourModal },
+  ] = useDisclosure(false);
 
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [peopleCount, setPeopleCount] = useState('');
-  const [employmentType, setEmploymentType] = useState<string[]>([]);
+  const [customHoursPerWeek, setCustomHoursPerWeek] = useState<string | number>(
+    0
+  );
+  const [employmentType, setEmploymentType] = useState<string>();
   const [startDate, setStartDate] = useState<string | null>(null);
   const [result, setResult] = useState<{
     role?: string;
@@ -61,14 +69,6 @@ export default function ZareEstimatorModal() {
     startDate?: string;
   }>({});
 
-  const handleEmploymentTypeChange = (type: string, checked: boolean) => {
-    if (checked) {
-      setEmploymentType([...employmentType, type]);
-    } else {
-      setEmploymentType(employmentType.filter((t) => t !== type));
-    }
-  };
-
   const handleCalculate = () => {
     const newErrors: typeof errors = {};
 
@@ -82,8 +82,12 @@ export default function ZareEstimatorModal() {
       newErrors.count = 'Please enter a valid number of people.';
     }
 
-    if (employmentType.length === 0) {
+    if (!employmentType) {
       newErrors.employmentType = 'Please select employment type.';
+    }
+
+    if (employmentType === 'custom' && !customHoursPerWeek) {
+      newErrors.employmentType = 'Please set custom work hours per week.';
     }
 
     if (!startDate) {
@@ -96,15 +100,15 @@ export default function ZareEstimatorModal() {
 
     const role = roleOptions.find((r) => r.value === selectedRole)?.label;
     if (!role || !RATE_TABLE[role]) {
-      console.log('Invalid role selected');
       return;
     }
 
-    const hoursPerWeek = employmentType.includes('custom')
-      ? Number(prompt('Enter custom hours per week:', '30')) || 0
-      : employmentType.includes('fulltime')
-        ? 40
-        : 20;
+    const hoursPerWeek =
+      employmentType === 'custom'
+        ? +customHoursPerWeek
+        : employmentType === 'fulltime'
+          ? 40
+          : 20;
 
     const hoursPerMonth = hoursPerWeek * 4;
     const count = Number(peopleCount);
@@ -115,15 +119,6 @@ export default function ZareEstimatorModal() {
     const savings = marketCost - zareCost;
     const savingsPercent = (savings / marketCost) * 100;
 
-    console.log({
-      role,
-      people: count,
-      hoursPerWeek,
-      marketCost,
-      zareCost,
-      savings,
-      savingsPercent: savingsPercent.toFixed(2) + '%',
-    });
     close();
     openResult();
     setResult({
@@ -150,6 +145,109 @@ export default function ZareEstimatorModal() {
         onClose={closeResult}
         result={result}
       />
+
+      <Modal
+        opened={isCustomHourModalOpen}
+        onClose={closeHourModal}
+        size={500}
+        padding="xl"
+        zIndex={1000}
+        centered
+        withCloseButton={false}
+        styles={{
+          content: {
+            backgroundColor: '#ffffff',
+          },
+          body: {
+            padding: '2rem',
+          },
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: '#ffffff',
+          }}
+        >
+          <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+            <Stack gap="xl">
+              {/* Header */}
+              <Title order={1} size="lg" fw={700} c="#000000">
+                Custom
+              </Title>
+
+              {/* Input Field */}
+              <NumberInput
+                placeholder="How many hours per week?"
+                value={customHoursPerWeek}
+                onChange={(value) => setCustomHoursPerWeek(value)}
+                styles={{
+                  input: {
+                    backgroundColor: '#f3f3f3',
+                    border: 'none',
+                    color: '#475569',
+                    fontSize: '16px',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    height: '42px',
+                    '&::placeholder': {
+                      color: '#475569',
+                    },
+                    '&:focus': {
+                      borderColor: 'transparent',
+                      outline: 'none',
+                    },
+                  },
+                }}
+              />
+
+              {/* Action Buttons */}
+              <Flex gap="md" justify={'space-between'}>
+                <Button
+                  radius="md"
+                  styles={{
+                    root: {
+                      backgroundColor: '#f0fdfa',
+                      color: '#0a293b',
+                      border: 'none',
+                      fontWeight: 600,
+                      height: '42px',
+                      '&:hover': {
+                        backgroundColor: '#f0fdfa',
+                        opacity: 0.9,
+                      },
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  radius="md"
+                  rightSection={<IconArrowRight size={20} />}
+                  styles={{
+                    root: {
+                      backgroundColor: '#0a293b',
+                      color: '#ffffff',
+                      border: 'none',
+                      fontWeight: 600,
+                      height: '42px',
+                      '&:hover': {
+                        backgroundColor: '#0a293b',
+                        opacity: 0.9,
+                      },
+                    },
+                  }}
+                  onClick={() => {
+                    closeHourModal();
+                  }}
+                >
+                  Done
+                </Button>
+              </Flex>
+            </Stack>
+          </div>
+        </div>
+      </Modal>
 
       <Modal
         opened={open}
@@ -278,13 +376,8 @@ export default function ZareEstimatorModal() {
             <Flex gap="xl" className="bg-[#f8f8f8] py-2 px-3">
               <Checkbox
                 label="Full-time (40 hrs/week)"
-                checked={employmentType.includes('fulltime')}
-                onChange={(event) =>
-                  handleEmploymentTypeChange(
-                    'fulltime',
-                    event.currentTarget.checked
-                  )
-                }
+                checked={employmentType === 'fulltime'}
+                onClick={() => setEmploymentType('fulltime')}
                 styles={{
                   label: {
                     color: '#000000',
@@ -293,13 +386,8 @@ export default function ZareEstimatorModal() {
               />
               <Checkbox
                 label="Part-time (20 hrs/week)"
-                checked={employmentType.includes('parttime')}
-                onChange={(event) =>
-                  handleEmploymentTypeChange(
-                    'parttime',
-                    event.currentTarget.checked
-                  )
-                }
+                checked={employmentType === 'parttime'}
+                onClick={() => setEmploymentType('parttime')}
                 styles={{
                   label: {
                     color: '#000000',
@@ -307,14 +395,16 @@ export default function ZareEstimatorModal() {
                 }}
               />
               <Checkbox
-                label="Instead set custom work hours per week"
-                checked={employmentType.includes('custom')}
-                onChange={(event) =>
-                  handleEmploymentTypeChange(
-                    'custom',
-                    event.currentTarget.checked
-                  )
+                label={
+                  customHoursPerWeek
+                    ? `${customHoursPerWeek} hrs/week`
+                    : 'Instead set custom work hours per week'
                 }
+                checked={employmentType === 'custom'}
+                onClick={() => {
+                  setEmploymentType('custom');
+                  openHourModal();
+                }}
                 styles={{
                   label: {
                     color: '#000000',

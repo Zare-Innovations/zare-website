@@ -53,6 +53,17 @@ export function calculateSalary(roleName: string, weeklyHours: number, peopleCou
     const savings = marketCost - zareCost;
     const percentSavings = ((savings / marketCost) * 100).toFixed(2);
 
+    console.log({
+        roleName,
+        peopleCount,
+        weeklyHours,
+        monthlyHours,
+        marketCost,
+        zareCost,
+        savings,
+        percentSavings
+    })
+
     return {
         role: roleName,
         people: peopleCount,
@@ -61,6 +72,6 @@ export function calculateSalary(roleName: string, weeklyHours: number, peopleCou
         marketCost,
         zareCost,
         savings,
-        percentSavings: `${percentSavings}%`
+        percentSavings: `${percentSavings}`
     };
 }
