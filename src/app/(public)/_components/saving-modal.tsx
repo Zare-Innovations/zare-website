@@ -43,7 +43,7 @@ export default function SavingModal({
     }
     try {
       await fetch(
-        process.env.NEXT_PUBLIC_API_URL + '/api/resource-rate/send-email',
+        'https://landing.zareinnovations.com/api/resource-rate/send-email',
         {
           method: 'POST',
           headers: {
