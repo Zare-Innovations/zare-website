@@ -136,7 +136,7 @@ export default function ZareEstimatorModal() {
     <Group>
       <button
         onClick={toggle}
-        className="font-bold text-[#0A293B] bg-white p-3 px-8"
+        className="font-bold text-[#0A293B] bg-white hover:bg-cyan-500 hover:text-white p-3 px-8"
       >
         Compare Rates Instantly
       </button>
