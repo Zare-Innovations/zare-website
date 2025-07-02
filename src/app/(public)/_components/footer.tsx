@@ -15,7 +15,7 @@ export default function Footer() {
         <Flex className="w-full text-white flex-col md:flex-wrap lg:flex-nowrap md:flex-row gap-8">
           <div className="md:w-[20%] mr-20">
             <Image
-              src={'/zare-logo-footer.svg'}
+              src={'/zarelogo.svg'}
               width={100}
               height={100}
               alt="Zare Logo"
