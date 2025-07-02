@@ -11,72 +11,91 @@ import BottomFooter from './footer-bottom';
 export default function Footer() {
   return (
     <Flex className="flex-col">
-      <Stack className="p-6 py-10 bg-[#0A293B]">
-        <Flex className="w-full text-white flex-col md:flex-wrap lg:flex-nowrap md:flex-row gap-8">
-          <div className="md:w-[20%] mr-20">
-            <Image
-              src={'/zarelogo.svg'}
-              width={100}
-              height={100}
-              alt="Zare Logo"
-              className="w-full"
-            />
-          </div>
+      <Stack className="px-4 sm:px-8 lg:px-16 py-10 bg-[#0A293B] text-white">
+        <Flex className="w-full flex-col gap-10 md:flex-row md:flex-wrap lg:flex-nowrap">
 
-          <Flex className="flex gap-4 md:w-[10%] flex-col">
-            <p className="text-lg font-semibold">Explore</p>
-            <Link href={'/#aboutUs'}>ABOUT</Link>
-            <Link href={'/#services'}>SERVICES</Link>
-            <Link href={'/our-work'}>OUR WORK</Link>
+          <Flex className="w-full md:w-1/5 items-start">
+            <Image
+              src="/zarelogo.svg"
+              width={160}
+              height={160}
+              alt="Zare Logo"
+              className="w-40 md:w-44"
+            />
           </Flex>
 
-          <Flex className="flex gap-2 w-full md:w-[20%] flex-col">
-            <p className="text-lg font-semibold">Send Us An Email</p>
-            <Link
-              href={'mailto:careers@zareinnovations.com'}
-              className="flex gap-2 items-center"
-            >
-              <IconMail className="h-6 w-6" />
-              <span>info@zareinnovations.com</span>
+
+          <Flex className="flex-col gap-2 w-full md:w-1/5">
+            <p className="text-lg font-semibold">Explore</p>
+            <Link href="/#aboutUs" className="text-sm hover:underline">
+              About
+            </Link>
+            <Link href="/#services" className="text-sm hover:underline">
+              Services
+            </Link>
+            <Link href="/our-work" className="text-sm hover:underline">
+              Our Work
             </Link>
           </Flex>
 
-          <Flex className="flex gap-2 md:w-[25%] flex-col">
-            <p className="text-lg w-2/3 mx-auto font-semibold">
-              Give Us A Call
-            </p>
-            <Flex className="gap-4 flex-col sm:flex-row">
-              <Flex className="sm:w-1/2 gap-2 flex-col">
+
+          <Flex className="flex-col gap-2 w-full md:w-1/5">
+            <p className="text-lg font-semibold">Send Us An Email</p>
+            <Link
+              href="mailto:info@zareinnovations.com"
+              className="flex items-center gap-2 text-sm hover:underline"
+            >
+              <IconMail className="h-5 w-5" />
+              info@zareinnovations.com
+            </Link>
+          </Flex>
+
+          <Flex className="flex-col gap-3 w-full md:w-2/5">
+            <p className="text-lg font-semibold">Give Us A Call</p>
+            <Flex className="gap-6 flex-wrap">
+              <Flex className="flex-col gap-1 w-1/2 min-w-[150px]">
                 <p className="font-semibold">USA</p>
                 <p className="text-sm">+1 703 395 5235</p>
               </Flex>
-              <Flex className="sm:w-1/2 gap-2 flex-col">
+              <Flex className="flex-col gap-1 w-1/2 min-w-[150px]">
                 <p className="font-semibold">Ethiopia</p>
                 <p className="text-sm">+251 93 816 9380</p>
               </Flex>
             </Flex>
           </Flex>
 
-          <Flex className="flex gap-2 md:w-[30%] flex-col">
+
+          <Flex className="flex-col gap-2 w-full md:w-2/5">
             <p className="text-lg font-semibold">Where To Find Us</p>
-            <p className="font-semibold">USA</p>
-            <Flex className="gap-2 text-sm">
-              <IconMapPinFilled />
-              5501 Seminary Road, Falls Church VA, 22041, Unit 1710 South,
-              22041, United States
-            </Flex>
-            <p className="font-semibold">Ethiopia</p>
-            <Flex className="text-sm gap-2">
-              <IconMapPinFilled />
-              Meskel Flower, Aster Plaza 3rd Floor,Addis Ababa, Ethiopia
-            </Flex>
+            <div>
+              <p className="font-semibold">USA</p>
+              <Flex className="gap-2 text-sm mt-1">
+                <IconMapPinFilled className="mt-0.5" />
+                <span>
+                  5501 Seminary Road, Falls Church VA, 22041, Unit 1710 South,
+                  United States
+                </span>
+              </Flex>
+            </div>
+            <div>
+              <p className="font-semibold mt-3">Ethiopia</p>
+              <Flex className="gap-2 text-sm mt-1">
+                <IconMapPinFilled className="mt-0.5" />
+                <span>
+                  Meskel Flower, Aster Plaza 3rd Floor, Addis Ababa, Ethiopia
+                </span>
+              </Flex>
+            </div>
           </Flex>
         </Flex>
 
-        <div className="flex items-center w-full gap-4">
+
+        <div className="flex justify-center mt-6">
           <Link
-            className="rounded-full p-2 bg-[#06b6d450] hover:bg-white group mx-auto"
+            className="rounded-full p-2 bg-[#06b6d450] hover:bg-white group transition-colors"
             href="https://www.linkedin.com/company/zare-innovations"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <IconBrandLinkedin
               className="block group-hover:hidden"
@@ -89,6 +108,7 @@ export default function Footer() {
           </Link>
         </div>
       </Stack>
+
       <BottomFooter />
     </Flex>
   );
