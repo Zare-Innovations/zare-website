@@ -13,7 +13,8 @@ export default function Footer() {
   return (
     <Flex className="flex-col">
       <Stack className="px-4 sm:px-8 lg:px-16 py-10 bg-[#0A293B] text-white">
-        <Flex className="flex-col gap-10 md:flex-row md:flex-wrap md:px-16 lg:flex-nowrap justify-between md:px-16w-full">
+
+        <Flex className="flex-col gap-10 md:flex-row md:flex-wrap md:px-16 lg:flex-nowrap justify-between ">
           {/* Logo */}
           <Flex className="items-start  justify-start">
             <Link href="/">
@@ -29,7 +30,17 @@ export default function Footer() {
 
           {/* Explore */}
           <Flex className="flex-col gap-2">
-            <p className="text-lg font-semibold">Explore</p>
+            <div className="text-lg font-semibold  flex items-center gap-2">
+              <Image
+                src="/title-line.svg"
+                width={100}
+                height={100}
+                alt=""
+                className="h-[1.8rem] w-auto"
+              />
+              <span>Explore</span>
+            </div>
+
             <Link href="/#aboutUs" className="text-md hover:underline">About</Link>
             <Link href="/#services" className="text-md hover:underline">Services</Link>
             <Link href="/our-work" className="text-md hover:underline">Our Work</Link>
@@ -37,7 +48,18 @@ export default function Footer() {
 
           {/* Email */}
           <Flex className="flex-col gap-2">
-            <p className="text-lg font-semibold">Send Us An Email</p>
+
+
+            <div className="text-lg font-semibold  flex items-center gap-2">
+              <Image
+                src="/title-line.svg"
+                width={100}
+                height={100}
+                alt=""
+                className="h-[1.8rem] w-auto"
+              />
+              <span>Send Us An Email</span>
+            </div>
             <Link
               href="mailto:info@zareinnovations.com"
               className="flex items-center gap-2 text-md hover:underline"
@@ -49,7 +71,18 @@ export default function Footer() {
 
           {/* Phone */}
           <Flex className="flex-col gap-3">
-            <p className="text-lg font-semibold">Give Us A Call</p>
+
+
+            <div className="text-lg font-semibold  flex items-center gap-2">
+              <Image
+                src="/title-line.svg"
+                width={100}
+                height={100}
+                alt=""
+                className="h-[1.8rem] w-auto"
+              />
+              <span>Give Us A Call</span>
+            </div>
             <Flex className="gap-8  flex-col">
               <Flex className="flex-col gap-1 ">
                 <p className="font-semibold">USA</p>
@@ -64,7 +97,18 @@ export default function Footer() {
 
           {/* Location */}
           <Flex className="flex-col gap-2">
-            <p className="text-lg font-semibold">Where To Find Us</p>
+
+
+            <div className="text-lg font-semibold  flex items-center gap-2">
+              <Image
+                src="/title-line.svg"
+                width={100}
+                height={100}
+                alt=""
+                className="h-[1.8rem] w-auto"
+              />
+              <span>Where To Find Us</span>
+            </div>
             <div>
               <p className="font-semibold">USA</p>
               <Flex className="gap-2 text-sm mt-1">
