@@ -427,6 +427,7 @@ export default function ZareEstimatorModal() {
                   value={startDate}
                   onChange={setStartDate}
                   error={errors.startDate}
+                  minDate={new Date()}
                   rightSection={
                     <ActionIcon
                       size="lg"
