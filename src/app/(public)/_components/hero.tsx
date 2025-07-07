@@ -34,8 +34,8 @@ export default function Hero() {
               y1="50%"
               x2="100%"
               y2="50%"
-              stroke-width="2"
-              marker-end="url(#m)"
+              strokeWidth="2"
+              markerEnd="url(#m)"
               stroke="#06b6d4"
             />
           </svg>

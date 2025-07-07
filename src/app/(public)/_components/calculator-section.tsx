@@ -69,7 +69,7 @@ export default function CalculatorSection() {
               </Stack>
             </Grid.Col>
 
-            <Grid.Col span={{ base: 12, md: 6 }}>
+            <Grid.Col span={{ base: 12, md: 6 }} className="hidden md:block">
               <Grid gutter="lg" className="w-2/3">
                 {professionals.map((professional, index) => (
                   <Grid.Col span={{ base: 12, md: 6 }} key={index}>
