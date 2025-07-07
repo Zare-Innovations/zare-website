@@ -5,7 +5,6 @@ import {
   Grid,
   Box,
   Text,
-  Title,
   Group,
   Stack,
   Modal,
