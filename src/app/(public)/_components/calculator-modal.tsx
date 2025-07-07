@@ -360,7 +360,7 @@ export default function ZareEstimatorModal() {
 
           {/* Start Date */}
           <Grid gutter="xl">
-            <Grid.Col span={12}>
+            <Grid.Col  span={{ base: 12, md: 6 }}>
               <Stack gap="sm">
                 <Text fw={600} c="#000000">Desired Start Date</Text>
                 <DatePickerInput
