@@ -14,7 +14,7 @@ export default function Footer() {
     <Flex className="flex-col">
       <Stack className="px-4 sm:px-8 lg:px-16 py-10 bg-[#0A293B] text-white">
 
-        <Flex className="flex-col gap-10 md:flex-row md:flex-wrap md:px-16 lg:flex-nowrap justify-between ">
+        <Flex className="flex-col gap-10 md:flex-row md:flex-wrap  lg:flex-nowrap justify-between ">
           {/* Logo */}
           <Flex className="items-start  justify-start">
             <Link href="/">
@@ -83,7 +83,7 @@ export default function Footer() {
               />
               <span>Give Us A Call</span>
             </div>
-            <Flex className="gap-8  flex-col">
+            <Flex className="gap-8  flex-row">
               <Flex className="flex-col gap-1 ">
                 <p className="font-semibold">USA</p>
                 <p className="text-md">+1 703 395 5235</p>
