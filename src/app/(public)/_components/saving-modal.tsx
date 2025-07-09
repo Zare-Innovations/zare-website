@@ -35,7 +35,8 @@ export default function SavingModal({
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setError('');
     if (!z.string().email().safeParse(email).success) {
       setError('Please enter a valid email address.');
@@ -69,7 +70,7 @@ export default function SavingModal({
 
   return (
  <Modal opened={opened} onClose={onClose} size={1000}>
-  <form onSubmit={handleSubmit}>
+  <form onSubmit={e=>handleSubmit(e)}>
     <Box bg="#ffffff">
       <Container size="lg" className=' md:py-4'>
         {/* Progress Indicator */}
