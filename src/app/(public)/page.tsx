@@ -7,6 +7,7 @@ import Testimonials from './_components/testimonials';
 import Contact from './_components/contact';
 import Works from './_components/works';
 import Companies from './_components/companies';
+import CalculatorSection from './_components/calculator-section';
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <Services />
       <Testimonials />
       <Works />
+      <CalculatorSection />
       <Contact />
     </Stack>
   );

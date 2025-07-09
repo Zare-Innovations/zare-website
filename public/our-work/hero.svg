@@ -8,7 +8,7 @@
             fill-opacity="0.6" />
         <rect x="-0.5625" y="-0.5625" width="1441.12" height="279.125" fill="#ACFF24" fill-opacity="0.2"
             style="mix-blend-mode:color" />
-        <rect x="-0.5625" y="-0.5625" width="1441.12" height="279.125" stroke="#262626" stroke-width="1.125" />
+        <rect x="-0.5625" y="-0.5625" width="1441.12" height="279.125" stroke="#262626" strokeWidth="1.125" />
 
     </g>
     <defs>

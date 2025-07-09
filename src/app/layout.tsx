@@ -6,11 +6,9 @@ import './globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 
 import RootStyleRegistry from './mantine';
-import { NavBar } from './_components/nav-bar';
-
-import Footer from './_components/footer';
 
 import localFont from 'next/font/local';
 
@@ -55,11 +53,7 @@ export default function RootLayout({
       <body
         className={`${gotham.className}  antialiased outline overflow-x-hidden`}
       >
-        <RootStyleRegistry>
-          <NavBar />
-          {children}
-          <Footer />
-        </RootStyleRegistry>
+        <RootStyleRegistry>{children}</RootStyleRegistry>
       </body>
     </html>
   );
