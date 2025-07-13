@@ -11,8 +11,8 @@ import BottomFooter from './footer-bottom';
 
 export default function Footer() {
   return (
-    <Flex className="flex-col">
-      <Stack className="px-4 sm:px-8 lg:px-16 py-10 bg-[#0A293B] text-white">
+    <Flex className="flex-col mt-auto">
+      <Stack className="px-4 sm:px-8 lg:px-16 py-10 bg-[#0A293B] text-white ">
 
         <Flex className="flex-col gap-10 md:flex-row md:flex-wrap  lg:flex-nowrap justify-between ">
           {/* Logo */}

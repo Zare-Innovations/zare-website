@@ -14,10 +14,10 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <NavBar />
       {children}
       <Footer />
-    </>
+    </div>
   );
 }
