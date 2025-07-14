@@ -44,6 +44,7 @@ export default function Footer() {
             <Link href="/#aboutUs" className="text-md hover:underline">About</Link>
             <Link href="/#services" className="text-md hover:underline">Services</Link>
             <Link href="/our-work" className="text-md hover:underline">Our Work</Link>
+             <Link href="/careers" className="text-md hover:underline">Careers</Link>
           </Flex>
 
           {/* Email */}
