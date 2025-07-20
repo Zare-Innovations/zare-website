@@ -91,9 +91,7 @@ export default function JobCard({
                     ))}
                 </div>
              <JobsApplyModal/>
-                {/* <button className="text-[0.7rem] font-semibold bg-[#0A293B] text-white px-6 sm:px-10 py-2 rounded-lg hover:bg-teal-800 transition w-full sm:w-auto">
-                    Apply
-                </button> */}
+        
             </div>
         </div>
 

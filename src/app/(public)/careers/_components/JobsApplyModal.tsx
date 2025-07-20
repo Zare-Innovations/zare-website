@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Group,
   Modal,
@@ -20,10 +19,9 @@ import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Placeholder from '@tiptap/extension-placeholder';
-
 import { z } from 'zod';
 
 
@@ -43,9 +41,28 @@ const schema = z.object({
     ),
 });
 
+const SuccessMessage = () => {
+  return (
+    <div className="flex items-center flex-col justify-center gap-4 p-2">
+      <Image
+        width={90}
+        height={90}
+        alt="success-job"
+        src="/assets/succcess-job.svg"
+      />
+    <div className="font-semibold">Application sent!</div>
+      <div className="text-[#00000099]  text-[0.9rem] max-w-md">
+        Thank you for applying. Our team will review your submission and get back to you shortly.
+      </div>
+    </div>
+  );
+};
+
+
 
 export default function JobsApplyModal() {
   const [open, { toggle, close }] = useDisclosure();
+  const [success, setSuccess] = useState(false);
 
   const form = useForm<{
     fullName: string;
@@ -70,49 +87,39 @@ export default function JobsApplyModal() {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({
         placeholder:
-          'Write down your biography here. Let the employers know who you are...',
+          'Write down your biography here. Let the employers know who you are...',        
       }),
     ],
   });
 
-  const handleSubmit = async (values: typeof form.values) => {
-    console.log('Submitting values:', {
-      ...values,
-      resume: resumeFile?.name,
-      coverLetter: editor?.getHTML() || '',
-    });
+  const handleSubmit = async () => {
 
-    close();
+    setSuccess(true)
+    // console.log('Submitting values:', {
+    //   ...values,
+    //   resume: resumeFile?.name,
+    //   coverLetter: editor?.getHTML() || '',
+    // });
   };
-
-
-
-  // const editor = useEditor({
-  //   extensions: [
-  //     StarterKit,
-  //     Underline,
-  //     Link,
-  //     Superscript,
-  //           Placeholder.configure({
-
-  //       placeholder: 'Write down your biography here. Let the employers know who you are...',
-  //     }),
-
-  //     Highlight,
-  //     TextAlign.configure({ types: ['heading', 'paragraph'] }),
-  //   ],
-
-  //   // content: form.values.jobDescription || '',
-  //   // onUpdate: ({ editor }) => {
-  //   //   const content = editor.getText();
-  //   //   setDescriptionLength(content.length);
-  //   //   form.setFieldValue('jobDescription', content);
-  //   // },
-  // });
-
-
   const [resumeFile, setResumeFile] = useState<FileWithPath | null>(null);
 
+
+
+useEffect(() => {
+  if (success) {
+    const timer = setTimeout(() => {
+    
+      handleClose();            
+    }, 4000);
+
+    return () => clearTimeout(timer); 
+  }
+}, [success]);
+
+const handleClose = () => {
+  setSuccess(false);  
+  close();            
+};
 
 
 
@@ -124,15 +131,13 @@ export default function JobsApplyModal() {
       >
         Apply
       </button>
-
-   
       <Modal
         opened={open}
-        onClose={close}
-        size={700}
+        onClose={handleClose}
+        size={success?370:700}
         withCloseButton={false}
 
-        closeOnClickOutside={false}   // ✅ Disable outside click to close
+        closeOnClickOutside={success}   // ✅ Disable outside click to close
         styles={{
           content: {
             backgroundColor: '#ffffff',
@@ -140,9 +145,9 @@ export default function JobsApplyModal() {
           },
         }}
       >
-        {/* Close Icon at top right corner */}
-        <button
-          onClick={close}
+
+         <button
+          onClick={handleClose}
           aria-label="Close"
           className="absolute top-3 right-3 flex items-center justify-center transition"
           style={{
@@ -178,14 +183,9 @@ export default function JobsApplyModal() {
             &times;
           </span>
         </button>
-
-
-
-
-
-
-
-
+        {success? <SuccessMessage /> 
+        : <>
+       
 
         <form >
           <Stack className='px-[1rem] ' >
@@ -364,7 +364,7 @@ export default function JobsApplyModal() {
 
 
               <button
-                // onClick={handleSubmit}
+               onClick={(e)=>handleSubmit()}
                 className="bg-[#0a293b] text-white text-[.9rem] px-6 py-2 rounded-md hover:opacity-90 transition-opacity flex items-center gap-2"
               >
                 Apply Now
@@ -374,6 +374,8 @@ export default function JobsApplyModal() {
           </Stack>
 
         </form>
+      </>
+}
       </Modal>
     </Group>
 
