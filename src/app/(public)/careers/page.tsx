@@ -1,3 +1,4 @@
+'use client'
 import { Jobs } from "./_components/jobs";
 
 

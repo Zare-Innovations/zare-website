@@ -1,10 +1,6 @@
-
-
-
-
-
-
-
+`use client`;
+import { useEffect, useRef, useState } from "react";
+import JobsApplyModal from "./JobsApplyModal";
 
 type JobCardProps = {
     title: string;
@@ -25,11 +21,25 @@ export default function JobCard({
     description,
     tags,
 }: JobCardProps) {
+
+   const [isClamped, setIsClamped] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const ref = useRef<HTMLParagraphElement | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (el) {
+      const lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+      const maxHeight = lineHeight * 3;
+      setIsClamped(el.scrollHeight > maxHeight);
+    }
+  }, [description]);
+
     return (
-        <div className="max-w-md w-full mx-auto bg-white shadow-lg rounded-lg p-4 sm:p-6 border">
+        <div className=" w-full mx-auto bg-white shadow-lg rounded-lg p-4 px-6 border ">
             <h2 className="text-[0.95rem] sm:text-base font-medium mb-4">{title}</h2>
 
-            <div className="flex flex-wrap gap-4 mb-4 text-[0.75rem] sm:text-[0.8rem]">
+            <div className="flex  w-full  justify-between flex-wrap gap-4 mb-4 text-[0.8rem]">
                 <div>
                     <span className="text-teal-600 font-semibold">X of Experience</span>
                     <p className="text-gray-500 text-sm">{experience}</p>
@@ -50,27 +60,40 @@ export default function JobCard({
 
             <hr className="border-t border-gray-300 my-4" />
 
-            <p className="text-[#64748B] text-[0.8rem] sm:text-[0.85rem] mb-4 leading-[1.59] tracking-[0.05em]  h-16">
-                {description}
-            </p>
+          <p
+        ref={ref}
+        className={`text-[#64748B] text-[0.8rem] sm:text-[0.85rem] mb-2 leading-[1.59] tracking-[0.05em] transition-all duration-300 ${
+          expanded ? "" : "line-clamp-3"
+        }`}
+      >
+        {description}
+      </p>
 
-            <hr className="border-t border-gray-300 my-4" />
+      {isClamped && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-teal-400 font-semibold text-[0.8rem]  hover:underline"
+        >
+          {expanded ? "View less" : "View more"}
+        </button>
+      )}
+            <hr className="border-t border-gray-300 py-2" />
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex flex-wrap gap-2">
                     {tags.map((tag, index) => (
                         <span
                             key={index}
-                            className="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-[0.65rem]"
+                            className="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-[0.7rem]"
                         >
                             {tag}
                         </span>
                     ))}
                 </div>
-
-                <button className="text-[0.7rem] font-semibold bg-[#0A293B] text-white px-6 sm:px-10 py-2 rounded-lg hover:bg-teal-800 transition w-full sm:w-auto">
+             <JobsApplyModal/>
+                {/* <button className="text-[0.7rem] font-semibold bg-[#0A293B] text-white px-6 sm:px-10 py-2 rounded-lg hover:bg-teal-800 transition w-full sm:w-auto">
                     Apply
-                </button>
+                </button> */}
             </div>
         </div>
 
