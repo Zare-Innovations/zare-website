@@ -44,9 +44,13 @@ export function NavBar() {
             <Link href="/our-work" className={classes.link}>
               Our Work
             </Link>
-            <a href="#contact-us" className={classes.link}>
+
+            <Link href="/careers" className={classes.link}>
+              Careers
+            </Link>
+            <Link href="#contact-us" className={classes.link}>
               Contact Us
-            </a>
+            </Link>
           </Group>
 
           <Group visibleFrom="md">

@@ -27,11 +27,18 @@ import { useState } from 'react';
 import { z } from 'zod';
 import '@mantine/tiptap/styles.css';
 import { SearchablePill } from '../../_components/searchable-pill';
+import { Job, useCreateJobMutation } from '@/store/api/auth/job.api';
+import { useRouter } from 'next/navigation';
 
 // Zod validation schema
-const jobSchema = z
+
+
+const today = new Date();
+today.setHours(0, 0, 0, 0); // remove time component for clean comparison
+
+export const jobSchema = z
   .object({
-    jobTitle: z
+    title: z
       .string()
       .min(2, 'Job title must be at least 2 characters')
       .max(100, 'Job title must be less than 100 characters')
@@ -49,7 +56,7 @@ const jobSchema = z
       .max(100, 'Location must be less than 100 characters')
       .nonempty('Location is required'),
 
-    jobType: z.enum(['Remote', 'On-site', 'Hybrid'], {
+    type: z.enum(['Remote', 'On-site', 'Hybrid'], {
       errorMap: () => ({ message: 'Please select a valid job type' }),
     }),
 
@@ -62,48 +69,71 @@ const jobSchema = z
       .min(1, 'At least one skill is required')
       .max(10, 'Maximum 10 skills allowed'),
 
-    startDate: z
-      .date({
-        required_error: 'Start date is required',
-        invalid_type_error: 'Please enter a valid start date',
+    startDate: z.preprocess(
+      (val) => (val instanceof Date ? val : null),
+      z
+        .date({
+          required_error: 'Start date is required',
+          invalid_type_error: 'Please enter a valid start date',
+        })
+        .refine((date) => {
+          const now = new Date();
+          now.setHours(0, 0, 0, 0);
+          return date >= now;
+        }, {
+          message: 'Start date cannot be in the past',
+        })
+    ),
+
+    endDate: z.preprocess(
+      (val) => (val instanceof Date ? val : null),
+      z.date({
+        required_error: 'End date is required',
+        invalid_type_error: 'Please enter a valid end date',
       })
-      .min(new Date(), 'Start date cannot be in the past'),
+    ),
 
-    endDate: z.date({
-      required_error: 'End date is required',
-      invalid_type_error: 'Please enter a valid end date',
-    }),
-
-    jobDescription: z
+    description: z
       .string()
       .min(10, 'Job description must be at least 10 characters')
-      .max(400, 'Job description must be less than 400 characters')
       .nonempty('Job description is required'),
   })
-  .refine((data) => data.endDate > data.startDate, {
-    message: 'End date must be after start date',
-    path: ['endDate'],
-  });
+  .refine(
+    (data) => data.endDate > data.startDate,
+    {
+      path: ['endDate'],
+      message: 'End date must be after start date',
+    }
+  );
 
 type JobFormData = z.infer<typeof jobSchema>;
 
 export default function JobCreationForm() {
   const [descriptionLength, setDescriptionLength] = useState(0);
+  const router = useRouter();
+  const [createJob, { isLoading: isJobCreated }] = useCreateJobMutation();
 
   const form = useForm<JobFormData>({
     validate: zodResolver(jobSchema),
     initialValues: {
-      jobTitle: '',
+      title: '',
       yearsOfExperience: 2,
       location: '',
-      jobType: 'Remote',
+      type: 'Remote',
       workType: 'Full-Time',
       skills: [],
       startDate: new Date(),
       endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-      jobDescription: '',
+      description: '',
     },
   });
+
+
+
+
+
+
+
 
   const editor = useEditor({
     extensions: [
@@ -115,26 +145,39 @@ export default function JobCreationForm() {
       Highlight,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
-    content: form.values.jobDescription || '',
+    content: form.values.description || '',
     onUpdate: ({ editor }) => {
       const content = editor.getText();
       setDescriptionLength(content.length);
-      form.setFieldValue('jobDescription', content);
+      form.setFieldValue('description', content);
     },
   });
 
-  const handleSubmit = (values: JobFormData) => {
-    console.log('Form submitted:', values);
+  const handleSubmit = async (values: JobFormData) => {
+    try{
+    const job = { ...values, skills: values.skills.join(','), startDate: values.startDate.toUTCString(), endDate: values.endDate.toUTCString() } as Job
+    const res = await createJob(job).unwrap();
     notifications.show({
       title: 'Success!',
       message: 'Job posting has been created successfully',
       color: 'teal',
       icon: <IconCheck size={16} />,
     });
+
+    router.push('/admin/job');
+  }
+    catch (err) {
+        notifications.show({
+          title: "Job posting  Failed",
+          message: "Please try again later.",
+          color: "red",
+        });
+      }
+
+
   };
 
   const handleSubmitError = (errors: typeof form.errors) => {
-    console.log('Form errors:', errors);
     notifications.show({
       title: 'Validation Error',
       message: 'Please fix the errors in the form before submitting',
@@ -164,7 +207,7 @@ export default function JobCreationForm() {
                   placeholder="Enter job title"
                   size="md"
                   withAsterisk
-                  {...form.getInputProps('jobTitle')}
+                  {...form.getInputProps('title')}
                 />
               </Grid.Col>
               <Grid.Col span={6}>
@@ -229,7 +272,6 @@ export default function JobCreationForm() {
                   )}
                 </div>
               </Grid.Col>
-
               <Grid.Col span={6}>
                 <DateInput
                   label="Start Date"
@@ -250,6 +292,7 @@ export default function JobCreationForm() {
                   {...form.getInputProps('endDate')}
                 />
               </Grid.Col>
+
 
               <Grid.Col span={12}>
                 <div>
@@ -280,9 +323,9 @@ export default function JobCreationForm() {
                     </RTE.Toolbar>
                   </RTE>
                   <Group mt="xs">
-                    {form.errors.jobDescription && (
+                    {form.errors.description && (
                       <Text color="red" size="sm">
-                        {form.errors.jobDescription}
+                        {form.errors.description}
                       </Text>
                     )}
                     <Text
