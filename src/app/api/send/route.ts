@@ -1,7 +1,8 @@
 import { EmailTemplate } from '@/app/(public)/_components/email-template';
 import { Resend } from 'resend';
 
-const resendApiKey = process.env.NEXT_PUBLIC_RESEND_API_KEY;
+const resendApiKey ="re_WAsL1jwy_69W8QmnpGc5qxZXk3jv6fQJp"
+//  process.env.NEXT_PUBLIC_RESEND_API_KEY;
 
 if (!resendApiKey) {
   console.error('❌ RESEND_API_KEY is not set in environment variables.');
