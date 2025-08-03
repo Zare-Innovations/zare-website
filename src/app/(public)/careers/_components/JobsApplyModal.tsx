@@ -50,7 +50,7 @@ const SuccessMessage = () => {
         alt="success-job"
         src="/assets/succcess-job.svg"
       />
-    <div className="font-semibold">Application sent!</div>
+      <div className="font-semibold">Application sent!</div>
       <div className="text-[#00000099]  text-[0.9rem] max-w-md">
         Thank you for applying. Our team will review your submission and get back to you shortly.
       </div>
@@ -87,7 +87,7 @@ export default function JobsApplyModal() {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({
         placeholder:
-          'Write down your biography here. Let the employers know who you are...',        
+          'Write down your biography here. Let the employers know who you are...',
       }),
     ],
   });
@@ -105,21 +105,21 @@ export default function JobsApplyModal() {
 
 
 
-useEffect(() => {
-  if (success) {
-    const timer = setTimeout(() => {
-    
-      handleClose();            
-    }, 4000);
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
 
-    return () => clearTimeout(timer); 
-  }
-}, [success]);
+        handleClose();
+      }, 4000);
 
-const handleClose = () => {
-  setSuccess(false);  
-  close();            
-};
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
+
+  const handleClose = () => {
+    setSuccess(false);
+    close();
+  };
 
 
 
@@ -134,7 +134,7 @@ const handleClose = () => {
       <Modal
         opened={open}
         onClose={handleClose}
-        size={success?370:700}
+        size={success ? 370 : 700}
         withCloseButton={false}
 
         closeOnClickOutside={success}   // ✅ Disable outside click to close
@@ -146,7 +146,7 @@ const handleClose = () => {
         }}
       >
 
-         <button
+        <button
           onClick={handleClose}
           aria-label="Close"
           className="absolute top-3 right-3 flex items-center justify-center transition"
@@ -183,199 +183,199 @@ const handleClose = () => {
             &times;
           </span>
         </button>
-        {success? <SuccessMessage /> 
-        : <>
-       
+        {success ? <SuccessMessage />
+          : <>
 
-        <form >
-          <Stack className='px-[1rem] ' >
 
-            <div className="text-[1.125rem] font-medium text-[#1e293b] leading-tight tracking-tight">
-              Senior UX Designer
-            </div>
+            <form >
+              <Stack className='px-[1rem] ' >
 
-            <Stack>
-              <Text c="#000000">
-                Full Name <span style={{ color: 'red' }}>*</span>
-              </Text>
-              <TextInput
-                placeholder="Full Name"
-                {...form.getInputProps('fullName')}
-                styles={{ input: { border: '1px solid #f3f3f3' } }}
-              />
-            </Stack>
+                <div className="text-[1.125rem] font-medium text-[#1e293b] leading-tight tracking-tight">
+                  Senior UX Designer
+                </div>
 
-            <Stack>
-              <Text c="#000000">
-                Email Address <span style={{ color: 'red' }}>*</span>
-              </Text>
-              <TextInput
-                placeholder="Email Address"
-                {...form.getInputProps('email')}
-                type="email"
-                styles={{ input: { border: '1px solid #f3f3f3' } }}
-              />
-            </Stack>
-            <Stack>
-              <Text c="#000000">
-                Upload Your Resume <span style={{ color: 'red' }}>*</span>
-              </Text>
-
-              {/* Show Dropzone only when no file is uploaded */}
-              {!resumeFile && (
-                <Dropzone
-                  onDrop={(files) => {
-                    const file = files[0];
-                    setResumeFile(file);
-                    form.setFieldValue('resume', file);
-                  }}
-                  multiple={false}
-                  accept={[
-                    'application/pdf',
-                    'application/msword',
-                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                  ]}
-                  maxSize={5 * 1024 ** 2}
-                  styles={{
-                    root: {
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #e1dcdcff',
-                      borderRadius: '8px',
-                      padding: '1.8rem',
-                      textAlign: 'center',
-                      minHeight: '4.7rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                    },
-                  }}
-                >
-                  <Group align="center" gap="xs">
-                    <IconUpload size={24} stroke={1.5} color="#00A9AB" />
-                    <Text size="sm" c="#00A9AB">
-                      Drop your resume here or click to upload
-                    </Text>
-                  </Group>
-                </Dropzone>
-              )}
-
-              {/* File display with remove button */}
-              {resumeFile && (
-                <Group
-                  justify="space-between"
-                  mt="xs"
-                  px="md"
-                  py="sm"
-                  style={{
-                    border: '1px solid #e1dcdcff',
-                    borderRadius: '8px',
-                    background: '#f9f9f9',
-                  }}
-                >
-                  <Text size="sm" fw={500}>
-                    {resumeFile.name}
+                <Stack>
+                  <Text c="#000000">
+                    Full Name <span style={{ color: 'red' }}>*</span>
                   </Text>
+                  <TextInput
+                    placeholder="Full Name"
+                    {...form.getInputProps('fullName')}
+                    styles={{ input: { border: '1px solid #f3f3f3' } }}
+                  />
+                </Stack>
+
+                <Stack>
+                  <Text c="#000000">
+                    Email Address <span style={{ color: 'red' }}>*</span>
+                  </Text>
+                  <TextInput
+                    placeholder="Email Address"
+                    {...form.getInputProps('email')}
+                    type="email"
+                    styles={{ input: { border: '1px solid #f3f3f3' } }}
+                  />
+                </Stack>
+                <Stack>
+                  <Text c="#000000">
+                    Upload Your Resume <span style={{ color: 'red' }}>*</span>
+                  </Text>
+
+                  {/* Show Dropzone only when no file is uploaded */}
+                  {!resumeFile && (
+                    <Dropzone
+                      onDrop={(files) => {
+                        const file = files[0];
+                        setResumeFile(file);
+                        form.setFieldValue('resume', file);
+                      }}
+                      multiple={false}
+                      accept={[
+                        'application/pdf',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                      ]}
+                      maxSize={5 * 1024 ** 2}
+                      styles={{
+                        root: {
+                          backgroundColor: '#ffffff',
+                          border: '1px solid #e1dcdcff',
+                          borderRadius: '8px',
+                          padding: '1.8rem',
+                          textAlign: 'center',
+                          minHeight: '4.7rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                        },
+                      }}
+                    >
+                      <Group align="center" gap="xs">
+                        <IconUpload size={24} stroke={1.5} color="#00A9AB" />
+                        <Text size="sm" c="#00A9AB">
+                          Drop your resume here or click to upload
+                        </Text>
+                      </Group>
+                    </Dropzone>
+                  )}
+
+                  {/* File display with remove button */}
+                  {resumeFile && (
+                    <Group
+                      justify="space-between"
+                      mt="xs"
+                      px="md"
+                      py="sm"
+                      style={{
+                        border: '1px solid #e1dcdcff',
+                        borderRadius: '8px',
+                        background: '#f9f9f9',
+                      }}
+                    >
+                      <Text size="sm" fw={500}>
+                        {resumeFile.name}
+                      </Text>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setResumeFile(null);
+                          form.setFieldValue('resume', null);
+                        }}
+                        className="text-red-500 hover:text-red-700 text-lg font-semibold"
+                        aria-label="Remove file"
+                      >
+                        &times;
+                      </button>
+                    </Group>
+                  )}
+
+                  {form.errors.resume && (
+                    <Text size="xs" c="red">
+                      {form.errors.resume}
+                    </Text>
+                  )}
+                </Stack>
+
+
+
+
+                <Stack >
+
+
+
+                  <div>
+                    <Text size="sm" mb="xs">
+                      <span style={{ color: '#000000' }}>Cover Letter</span>
+                    </Text>
+                    <RTE editor={editor}>
+                      <RTE.Content
+                        style={{
+                          fontSize: '0.9rem',
+                          backgroundColor: '#f8f8f8',
+                          border: '1px solid #f3f3f3',
+                          borderRadius: '8px',
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                        }}
+
+                      />
+
+                      <RTE.Toolbar>
+                        <RTE.ControlsGroup>
+                          <RTE.Bold />
+                          <RTE.Italic />
+                          <RTE.Underline />
+                          <RTE.Strikethrough />
+                        </RTE.ControlsGroup>
+
+                        <RTE.ControlsGroup>
+                          <RTE.BulletList />
+                          <RTE.OrderedList />
+                        </RTE.ControlsGroup>
+
+                        <RTE.ControlsGroup>
+                          <RTE.Link />
+                          <RTE.Unlink />
+                        </RTE.ControlsGroup>
+                      </RTE.Toolbar>
+                    </RTE>
+                    <Group mt="xs">
+
+
+                    </Group>
+                  </div>
+
+
+
+                </Stack>
+
+                {/* Submit Button */}
+                <Group justify="space-between" className="mt-4 w-full">
                   <button
                     type="button"
-                    onClick={() => {
-                      setResumeFile(null);
-                      form.setFieldValue('resume', null);
-                    }}
-                    className="text-red-500 hover:text-red-700 text-lg font-semibold"
-                    aria-label="Remove file"
+                    onClick={close}
+                    className="bg-[#F0FDFA] text-gray-800 text-[0.9rem] px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
                   >
-                    &times;
+                    Cancel
+                  </button>
+
+
+
+                  <button
+                    onClick={(e) => handleSubmit()}
+                    className="bg-[#0a293b] text-white text-[.9rem] px-6 py-2 rounded-md hover:opacity-90 transition-opacity flex items-center gap-2"
+                  >
+                    Apply Now
+                    <IconArrowRight size={18} stroke={1.5} />
                   </button>
                 </Group>
-              )}
+              </Stack>
 
-              {form.errors.resume && (
-                <Text size="xs" c="red">
-                  {form.errors.resume}
-                </Text>
-              )}
-            </Stack>
-
-
-
-
-            <Stack >
-
-
-
-              <div>
-                <Text size="sm" mb="xs">
-                  <Text c="#000000"> Cover Letter</Text>
-                </Text>
-                <RTE editor={editor}>
-                  <RTE.Content
-                    style={{
-                      fontSize: '0.9rem',
-                      backgroundColor: '#f8f8f8',
-                      border: '1px solid #f3f3f3',
-                      borderRadius: '8px',
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-
-                  />
-
-                  <RTE.Toolbar>
-                    <RTE.ControlsGroup>
-                      <RTE.Bold />
-                      <RTE.Italic />
-                      <RTE.Underline />
-                      <RTE.Strikethrough />
-                    </RTE.ControlsGroup>
-
-                    <RTE.ControlsGroup>
-                      <RTE.BulletList />
-                      <RTE.OrderedList />
-                    </RTE.ControlsGroup>
-
-                    <RTE.ControlsGroup>
-                      <RTE.Link />
-                      <RTE.Unlink />
-                    </RTE.ControlsGroup>
-                  </RTE.Toolbar>
-                </RTE>
-                <Group mt="xs">
-
-
-                </Group>
-              </div>
-
-
-
-            </Stack>
-
-            {/* Submit Button */}
-            <Group justify="space-between" className="mt-4 w-full">
-              <button
-                type="button"
-                onClick={close}
-                className="bg-[#F0FDFA] text-gray-800 text-[0.9rem] px-6 py-2 rounded-md hover:opacity-90 transition-opacity"
-              >
-                Cancel
-              </button>
-
-
-
-              <button
-               onClick={(e)=>handleSubmit()}
-                className="bg-[#0a293b] text-white text-[.9rem] px-6 py-2 rounded-md hover:opacity-90 transition-opacity flex items-center gap-2"
-              >
-                Apply Now
-                <IconArrowRight size={18} stroke={1.5} />
-              </button>
-            </Group>
-          </Stack>
-
-        </form>
-      </>
-}
+            </form>
+          </>
+        }
       </Modal>
     </Group>
 
