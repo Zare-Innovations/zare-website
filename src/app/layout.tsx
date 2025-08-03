@@ -11,6 +11,7 @@ import '@mantine/dates/styles.css';
 import RootStyleRegistry from './mantine';
 
 import localFont from 'next/font/local';
+import { Providers } from '@/store/provider';
 
 const gotham = localFont({
   src: [
@@ -53,7 +54,9 @@ export default function RootLayout({
       <body
         className={`${gotham.className}  antialiased outline overflow-x-hidden`}
       >
+        <Providers>
         <RootStyleRegistry>{children}</RootStyleRegistry>
+        </Providers>
       </body>
     </html>
   );

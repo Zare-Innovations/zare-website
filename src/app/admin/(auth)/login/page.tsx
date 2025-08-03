@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Paper,
@@ -13,131 +15,168 @@ import Image from 'next/image';
 import React from 'react';
 import { IconMail, IconLock, IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
+import { useSignInMutation } from '@/store/api/auth/auth.api';
+import z from 'zod';
+import { setCookie } from 'cookies-next';
+import { useForm } from 'react-hook-form';
+import { notifications } from '@mantine/notifications';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+// Zod schema for validation
+const schema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type FormSchema = z.infer<typeof schema>;
 
 export default function LoginPage() {
+  const [signIn, { isLoading: isSignIn }] = useSignInMutation();
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormSchema>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: FormSchema) => {
+    try {
+      const res = await signIn(data).unwrap();
+
+      // Save tokens
+      setCookie("access_token", res.access_token, { maxAge: 60 * 60 * 24 }); // 1 day
+      setCookie("refresh_token", res.refresh_token, { maxAge: 60 * 60 * 24 * 7 }); // 7 days
+
+      router.push("/admin/job"); // or wherever you want to redirect after login
+    } catch (err) {
+      notifications.show({
+        title: "Login Failed",
+        message: "Incorrect email or password.",
+        color: "red",
+      });
+    }
+  };
+
   return (
-    <Paper
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#fff',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-      }}
-    >
-      {/* Logo */}
-      <Box p="xl" style={{ alignSelf: 'flex-end' }}>
-        <div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Paper
+        style={{
+          minHeight: '100vh',
+          backgroundColor: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* Logo */}
+        <Box p="xl" style={{ alignSelf: 'flex-end' }}>
           <Image
-            src={'/zare-logo.svg'}
+            src="/zare-logo.svg"
             width={300}
             height={300}
             alt="Zare Logo"
             className="w-full"
           />
-        </div>
-      </Box>
+        </Box>
 
-      {/* Login Form */}
-      <Box
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '2rem',
-        }}
-      >
-        <Stack gap="xl" style={{ width: '100%', maxWidth: 400 }}>
-          <Stack gap="xs" align="center">
-            <Title order={2} fw={700} c="#1e3a5f" size="2rem">
-              WELCOME BACK
-            </Title>
-            <Text c="dimmed" size="sm" fw={500}>
-              LOG IN TO CONTINUE
-            </Text>
-          </Stack>
+        {/* Login Form */}
+        <Box
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem',
+          }}
+        >
+          <Stack gap="xl" style={{ width: '100%', maxWidth: 400 }}>
+            <Stack gap="xs" align="center">
+              <Title order={2} fw={700} c="#1e3a5f" size="2rem">
+                WELCOME BACK
+              </Title>
+              <Text c="dimmed" size="sm" fw={500}>
+                LOG IN TO CONTINUE
+              </Text>
+            </Stack>
 
-          <Stack gap="md">
-            <TextInput
-              placeholder="example@email.com"
-              leftSection={<IconMail size={18} color="#9ca3af" />}
-              size="lg"
-              styles={{
-                input: {
-                  backgroundColor: 'white',
-                  border: '1px solid #e5e7eb',
-                  padding: '1rem 1rem 1rem 3rem',
-                  fontSize: '1rem',
-                },
-              }}
-            />
-
-            <PasswordInput
-              placeholder="••••••••••"
-              leftSection={<IconLock size={18} color="#9ca3af" />}
-              size="lg"
-              visibilityToggleButtonProps={{
-                'aria-label': 'Toggle password visibility',
-                children: (
-                  <Text size="sm" c="dimmed" fw={500}>
-                    show
-                  </Text>
-                ),
-              }}
-              styles={{
-                input: {
-                  backgroundColor: 'white',
-                  border: '1px solid #e5e7eb',
-
-                  padding: '1rem 1rem 1rem 3rem',
-                  fontSize: '1rem',
-                },
-                visibilityToggle: {
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                },
-              }}
-            />
-            <Button
-              size="lg"
-              rightSection={<IconArrowRight size={18} />}
-              style={{
-                backgroundColor: '#1e3a5f',
-                borderRadius: '8px',
-                padding: '1rem 2rem',
-                fontSize: '1rem',
-                fontWeight: 600,
-                marginTop: '1rem',
-              }}
-              styles={{
-                root: {
-                  '&:hover': {
-                    backgroundColor: '#2c5f7c',
+            <Stack gap="md">
+              <TextInput
+                placeholder="example@email.com"
+                leftSection={<IconMail size={18} color="#9ca3af" />}
+                size="lg"
+                {...register("email")}
+                error={errors.email?.message}
+                styles={{
+                  input: {
+                    backgroundColor: 'white',
+                    border: '1px solid #e5e7eb',
+                    padding: '1rem 1rem 1rem 3rem',
+                    fontSize: '1rem',
                   },
-                },
-              }}
-            >
-              <Link href={'/admin/job'} className="w-full h-full">
-                Proceed to my Account
-              </Link>
-            </Button>
-          </Stack>
+                }}
+              />
 
-          <Box style={{ textAlign: 'center', marginTop: '1rem' }}>
-            <Link href="/admin/forgot-password">
-              <Anchor
-                href="#"
-                c="dimmed"
-                size="sm"
-                style={{ textDecoration: 'none' }}
+              <PasswordInput
+                placeholder="••••••••••"
+                leftSection={<IconLock size={18} color="#9ca3af" />}
+                size="lg"
+                {...register("password")}
+                error={errors.password?.message}
+                visibilityToggleButtonProps={{
+                  'aria-label': 'Toggle password visibility',
+                }}
+                styles={{
+                  input: {
+                    backgroundColor: 'white',
+                    border: '1px solid #e5e7eb',
+                    padding: '1rem 1rem 1rem 3rem',
+                    fontSize: '1rem',
+                  },
+                  visibilityToggle: {
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                  },
+                }}
+              />
+
+              <Button
+                size="lg"
+                rightSection={<IconArrowRight size={18} />}
+                style={{
+                  backgroundColor: '#1e3a5f',
+                  borderRadius: '8px',
+                  padding: '1rem 2rem',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  marginTop: '1rem',
+                }}
+                styles={{
+                  root: {
+                    '&:hover': {
+                      backgroundColor: '#2c5f7c',
+                    },
+                  },
+                }}
+                type="submit"
+                loading={isSignIn}
               >
-                Forgot Password?
-              </Anchor>
-            </Link>
-          </Box>
-        </Stack>
-      </Box>
-    </Paper>
+                Proceed to my Account
+              </Button>
+            </Stack>
+
+            <Box style={{ textAlign: 'center', marginTop: '1rem' }}>
+              <Link href="/admin/forgot-password" passHref>
+                <Anchor c="dimmed" size="sm" style={{ textDecoration: 'none' }}>
+                  Forgot Password?
+                </Anchor>
+              </Link>
+            </Box>
+          </Stack>
+        </Box>
+      </Paper>
+    </form>
   );
 }
