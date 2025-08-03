@@ -2,7 +2,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 import { getCookie, setCookie, deleteCookie } from 'cookies-next';
 import { jwtDecode } from 'jwt-decode';
 
-const baseURL = `${process.env.NEXT_PUBLIC_ZARE_API}/api`;
+const baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: baseURL,

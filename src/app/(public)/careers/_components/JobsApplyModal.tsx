@@ -23,7 +23,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Placeholder from '@tiptap/extension-placeholder';
 import { z } from 'zod';
-
+import { useCallback } from 'react';
 
 
 const schema = z.object({
@@ -92,8 +92,8 @@ export default function JobsApplyModal() {
     ],
   });
 
-  const handleSubmit = async () => {
-
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
     setSuccess(true)
     // console.log('Submitting values:', {
     //   ...values,
@@ -105,6 +105,13 @@ export default function JobsApplyModal() {
 
 
 
+
+  const handleClose = useCallback(() => {
+    setSuccess(false);
+    close();
+  }, [close]);
+
+
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => {
@@ -114,12 +121,7 @@ export default function JobsApplyModal() {
 
       return () => clearTimeout(timer);
     }
-  }, [success]);
-
-  const handleClose = () => {
-    setSuccess(false);
-    close();
-  };
+  }, [success, handleClose]);
 
 
 
@@ -187,7 +189,7 @@ export default function JobsApplyModal() {
           : <>
 
 
-            <form >
+            <form onSubmit={handleSubmit}>
               <Stack className='px-[1rem] ' >
 
                 <div className="text-[1.125rem] font-medium text-[#1e293b] leading-tight tracking-tight">
@@ -364,7 +366,7 @@ export default function JobsApplyModal() {
 
 
                   <button
-                    onClick={(e) => handleSubmit()}
+                    type="submit"
                     className="bg-[#0a293b] text-white text-[.9rem] px-6 py-2 rounded-md hover:opacity-90 transition-opacity flex items-center gap-2"
                   >
                     Apply Now

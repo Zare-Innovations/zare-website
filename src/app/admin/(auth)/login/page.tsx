@@ -53,6 +53,7 @@ export default function LoginPage() {
 
       router.push("/admin/job"); // or wherever you want to redirect after login
     } catch (err) {
+      console.error("Login error:", err);
       notifications.show({
         title: "Login Failed",
         message: "Incorrect email or password.",

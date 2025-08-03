@@ -24,11 +24,11 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import { IconCalendar, IconCheck, IconAlertCircle } from '@tabler/icons-react';
 import { useState } from 'react';
-import { z } from 'zod';
 import '@mantine/tiptap/styles.css';
 import { SearchablePill } from '../../_components/searchable-pill';
 import { Job, useCreateJobMutation } from '@/store/api/auth/job.api';
 import { useRouter } from 'next/navigation';
+import { jobSchema, JobFormData } from './job.schema';
 
 // Zod validation schema
 
@@ -36,82 +36,12 @@ import { useRouter } from 'next/navigation';
 const today = new Date();
 today.setHours(0, 0, 0, 0); // remove time component for clean comparison
 
-export const jobSchema = z
-  .object({
-    title: z
-      .string()
-      .min(2, 'Job title must be at least 2 characters')
-      .max(100, 'Job title must be less than 100 characters')
-      .nonempty('Job title is required'),
 
-    yearsOfExperience: z
-      .number()
-      .min(0, 'Years of experience cannot be negative')
-      .max(50, 'Years of experience cannot exceed 50')
-      .int('Years of experience must be a whole number'),
-
-    location: z
-      .string()
-      .min(2, 'Location must be at least 2 characters')
-      .max(100, 'Location must be less than 100 characters')
-      .nonempty('Location is required'),
-
-    type: z.enum(['Remote', 'On-site', 'Hybrid'], {
-      errorMap: () => ({ message: 'Please select a valid job type' }),
-    }),
-
-    workType: z.enum(['Full-Time', 'Part-Time', 'Contract', 'Freelance'], {
-      errorMap: () => ({ message: 'Please select a valid work type' }),
-    }),
-
-    skills: z
-      .array(z.string())
-      .min(1, 'At least one skill is required')
-      .max(10, 'Maximum 10 skills allowed'),
-
-    startDate: z.preprocess(
-      (val) => (val instanceof Date ? val : null),
-      z
-        .date({
-          required_error: 'Start date is required',
-          invalid_type_error: 'Please enter a valid start date',
-        })
-        .refine((date) => {
-          const now = new Date();
-          now.setHours(0, 0, 0, 0);
-          return date >= now;
-        }, {
-          message: 'Start date cannot be in the past',
-        })
-    ),
-
-    endDate: z.preprocess(
-      (val) => (val instanceof Date ? val : null),
-      z.date({
-        required_error: 'End date is required',
-        invalid_type_error: 'Please enter a valid end date',
-      })
-    ),
-
-    description: z
-      .string()
-      .min(10, 'Job description must be at least 10 characters')
-      .nonempty('Job description is required'),
-  })
-  .refine(
-    (data) => data.endDate > data.startDate,
-    {
-      path: ['endDate'],
-      message: 'End date must be after start date',
-    }
-  );
-
-type JobFormData = z.infer<typeof jobSchema>;
 
 export default function JobCreationForm() {
   const [descriptionLength, setDescriptionLength] = useState(0);
   const router = useRouter();
-  const [createJob, { isLoading: isJobCreated }] = useCreateJobMutation();
+  const [createJob] = useCreateJobMutation();
 
   const form = useForm<JobFormData>({
     validate: zodResolver(jobSchema),
@@ -153,10 +83,17 @@ export default function JobCreationForm() {
     },
   });
 
-  const handleSubmit = async (values: JobFormData) => {
-    try{
-    const job = { ...values, skills: values.skills.join(','), startDate: values.startDate.toUTCString(), endDate: values.endDate.toUTCString() } as Job
-    const res = await createJob(job).unwrap();
+const handleSubmit = async (values: JobFormData) => {
+  try {
+    const job = {
+      ...values,
+      skills: values.skills.join(','),
+      startDate: values.startDate.toUTCString(),
+      endDate: values.endDate.toUTCString(),
+    } as Job;
+
+    await createJob(job).unwrap(); // ✅ 'res' removed
+
     notifications.show({
       title: 'Success!',
       message: 'Job posting has been created successfully',
@@ -165,19 +102,19 @@ export default function JobCreationForm() {
     });
 
     router.push('/admin/job');
+  } catch {
+    // ✅ Removed unused 'err'
+    notifications.show({
+      title: 'Job posting Failed',
+      message: 'Please try again later.',
+      color: 'red',
+    });
   }
-    catch (err) {
-        notifications.show({
-          title: "Job posting  Failed",
-          message: "Please try again later.",
-          color: "red",
-        });
-      }
+};
 
-
-  };
 
   const handleSubmitError = (errors: typeof form.errors) => {
+    console.error('Form submission errors:', errors);
     notifications.show({
       title: 'Validation Error',
       message: 'Please fix the errors in the form before submitting',
