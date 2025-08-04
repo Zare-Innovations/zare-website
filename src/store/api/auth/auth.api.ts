@@ -1,4 +1,5 @@
 
+import { baseQuery } from '@/store/base-query';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 interface User {
@@ -19,12 +20,12 @@ interface ResetPasswordEmail {
 }
 
 
-const baseURL = `/accounts`;
+const baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api/accounts`;
 
 export const authApi = createApi({
   reducerPath: 'authApi',
   refetchOnFocus: true,
-  baseQuery: fetchBaseQuery({ baseUrl: baseURL }),
+  baseQuery: baseQuery,
   endpoints: (builder) => ({
     signIn: builder.mutation<any, User>({
       query: (data) => ({
