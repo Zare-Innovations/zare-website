@@ -19,7 +19,7 @@ interface ResetPasswordEmail {
 }
 
 
-const baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api/accounts`;
+const baseURL = `/accounts`;
 
 export const authApi = createApi({
   reducerPath: 'authApi',
