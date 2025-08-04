@@ -38,8 +38,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
-React.useEffect(() => setMounted(true), []);
-if (!mounted) return null; // or skeleton
+  
 
   const {
     register,
@@ -132,30 +131,16 @@ if (!mounted) return null; // or skeleton
                 }}
               />
 
-            <PasswordInput
-
-  leftSection={<IconLock size={18} color="#9ca3af" />}
-  size="lg"
-  autoComplete="current-password"
-  {...register("password")}
-  error={errors.password?.message}
-  visibilityToggleButtonProps={{
-    'aria-label': 'Toggle password visibility',
-  }}
-  styles={{
-    input: {
-      backgroundColor: 'white',
-      border: '1px solid #e5e7eb',
-      padding: '1rem 1rem 1rem 3rem',
-      fontSize: '1rem',
-      pointerEvents: 'auto',
-    },
-    visibilityToggle: {
-      border: 'none',
-      backgroundColor: 'transparent',
-    },
-  }}
-/>
+      <div className="relative">
+      <input
+        type="password"
+        placeholder="••••••••••"
+        autoComplete="current-password"
+        {...register('password')}
+        className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base"
+      />
+      {errors.email?.message && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
+    </div>
 
 
               <Button
