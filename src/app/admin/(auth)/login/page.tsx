@@ -5,7 +5,6 @@ import {
   Paper,
   Text,
   TextInput,
-  PasswordInput,
   Button,
   Stack,
   Title,
@@ -139,7 +138,7 @@ export default function LoginPage() {
         {...register('password')}
         className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base"
       />
-      {errors.email?.message && <p className="text-red-500 text-sm mt-1">{error.message}</p>}
+      {errors.password?.message && <p className="text-red-500 text-sm mt-1">{errors?.password?.message}</p>}
     </div>
 
 
