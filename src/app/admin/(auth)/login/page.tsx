@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Box,
@@ -130,28 +130,31 @@ export default function LoginPage() {
                 }}
               />
 
-              <PasswordInput
-                placeholder="••••••••••"
-                leftSection={<IconLock size={18} color="#9ca3af" />}
-                size="lg"
-                {...register("password")}
-                error={errors.password?.message}
-                visibilityToggleButtonProps={{
-                  'aria-label': 'Toggle password visibility',
-                }}
-                styles={{
-                  input: {
-                    backgroundColor: 'white',
-                    border: '1px solid #e5e7eb',
-                    padding: '1rem 1rem 1rem 3rem',
-                    fontSize: '1rem',
-                  },
-                  visibilityToggle: {
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                  },
-                }}
-              />
+           <PasswordInput
+
+  leftSection={<IconLock size={18} color="#9ca3af" />}
+  size="lg"
+  autoComplete="current-password"
+  {...register("password")}
+  error={errors.password?.message}
+  visibilityToggleButtonProps={{
+    'aria-label': 'Toggle password visibility',
+  }}
+  styles={{
+    input: {
+      backgroundColor: 'white',
+      border: '1px solid #e5e7eb',
+      padding: '1rem 1rem 1rem 3rem',
+      fontSize: '1rem',
+      pointerEvents: 'auto',
+    },
+    visibilityToggle: {
+      border: 'none',
+      backgroundColor: 'transparent',
+    },
+  }}
+/>
+
 
               <Button
                 size="lg"
