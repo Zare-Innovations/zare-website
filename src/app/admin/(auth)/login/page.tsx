@@ -11,8 +11,8 @@ import {
   Stack,
   Title,
 } from '@mantine/core';
-import Image from 'next/image';
-import React from 'react';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState } from 'react';
 import { IconMail, IconLock, IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useSignInMutation } from '@/store/api/auth/auth.api';
@@ -23,7 +23,10 @@ import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-// Zod schema for validation
+// ⛔ Avoid SSR for Image
+const ClientImage = dynamic(() => import('next/image'), { ssr: false });
+
+// Validation schema
 const schema = z.object({
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -35,6 +38,8 @@ export default function LoginPage() {
   const [signIn, { isLoading: isSignIn }] = useSignInMutation();
   const router = useRouter();
 
+  const [mounted, setMounted] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -43,15 +48,18 @@ export default function LoginPage() {
     resolver: zodResolver(schema),
   });
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const onSubmit = async (data: FormSchema) => {
     try {
       const res = await signIn(data).unwrap();
 
-      // Save tokens
-      setCookie("access_token", res.access_token, { maxAge: 60 * 60 * 24 }); // 1 day
-      setCookie("refresh_token", res.refresh_token, { maxAge: 60 * 60 * 24 * 7 }); // 7 days
+      setCookie("access_token", res.access_token, { maxAge: 60 * 60 * 24 });
+      setCookie("refresh_token", res.refresh_token, { maxAge: 60 * 60 * 24 * 7 });
 
-      router.push("/admin/job"); // or wherever you want to redirect after login
+      router.push("/admin/job");
     } catch (err) {
       console.error("Login error:", err);
       notifications.show({
@@ -61,6 +69,9 @@ export default function LoginPage() {
       });
     }
   };
+
+  // Avoid hydration mismatch
+  if (!mounted) return null;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -74,7 +85,7 @@ export default function LoginPage() {
       >
         {/* Logo */}
         <Box p="xl" style={{ alignSelf: 'flex-end' }}>
-          <Image
+          <ClientImage
             src="/zare-logo.svg"
             width={300}
             height={300}
@@ -168,13 +179,13 @@ export default function LoginPage() {
               </Button>
             </Stack>
 
-            <Box style={{ textAlign: 'center', marginTop: '1rem' }}>
+            {/* <Box style={{ textAlign: 'center', marginTop: '1rem' }}>
               <Link href="/admin/forgot-password" passHref>
                 <Anchor c="dimmed" size="sm" style={{ textDecoration: 'none' }}>
                   Forgot Password?
                 </Anchor>
               </Link>
-            </Box>
+            </Box> */}
           </Stack>
         </Box>
       </Paper>
