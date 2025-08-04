@@ -38,6 +38,8 @@ export default function LoginPage() {
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
+React.useEffect(() => setMounted(true), []);
+if (!mounted) return null; // or skeleton
 
   const {
     register,
@@ -130,7 +132,7 @@ export default function LoginPage() {
                 }}
               />
 
-           <PasswordInput
+            <PasswordInput
 
   leftSection={<IconLock size={18} color="#9ca3af" />}
   size="lg"
