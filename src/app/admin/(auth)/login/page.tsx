@@ -131,12 +131,16 @@ export default function LoginPage() {
               />
 
       <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <IconLock size={18} color="#9ca3af" />
+      </div>
+
       <input
         type="password"
         placeholder="••••••••••"
         autoComplete="current-password"
         {...register('password')}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base"
+        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       {errors.password?.message && <p className="text-red-500 text-sm mt-1">{errors?.password?.message}</p>}
     </div>
