@@ -8,8 +8,8 @@ export interface Job {
   type: 'Remote'| 'On-site'| 'Hybrid';
   workType: string;
   skills: string;
-  startDate: string;  
-  endDate: string;  
+  startDate: string | Date;  
+  endDate: string | Date;  
   description: string;
 }
 

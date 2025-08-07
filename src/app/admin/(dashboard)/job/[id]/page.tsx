@@ -85,11 +85,12 @@ export default function JobCreationForm() {
 
 const handleSubmit = async (values: JobFormData) => {
   try {
+    console.log('Form values:', values);
     const job = {
       ...values,
       skills: values.skills.join(','),
-      startDate: values.startDate.toUTCString(),
-      endDate: values.endDate.toUTCString(),
+      startDate: values.startDate,
+      endDate: values.endDate,
     } as Job;
 
     await createJob(job).unwrap(); // ✅ 'res' removed
@@ -102,7 +103,8 @@ const handleSubmit = async (values: JobFormData) => {
     });
 
     router.push('/admin/job');
-  } catch {
+  } catch(err) {
+    console.error('Job creation error:', err);
     // ✅ Removed unused 'err'
     notifications.show({
       title: 'Job posting Failed',
