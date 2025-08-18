@@ -19,7 +19,8 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       ...middleware,
-  
+      authApi.middleware,
+      jobApi.middleware
     ),
   devTools: process.env.NODE_ENV !== 'production',
 });

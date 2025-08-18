@@ -1,7 +1,9 @@
+import { CollectionQuery } from '@/app/core-fe/models/query';
+import { encodeCollectionQuery } from '@/app/utility/query-builder';
 import { baseQuery } from '@/store/base-query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-export interface Job {
+export interface CreateJob {
   title: string;
   yearsOfExperience: number;
   location: string;
@@ -13,6 +15,25 @@ export interface Job {
   description: string;
 }
 
+export interface Job {
+  id: string;
+  title: string;
+  yearsOfExperience: number;
+  location: string;
+  type: 'Remote' | 'On-site' | 'Hybrid';
+  workType: 'Full-Time' | 'Part-Time' | 'Contract' | 'Freelance';
+  skills: string; 
+  startDate: string; 
+  endDate: string;   
+  description: string;
+  createdAt: string; 
+  updatedAt: string;
+}
+
+export interface JobListResponse {
+  total: number;
+  items: Job[];
+}
 
 const baseURL = '/job';
 
@@ -21,7 +42,7 @@ export const jobApi = createApi({
   baseQuery: baseQuery,
   refetchOnFocus: true,
   endpoints: (builder) => ({
-    createJob: builder.mutation<any, Job>({
+    createJob: builder.mutation<any, CreateJob>({
       query: (data) => ({
         url: `${baseURL}`,
         method: 'POST',
@@ -29,17 +50,39 @@ export const jobApi = createApi({
       }),
     }),
 
-    updateJob: builder.mutation<any, Job>({
-      query: (data) => ({
-        url: `${baseURL}/update-password`,
+    updateJob: builder.mutation<any, { id: string; data: CreateJob }>({
+      query: ({ id, data }) => ({
+        url: `${baseURL}/${id}`,
         method: 'PUT',
         body: data,
       }),
     }),
 
-    getJob: builder.query<Job, void>({
-      query: () => ({
-        url: `${baseURL}/me`,
+    deleteJob: builder.mutation<any, { id: string }>({
+      query: ({ id }) => ({
+        url: `${baseURL}/${id}`,
+        method: 'DELETE',
+      }),
+    }),
+
+    getJobs: builder.query<JobListResponse, CollectionQuery>({
+      query: (collectionQuery) => {
+        let q = '';
+        if (collectionQuery) {
+          const query = encodeCollectionQuery(collectionQuery);
+          q = `?q=${query}`;
+        }
+        return {
+          url: `${baseURL}${q}`,
+          method: 'GET',
+        };
+      },
+    }),
+
+    
+    getJob: builder.query<Job, string>({
+      query: (id) => ({
+        url: `${baseURL}/${id}`,
         method: 'GET',
       }),
     }),
@@ -49,6 +92,7 @@ export const jobApi = createApi({
 export const {
   useCreateJobMutation,
   useUpdateJobMutation,
-  useGetJobQuery,
+  useGetJobsQuery,
+  useGetJobQuery,   
+  useDeleteJobMutation,
 } = jobApi;
-

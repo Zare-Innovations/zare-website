@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Text,
   Group,
@@ -23,25 +22,37 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import { IconCalendar, IconCheck, IconAlertCircle } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '@mantine/tiptap/styles.css';
 import { SearchablePill } from '../../_components/searchable-pill';
-import { Job, useCreateJobMutation } from '@/store/api/auth/job.api';
-import { useRouter } from 'next/navigation';
+import {
+  CreateJob,
+  useUpdateJobMutation,
+  useCreateJobMutation,
+  useGetJobQuery,
+} from '@/store/api/auth/job.api';
+import { useParams, useRouter } from 'next/navigation';
 import { jobSchema, JobFormData } from './job.schema';
 
-// Zod validation schema
+export default function JobForm() {
+
+  const { id } = useParams();
+const jobId = Array.isArray(id) ? id[0] : id;
 
 
-const today = new Date();
-today.setHours(0, 0, 0, 0); // remove time component for clean comparison
 
+const isEdit = Boolean(jobId && jobId !==  encodeURIComponent('+'));
 
-
-export default function JobCreationForm() {
+const { data: jobData, isLoading: isJobLoading } = useGetJobQuery(jobId!, {
+  skip: !isEdit, 
+});
+  
   const [descriptionLength, setDescriptionLength] = useState(0);
   const router = useRouter();
+
   const [createJob] = useCreateJobMutation();
+  const [updateJob] = useUpdateJobMutation();
+
 
   const form = useForm<JobFormData>({
     validate: zodResolver(jobSchema),
@@ -53,16 +64,27 @@ export default function JobCreationForm() {
       workType: 'Full-Time',
       skills: [],
       startDate: new Date(),
-      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       description: '',
     },
   });
 
+  // Populate form when jobData is loaded
+useEffect(() => {
+  if (isEdit && jobData) {
+    form.setValues({
+      ...jobData,
+      skills: jobData.skills?.split(',') || [],
+      startDate: jobData.startDate ? new Date(jobData.startDate) : undefined,
+      endDate: jobData.endDate ? new Date(jobData.endDate) : undefined,
+    });
 
-
-
-
-
+    if (editor) {
+      editor.commands.setContent(jobData.description || '');
+      setDescriptionLength(jobData.description?.length || 0);
+    }
+  }
+}, [isEdit, jobData]);
 
 
   const editor = useEditor({
@@ -83,37 +105,41 @@ export default function JobCreationForm() {
     },
   });
 
-const handleSubmit = async (values: JobFormData) => {
-  try {
-    console.log('Form values:', values);
-    const job = {
-      ...values,
-      skills: values.skills.join(','),
-      startDate: values.startDate,
-      endDate: values.endDate,
-    } as Job;
+  const handleSubmit = async (values: JobFormData) => {
+    try {
+      const payload = {
+        ...values,
+        skills: values.skills.join(','),
+      } as CreateJob;
 
-    await createJob(job).unwrap(); // ✅ 'res' removed
+      if (isEdit && id) {
+        await updateJob({
+          id: id as string,
+          data: payload,
+        }).unwrap();
+      } else {
+        await createJob(payload).unwrap();
+      }
 
-    notifications.show({
-      title: 'Success!',
-      message: 'Job posting has been created successfully',
-      color: 'teal',
-      icon: <IconCheck size={16} />,
-    });
+      notifications.show({
+        title: 'Success!',
+        message: isEdit
+          ? 'Job posting has been updated successfully'
+          : 'Job posting has been created successfully',
+        color: 'teal',
+        icon: <IconCheck size={16} />,
+      });
 
-    router.push('/admin/job');
-  } catch(err) {
-    console.error('Job creation error:', err);
-    // ✅ Removed unused 'err'
-    notifications.show({
-      title: 'Job posting Failed',
-      message: 'Please try again later.',
-      color: 'red',
-    });
-  }
-};
-
+      router.push('/admin/job');
+    } catch (err) {
+      console.error('Job submission error:', err);
+      notifications.show({
+        title: isEdit ? 'Update Failed' : 'Creation Failed',
+        message: 'Please try again later.',
+        color: 'red',
+      });
+    }
+  };
 
   const handleSubmitError = (errors: typeof form.errors) => {
     console.error('Form submission errors:', errors);
@@ -125,15 +151,21 @@ const handleSubmit = async (values: JobFormData) => {
     });
   };
 
+  if (isEdit && isJobLoading) {
+    return <Text>Loading job data...</Text>;
+  }
+
   return (
     <Container size="lg" py="xl">
       <div>
         <div className="p-4 rounded-lg bg-white mb-6">
           <Text size="xl" color="dark">
-            Create a Job
+            {isEdit ? 'Edit Job' : 'Create a Job'}
           </Text>
           <Text size="sm" color="gray.6">
-            Fill out the form below to create a new job listing.
+            {isEdit
+              ? 'Update the details below to edit the job listing.'
+              : 'Fill out the form below to create a new job listing.'}
           </Text>
         </div>
 
@@ -177,7 +209,7 @@ const handleSubmit = async (values: JobFormData) => {
                   data={['Remote', 'On-site', 'Hybrid']}
                   size="md"
                   withAsterisk
-                  {...form.getInputProps('jobType')}
+                  {...form.getInputProps('type')}
                 />
               </Grid.Col>
 
@@ -231,7 +263,6 @@ const handleSubmit = async (values: JobFormData) => {
                   {...form.getInputProps('endDate')}
                 />
               </Grid.Col>
-
 
               <Grid.Col span={12}>
                 <div>
@@ -287,7 +318,7 @@ const handleSubmit = async (values: JobFormData) => {
                 style={{ backgroundColor: '#1a365d' }}
                 loading={form.submitting}
               >
-                Submit
+                {isEdit ? 'Update Job' : 'Create Job'}
               </Button>
             </Group>
           </form>
