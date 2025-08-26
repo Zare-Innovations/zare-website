@@ -1,0 +1,22 @@
+# Dockerfile for Next.js
+
+# Use the official Node.js image as the base image
+FROM node:20-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and pnpm-lock.yaml to /app
+COPY package.json ./
+
+# Install pnpm globally
+#RUN npm install -g pnpm
+
+# Install dependencies
+RUN npm i --force
+
+ENV  NEXT_PUBLIC_API_URL  https://landing.zareinnovations.com
+
+ENV RESEND_API_KEY re_WAsL1jwy_69W8QmnpGc5qxZXk3jv6fQJp
+#Copy the rest of the application code to the working directory
+COPY . .
