@@ -15,7 +15,7 @@ COPY package.json ./
 # Install dependencies
 RUN npm i --force
 
-ENV  NEXT_PUBLIC_RESEND_API_KEY  re_WAsL1jwy_69W8QmnpGc5qxZXk3jv6fQJp
+ENV  RESEND_API_KEY  re_WAsL1jwy_69W8QmnpGc5qxZXk3jv6fQJp
 ENV  NEXT_PUBLIC_API_URL  https://landing.zareinnovations.com
 #Copy the rest of the application code to the working directory
 COPY . .
