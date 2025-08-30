@@ -1,0 +1,14 @@
+services:
+  # zare-landing-fe:
+   scrabble-fe:
+    environment:
+      NEXT_PUBLIC_API_URL: "https://landing.zareinnovations.com"
+        # image: zare-landing:latest
+      image: landingpage/ui
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      # - '3556:3000'
+        - '3555:3000'
+    restart: always
