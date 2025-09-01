@@ -1,5 +1,5 @@
 'use client';
-
+import { useProfileQuery } from '@/store/api/auth/auth.api';
 import { Avatar } from '@mantine/core';
 import {
   IconCalendar,
@@ -24,6 +24,10 @@ export default function Sidebar() {
   const [settingsExpanded, setSettingsExpanded] = useState(false);
    const router = useRouter();
 
+   const { data: profile} = useProfileQuery();
+
+   console.log("Profile Data:", profile);
+
   // const router = useRouter();
   const pathname = usePathname();
 
@@ -45,7 +49,7 @@ export default function Sidebar() {
               <div className="text-sm text-gray-400 uppercase tracking-wide">
                 ADMIN
               </div>
-              <div className="font-medium text-nowrap">Andrew Smith</div>
+              <div className="font-medium text-nowrap">{profile?.name ||''}</div>
             </div>
           </div>
         </div>

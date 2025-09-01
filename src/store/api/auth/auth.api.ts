@@ -7,13 +7,19 @@ interface User {
   password: string;
 }
 
+interface Profile{
+email:string
+id:string
+name:string 
 
-
-interface ResetPasswordUpdate {
-  email: string;
-  otp: string;
-  confirmPassword: string;
 }
+
+
+// interface ResetPasswordUpdate {
+//   email: string;
+//   otp: string;
+//   confirmPassword: string;
+// }
 
 interface ResetPasswordEmail {
   email: string;
@@ -47,18 +53,18 @@ export const authApi = createApi({
       }),
     }),
 
-    profile: builder.mutation<any, ResetPasswordUpdate>({
-      query: (data) => ({
-        url: `${baseURL}/me`,
-        method: 'GET',
-        body: data,
-      }),
-    }),
+ profile: builder.query<Profile, void>({
+  query: () => ({
+    url: `${baseURL}/me`,
+    method: 'GET',
+  }),
+}),
+
   }),
 });
 
 export const {
   useSignInMutation,
   useUpdatePasswordMutation,
-  useProfileMutation,
+  useProfileQuery,
 } = authApi;

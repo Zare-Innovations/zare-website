@@ -70,6 +70,7 @@ const { data: jobData, isLoading: isJobLoading } = useGetJobQuery(jobId!, {
   });
 
   // Populate form when jobData is loaded
+// eslint-disable-next-line react-hooks/exhaustive-deps
 useEffect(() => {
   if (isEdit && jobData) {
     form.setValues({
@@ -84,7 +85,9 @@ useEffect(() => {
       setDescriptionLength(jobData.description?.length || 0);
     }
   }
-}, [isEdit, jobData]);
+}, [isEdit, jobData]); 
+
+
 
 
   const editor = useEditor({
