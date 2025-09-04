@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import entityApi from './entity/api';
 import { authApi } from './api/auth/auth.api';
 import { jobApi } from './api/auth/job.api';
+import { resetPasswordReducer } from './api/auth/resetPasswordSlice';
 
 
 const { reducers, middleware} = entityApi;
@@ -9,7 +10,7 @@ const { reducers, middleware} = entityApi;
 export const store = configureStore({
   reducer: {
     ...reducers,
-    // resetPassword: resetPasswordReducer,
+     resetPassword: resetPasswordReducer,
      [authApi.reducerPath]: authApi.reducer,
     [jobApi.reducerPath]: jobApi.reducer,
     // [dashboardApi.reducerPath]: dashboardApi.reducer,

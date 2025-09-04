@@ -8,6 +8,7 @@ import {
   Button,
   Stack,
   Title,
+  Anchor,
 } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
@@ -20,6 +21,7 @@ import { useForm } from 'react-hook-form';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 
 // ⛔ Avoid SSR for Image
 const ClientImage = dynamic(() => import('next/image'), { ssr: false });
@@ -171,13 +173,13 @@ export default function LoginPage() {
               </Button>
             </Stack>
 
-            {/* <Box style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <Box style={{ textAlign: 'center' }}>
               <Link href="/admin/forgot-password" passHref>
                 <Anchor c="dimmed" size="sm" style={{ textDecoration: 'none' }}>
                   Forgot Password?
                 </Anchor>
               </Link>
-            </Box> */}
+            </Box>
           </Stack>
         </Box>
       </Paper>

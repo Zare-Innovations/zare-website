@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Only protect /admin routes, excluding /admin/login
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login' && pathname !== '/admin/forgot-password') {
     const token = request.cookies.get('access_token');
     const refreshToken = request.cookies.get('refresh_token');
 

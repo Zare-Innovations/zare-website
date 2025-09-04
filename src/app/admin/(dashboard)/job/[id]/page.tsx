@@ -85,7 +85,7 @@ useEffect(() => {
       setDescriptionLength(jobData.description?.length || 0);
     }
   }
-}, [isEdit, jobData]); 
+}, [isEdit, jobData]);
 
 
 
