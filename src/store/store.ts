@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import entityApi from './entity/api';
 import { authApi } from './api/auth/auth.api';
-import { jobApi } from './api/auth/job.api';
+import { jobApi } from './api/job.api';
 import { resetPasswordReducer } from './api/auth/resetPasswordSlice';
 
 

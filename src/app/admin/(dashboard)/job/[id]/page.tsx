@@ -30,7 +30,7 @@ import {
   useUpdateJobMutation,
   useCreateJobMutation,
   useGetJobQuery,
-} from '@/store/api/auth/job.api';
+} from '@/store/api/job.api';
 import { useParams, useRouter } from 'next/navigation';
 import { jobSchema, JobFormData } from './job.schema';
 

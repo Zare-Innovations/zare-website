@@ -24,7 +24,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from '@tabler/icons-react';
-import { Job,  useDeleteJobMutation, useGetJobsQuery } from '@/store/api/auth/job.api';
+import { Job,  useDeleteJobMutation, useGetJobsQuery } from '@/store/api/job.api';
 import { useDebounce } from 'use-debounce';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
