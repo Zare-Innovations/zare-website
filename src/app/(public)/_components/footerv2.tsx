@@ -1,9 +1,5 @@
-import { Flex } from '@mantine/core';
 import {
   IconBrandLinkedin,
-  IconBrandFacebook,
-  IconBrandInstagram,
-  IconBrandX,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';

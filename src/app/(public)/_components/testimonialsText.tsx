@@ -53,13 +53,16 @@ export default function TestimonialSliderText() {
     touchEndX = e.targetTouches[0].clientX;
   };
 
-  const handleTouchEnd = () => {
-    const swipeDistance = touchStartX - touchEndX;
-    if (Math.abs(swipeDistance) < 50) return;
+const handleTouchEnd = () => {
+  const swipeDistance = touchStartX - touchEndX;
+  if (Math.abs(swipeDistance) < 50) return;
 
-    swipeDistance > 50 ? next() : prev();
-  };
-
+  if (swipeDistance > 50) {
+    next();
+  } else {
+    prev();
+  }
+};
   const current = testimonials[index];
 
   return (

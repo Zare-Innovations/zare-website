@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Title, Text } from '@mantine/core';
 const projects = [{
   image: "/project/251-train.svg", logo: "/our-work/logos/3.png", title: "", client: "",
   location: "Washington, D.C., USA | NUMEDIC LLC",

@@ -4,9 +4,9 @@ import '@mantine/carousel/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 
-import { NavBar } from './_components/nav-bar';
+// import { NavBar } from './_components/nav-bar';
 
-import Footer from './_components/footer';
+// import Footer from './_components/footer';
 import { NavBarV2 } from './_components/nav-bar-v2';
 import FooterV2 from './_components/footerv2';
 
