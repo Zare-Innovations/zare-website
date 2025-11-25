@@ -36,7 +36,11 @@ const RATE_TABLE: Record<string, { marketRate: number; zareRate: number }> = {
   'Back Office Support Specialist': { marketRate: 22, zareRate: 9 },
 };
 
-export default function ZareEstimatorModal() {
+interface ZareEstimatorModalProps {
+  title?: string;
+}
+
+export default function ZareEstimatorModal({title}:ZareEstimatorModalProps) {
   const [open, { toggle, close }] = useDisclosure();
   const [isResultOpen, { open: openResult, close: closeResult }] =
     useDisclosure(false);
@@ -133,13 +137,14 @@ export default function ZareEstimatorModal() {
   };
 
   return (
-    <Group className="px-4 py-6 sm:px-8 lg:px-16">
-      <button
+    <Group >
+      <Button
+      className="!text-sm "
         onClick={toggle}
-        className="w-full sm:w-auto text-center font-semibold text-[#0A293B] bg-white hover:bg-cyan-500 hover:text-white px-6 py-3 rounded-md shadow-md transition duration-200"
+        size="md" variant="outline"
       >
-        Compare Rates Instantly
-      </button>
+      {title ?title:"Compare Rates Instantly"}  
+      </Button>
 
 
       <SavingModal

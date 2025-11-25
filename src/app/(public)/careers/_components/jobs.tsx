@@ -5,10 +5,8 @@ import { useEffect, useState } from "react";
 
 export function Jobs() {
 
-
     const [jobListings, setJobListings] = useState<Job[]>([]);
     const { data: jobsDataResponse } = useGetJobsQuery({});
-
 
     useEffect(() => {
         if (jobsDataResponse?.items) {
@@ -16,10 +14,9 @@ export function Jobs() {
         }
     }, [jobsDataResponse]);
 
-
     return (
         <div className="mx-auto">
-            <div className="grid md:grid-cols-1 w-full md:w-[80%] mx-auto items-center gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 w-full  mx-auto items-center gap-6 md:gap-8">
                 {jobListings.map((job) => (
                     <JobCard key={job.id} job={job} />
                 ))}
