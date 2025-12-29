@@ -8,6 +8,7 @@ import Contact from './_components/contact';
 import Works from './_components/works';
 import Companies from './_components/companies';
 import CalculatorSection from './_components/calculator-section';
+import ProjectsOverview from "./_components/projects-overview";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Companies />
       <Empowering />
       <Promise />
+      <ProjectsOverview />
       <Services />
       <Testimonials />
       <Works />
