@@ -14,7 +14,7 @@ export default function Empowering() {
           />
         </div>
         <div className="flex flex-col gap-4 lg:gap-6 sm:w-1/2 md:pr-8 px-4">
-          <p className="text-2xl sm:text-3xl md:text-5xl text-center font-semibold lg:text-left  max-w-full break-words">
+          <p className="text-2xl sm:text-3xl md:text-5xl text-center font-semibold sm:text-left  max-w-full break-words">
             Bridging Worlds,
             <span className="text-cyan-500"> Building Futures.</span>
           </p>
