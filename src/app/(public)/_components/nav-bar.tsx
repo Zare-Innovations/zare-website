@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Box, Burger, Divider, Drawer, Group, ScrollArea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -35,14 +35,17 @@ export function NavBar() {
               About Us
             </Link>
             <Link href="/#services" className={classes.link}>
-              Our Services
+              Services
             </Link>
             <Link href="/our-work" className={classes.link}>
-              Our Work
+              Portfolio
             </Link>
-            <a href="#contact-us" className={classes.link}>
+            <Link href="/carrers" className={classes.link}>
+              Carrers
+            </Link>
+            <Link href="#contact-us" className={classes.link}>
               Contact Us
-            </a>
+            </Link>
           </Group>
           <Burger
             opened={drawerOpened}
@@ -64,34 +67,21 @@ export function NavBar() {
         <ScrollArea h="calc(100vh - 80px)" mx="-md" className="space-y-5">
           <Divider my="sm" />
 
-          <Link href="/#" className={classes.link} onClick={toggleDrawer}>
-            Home
-          </Link>
-
-          <Link
-            href="/#aboutUs"
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
+          <Link href="/#aboutUs" className={classes.link}>
             About Us
           </Link>
-          <Link
-            href="/#services"
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
-            Our Services
+          <Link href="/#services" className={classes.link}>
+            Services
           </Link>
-          <Link
-            href="/our-work"
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
-            Our Work
+          <Link href="/our-work" className={classes.link}>
+            Portfolio
           </Link>
-          <a href="#contact-us" className={classes.link} onClick={toggleDrawer}>
+          <Link href="/carrers" className={classes.link}>
+            Carrers
+          </Link>
+          <Link href="#contact-us" className={classes.link}>
             Contact Us
-          </a>
+          </Link>
         </ScrollArea>
       </Drawer>
     </Box>
