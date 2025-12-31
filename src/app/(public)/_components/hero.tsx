@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 import createGlobe from "cobe";
 import CountUp from "@/app/(public)/_components/count-up";
+import { consultationLink } from "@/constants";
 
 const Globe = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -151,7 +152,11 @@ export default function Hero() {
         <HeroStats />
         <div className="flex items-center gap-3 min-[500px]:gap-7">
           {[
-            { href: "", label: "Book a consultation", outlined: false },
+            {
+              href: consultationLink,
+              label: "Book a consultation",
+              outlined: false
+            },
             { href: "", label: "Compare Rates Instantly", outlined: true }
           ].map((link, index) => (
             <NavLink key={index} href={link.href} outlined={link.outlined}>
