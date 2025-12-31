@@ -8,7 +8,7 @@ export default function CalculatorSection() {
   return (
     <Flex className="w-screen items-center gap-5 min-[1080px]:gap-10 px-5 md:px-12 mt-10 sm:mt-16">
       <Image
-        src="/calculator/calculator-shot.png"
+        src="/calculator/calculator-shot.svg"
         alt="Zare ROI Calculator"
         width={600}
         height={600}
@@ -24,7 +24,7 @@ export default function CalculatorSection() {
           ZARE&apos;s ROI Calculator
         </p>
         <Image
-          src="/calculator/calculator-shot.png"
+          src="/calculator/calculator-shot.svg"
           alt="Zare ROI Calculator"
           width={600}
           height={600}
