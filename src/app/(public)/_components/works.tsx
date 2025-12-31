@@ -93,7 +93,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
 export default function Works() {
   return (
     <Stack
-      className="relative md:p-12 gap-7 items-center max-sm:px-5 max-md:px-16 max-md:py-10 "
+      className="relative md:p-12 gap-4 sm:gap-7 items-center max-sm:px-5 max-md:px-16 max-md:py-10 "
       id="services"
     >
       <Flex className="flex flex-col mx-auto gap-3 sm:gap-5 text-center">
@@ -111,6 +111,12 @@ export default function Works() {
           <ProjectCard key={project.title} project={project} />
         ))}
       </Flex>
+      <Link
+        href="/our-work"
+        className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+      >
+        View All Projects
+      </Link>
     </Stack>
   );
 }
