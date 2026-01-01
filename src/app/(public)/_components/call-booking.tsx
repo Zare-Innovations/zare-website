@@ -228,7 +228,11 @@ const DateTimePicker = ({
   setSelectedTime: (time: ApptTime | null) => void;
 }) => {
   return (
-    <Flex gap="md" style={{ flex: 1 }} className="h-[352px] flex flex-col sm:flex-row gap-4 sm:gap-6 items-center justify-center">
+    <Flex
+      gap="md"
+      style={{ flex: 1 }}
+      className="h-[352px] flex flex-col sm:flex-row gap-4 sm:gap-6 max-sm:items-center justify-center"
+    >
       <Card className="flex flex-col gap-3 bg-black px-4 pb-4 pt-0 rounded-md shadow-white/20 shadow-[0.5px_0.5px_5px_1px_rgba(255,255,255,0.01)]">
         <Flex className="relative h-10 flex items-center text-white border-b border-white/20 overflow-hidden">
           <Flex
@@ -300,14 +304,14 @@ const DateTimePicker = ({
           scrollbars="y"
           styles={{ viewport: { overflowX: "hidden" } }}
         >
-          <Flex className="flex flex-col gap-2">
+          <Flex className="flex flex-col gap-3.5">
             {TIME_SLOTS.map((slot) =>
               slot.isAvailable ? (
                 <Flex key={slot.time} className={`gap-2 flex-1`}>
                   <button
-                    className={`min-w-max text-center gap-3 rounded-sm px-3 py-2 text-sm min-[500px]:text-base ${
+                    className={` text-center gap-3 rounded-sm px-3 py-2 text-sm min-[500px]:text-base ${
                       selectedTime?.time === slot.time
-                        ? "flex-1 border-2 border-cyan-900 bg-cyan-900 text-white"
+                        ? "min-w-max flex-1 border-2 border-cyan-900 bg-cyan-900 text-white"
                         : "min-w-full border-2 border-cyan-500 bg-cyan-500/20 text-white hover:bg-cyan-500"
                     } transition-all duration-500`}
                     style={{
@@ -346,7 +350,7 @@ const DateTimePicker = ({
                 >
                   <button
                     key={slot.time}
-                    className={`text-center gap-3 rounded-sm px-2 min-[500px]:px-3 sm:px-6 text-sm min-[430px]:text-sm min-[500px]:text-base py-[7px] sm:py-2.5 border-2 border-cyan-500/20 bg-cyan-500/20 text-white/50 transition-all duration-300`}
+                    className={`text-center gap-3 rounded-sm px-3 py-2 text-sm min-[430px]:text-sm min-[500px]:text-base border-2 border-cyan-500/20 bg-cyan-500/20 text-white/50 transition-all duration-300`}
                     disabled
                   >
                     {slot.time}
