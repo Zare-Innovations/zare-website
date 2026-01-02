@@ -1,18 +1,10 @@
-'use client';
+"use client";
 
-import {
-  Box,
-  Burger,
-  Button,
-  Divider,
-  Drawer,
-  Group,
-  ScrollArea,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import classes from './nav-bar.module.css';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Box, Burger, Divider, Drawer, Group, ScrollArea } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import classes from "./nav-bar.module.css";
+import Image from "next/image";
+import Link from "next/link";
 
 export function NavBar() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -21,11 +13,15 @@ export function NavBar() {
   return (
     <Box>
       <header className={classes.header}>
-        <Group justify="space-between" h="100%" px={40}>
+        <Group
+          justify="space-between"
+          h="100%"
+          className=" min-[500px]:px-3 sm:px-12"
+        >
           <div className="w-36">
             <Link href="/">
               <Image
-                src={'/zare-innovations-logo.svg'}
+                src={"/zare-innovations-logo.svg"}
                 width={1500}
                 height={1500}
                 className="w-full"
@@ -39,26 +35,18 @@ export function NavBar() {
               About Us
             </Link>
             <Link href="/#services" className={classes.link}>
-              Our Services
+              Services
             </Link>
             <Link href="/our-work" className={classes.link}>
-              Our Work
+              Portfolio
             </Link>
-            <a href="#contact-us" className={classes.link}>
+            <Link href="/carrers" className={classes.link}>
+              Carrers
+            </Link>
+            <Link href="#contact-us" className={classes.link}>
               Contact Us
-            </a>
-          </Group>
-
-          <Group visibleFrom="md">
-            <Link
-              href="https://calendly.com/emanuel-ypgh/30min?month=2025-02"
-              className="mx-auto md:ml-0"
-              target="_blank"
-            >
-              <Button size="md">Book a consultation</Button>
             </Link>
           </Group>
-
           <Burger
             opened={drawerOpened}
             onClick={toggleDrawer}
@@ -79,46 +67,21 @@ export function NavBar() {
         <ScrollArea h="calc(100vh - 80px)" mx="-md" className="space-y-5">
           <Divider my="sm" />
 
-          <Link href="/#" className={classes.link} onClick={toggleDrawer}>
-            Home
-          </Link>
-
-          <Link
-            href="/#aboutUs"
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
+          <Link href="/#aboutUs" className={classes.link}>
             About Us
           </Link>
-          <Link
-            href="/#services"
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
-            Our Services
+          <Link href="/#services" className={classes.link}>
+            Services
           </Link>
-          <Link
-            href="/our-work"
-            className={classes.link}
-            onClick={toggleDrawer}
-          >
-            Our Work
+          <Link href="/our-work" className={classes.link}>
+            Portfolio
           </Link>
-          <a href="#contact-us" className={classes.link} onClick={toggleDrawer}>
+          <Link href="/carrers" className={classes.link}>
+            Carrers
+          </Link>
+          <Link href="#contact-us" className={classes.link}>
             Contact Us
-          </a>
-
-          <Divider my="sm" />
-
-          <Link
-            href="https://calendly.com/emanuel-ypgh/30min?month=2025-02"
-            className="mx-auto px-3"
-            target="_blank"
-          >
-            <Button>Book a consultation</Button>
           </Link>
-
-          <Divider my="sm" />
         </ScrollArea>
       </Drawer>
     </Box>
