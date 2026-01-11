@@ -1,11 +1,11 @@
-import { Flex, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import Image from "next/image";
 import future from "../../../../public/assets/future.png";
 
 export default function Empowering() {
   return (
     <Stack id="aboutUs">
-      <Flex className="gap-8 flex-col sm:flex-row items-center">
+      <div className="flex gap-8 flex-col sm:flex-row items-center">
         <div className="relative w-1/2 flex items-center justify-center">
           <Image
             src={future}
@@ -33,7 +33,7 @@ export default function Empowering() {
             and talent from Ethiopia help power the global economy.
           </p>
         </div>
-      </Flex>
+      </div>
     </Stack>
   );
 }
