@@ -1,6 +1,5 @@
 import React from 'react';
-import Hero from './_components/hero';
-import ContactUs from './_components/contact-us';
+import Hero from "./_components/hero";
 import CareersList from './_components/careers-list';
 
 export default function Careers() {
@@ -8,7 +7,6 @@ export default function Careers() {
     <main>
       <Hero />
       <CareersList />
-      <ContactUs />
     </main>
   );
 }

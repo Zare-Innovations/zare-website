@@ -11,7 +11,9 @@ export default function Hero() {
         backgroundColor: "#0a293b"
       }}
     >
-      <h1 className="z-10 text-[36px] font-bold">All Open Positions</h1>
+      <h1 className="z-10 text-[36px] font-bold uppercase">
+        All Open Positions
+      </h1>
       <p className="z-10 text-base">
         Work in a vibrant workspace that is remote first and dedicated to help
         you thrive
