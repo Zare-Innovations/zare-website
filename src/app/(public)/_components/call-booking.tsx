@@ -120,7 +120,7 @@ function AppointmentModal({
       overlayProps={{ blur: 2, backgroundOpacity: 0.35 }}
       withinPortal
     >
-      <div className="flex flex-wrap items-center gap-2 font-medium pb-2.5">
+      <div className="flex flex-wrap items-center gap-2 font-medium pb-2.5 px-8">
         <span className="text-sm ">Book a Call for</span>
         <span className="text-sm  text-cyan-500">
           {formatDate(selectedDate, true)}{" "}
