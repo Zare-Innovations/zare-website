@@ -45,7 +45,7 @@ const JobCard = ({ job }: { job: Job }) => {
     <Card className="flex flex-col gap-4 p-3 sm:p-5 lg:p-7">
       <div className="n">
         <Link
-          href={`/carrers/${job.id}`}
+          href={`/careers/${job.id}`}
           className="flex flex-row items-center justify-between transition-all duration-300 text-black hover:text-cyan-500"
         >
           <h3 className=" text-start text-lg font-medium ">
@@ -93,7 +93,7 @@ export default function Jobs() {
         ))}
       </Flex>
       <Link
-        href="/carrers"
+        href="/careers"
         className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
       >
         View All Job Openings

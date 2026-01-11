@@ -40,8 +40,8 @@ export function NavBar() {
             <Link href="/our-work" className={classes.link}>
               Portfolio
             </Link>
-            <Link href="/carrers" className={classes.link}>
-              Carrers
+            <Link href="/careers" className={classes.link}>
+              Careers
             </Link>
             <Link href="#contact-us" className={classes.link}>
               Contact Us
@@ -76,8 +76,8 @@ export function NavBar() {
           <Link href="/our-work" className={classes.link}>
             Portfolio
           </Link>
-          <Link href="/carrers" className={classes.link}>
-            Carrers
+          <Link href="/careers" className={classes.link}>
+            Careers
           </Link>
           <Link href="#contact-us" className={classes.link}>
             Contact Us
