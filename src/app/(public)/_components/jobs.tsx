@@ -1,78 +1,43 @@
 "use client";
-import { Card, Flex, Stack } from "@mantine/core";
-import { IconArrowUpRight } from "@tabler/icons-react";
+
+import { Flex, Stack } from "@mantine/core";
 import Link from "next/link";
-interface Job {
-  title: string;
-  description: string;
-  location: string[];
-  id: string;
-}
-
-const jobs: Job[] = [
-  {
-    title: "Graphic Designer",
-    description:
-      "Are you a creative powerhouse with a passion for design? Join our team as a full-team Graphic Designer and unleash your talent from anywhere in the world. In this role, you’ll be responsible for creating visually...",
-    location: ["Full-Time", "On-Site", "Competitive Salary"],
-    id: "1"
-  },
-  {
-    title: "Frontend Developer",
-    description:
-      "Are you a creative powerhouse with a passion for design? Join our team as a full-team Graphic Designer and unleash your talent from anywhere in the world. In this role, you’ll be responsible for creating visually...",
-    location: ["Full-Time", "On-Site", "Competitive Salary"],
-    id: "2"
-  },
-  {
-    title: "Backend Developer",
-    description:
-      "Are you a creative powerhouse with a passion for design? Join our team as a full-team Graphic Designer and unleash your talent from anywhere in the world. In this role, you’ll be responsible for creating visually...",
-    location: ["Full-Time", "On-Site", "Competitive Salary"],
-    id: "3"
-  },
-  {
-    title: "UI/UX Designer",
-    description:
-      "Are you a creative powerhouse with a passion for design? Join our team as a full-team Graphic Designer and unleash your talent from anywhere in the world. In this role, you’ll be responsible for creating visually...",
-    location: ["Full-Time", "On-Site", "Competitive Salary"],
-    id: "4"
-  }
-];
-
-const JobCard = ({ job }: { job: Job }) => {
-  return (
-    <Card className="flex flex-col gap-4 p-3 sm:p-5 lg:p-7">
-      <div className="n">
-        <Link
-          href={`/careers/${job.id}`}
-          className="flex flex-row items-center justify-between transition-all duration-300 text-black hover:text-cyan-500"
-        >
-          <h3 className=" text-start text-lg font-medium ">
-            {job.title}
-          </h3>
-          <IconArrowUpRight className="w-6 h-6" />
-        </Link>
-      </div>
-      <p className="text-sm text-[#6C6C6C] leading-relaxed">
-        {job.description}
-      </p>
-
-      <div className="flex flex-wrap gap-2.5 text-sm mt-auto capitalize">
-        {job.location.map((location) => (
-          <span
-            key={location}
-            className="text-cyan-500 border border-cyan-500 rounded-full px-3 py-1"
-          >
-            {location}
-          </span>
-        ))}
-      </div>
-    </Card>
-  );
-};
+import { useEffect, useState } from "react";
+import { JobType } from "../careers/_components/careers-list";
+import CareerCard from "../careers/_components/career-card";
 
 export default function Jobs() {
+  const [results, setResults] = useState<JobType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchJobs = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/job`);
+      console.log(res);
+      if (!res.ok) throw new Error("Failed to fetch jobs");
+      const data = await res.json();
+
+      if (data.total > 4) {
+        setResults(data.items.slice(0, 4));
+      } else {
+        setResults(data.items);
+      }
+    } catch (err) {
+      setError("Something went wrong, " + (err as Error).message);
+      setResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
   return (
     <Stack
       className="relative md:p-12 gap-4 sm:gap-7 items-center max-sm:px-5 max-md:px-16 max-md:py-10 "
@@ -88,9 +53,29 @@ export default function Jobs() {
         </p>
       </Flex>
       <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
-        {jobs.map((job) => (
-          <JobCard key={job.title} job={job} />
-        ))}
+        {isLoading ? (
+          Array.from("jobs").map((j, i) => (
+            <div
+              key={j + i}
+              className="h-56 flex flex-col gap-4 p-3 sm:p-5 lg:p-7 bg-[#000]/5 rounded-sm"
+            >
+              <div className="h-10 flex items-center gap-5 justify-between">
+                <div className=" w-3/4 h-full bg-[#0001] animate-pulse rounded-md" />
+                <div className=" w-10 h-full bg-[#0001] animate-pulse rounded-md" />
+              </div>
+              <div className="flex-1 bg-[#0001] animate-pulse rounded-md" />
+              <div className="h-8 flex items-center gap-5">
+                <div className=" w-1/6 h-full bg-[#0001] animate-pulse rounded-full" />
+                <div className=" w-1/6 h-full bg-[#0001] animate-pulse rounded-full" />
+                <div className=" w-1/6 h-full bg-[#0001] animate-pulse rounded-full" />
+              </div>
+            </div>
+          ))
+        ) : error ? (
+          <div>{error}</div>
+        ) : (
+          results.map((job, i) => <CareerCard key={job.id + i} job={job} />)
+        )}
       </Flex>
       <Link
         href="/careers"
