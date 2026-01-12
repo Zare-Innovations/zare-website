@@ -4,7 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 interface Project {
   title: string;
-  description: string;
+  details: {
+    challenge: string;
+    solution: string;
+    results: string;
+  };
   location: string;
   about: {
     link: string;
@@ -17,8 +21,14 @@ interface Project {
 const projects: Project[] = [
   {
     title: "Pharmaceutical Dashboard Design and Development",
-    description:
-      "Designed and implemented a comprehensive pharmacy operations dashboard that streamlines daily workflows and strengthens compliance. The platform unifies a patient portal with centralized profiles, medication histories, refill requests, clinical notes, and secure messaging to enhance engagement and continuity of care.",
+    details: {
+      challenge:
+        "The client had a powerful pharmacy tracking system but lacked the UI/UX expertise to create a user-friendly dashboard for it.",
+      solution:
+        "Provided end-to-end UI/UX design and frontend implementation for a comprehensive pharmaceutical operations dashboard, turning complex data into a clean and intuitive interface.",
+      results:
+        "Delivered an intuitive dashboard that streamlined pharmacy operations. The enhanced UI led to increased user engagement and greater data accessibility for faster decision-making."
+    },
     location: "Addis Ababa, Ethiopia",
     about: {
       link: "https://medrafa.et/",
@@ -29,8 +39,19 @@ const projects: Project[] = [
   },
   {
     title: "Custom Development for ERP Tool",
-    description:
-      "Developed a custom CRM/ERP tool tailored for internal use. The tool facilitates onboarding, employee and financial metrics tracking, invoice and payment request generation, lead and client management, and project management, significantly enhancing operational efficiency.",
+    details: {
+      challenge:
+        "Inefficient internal processes and a lack of centralized data management were hindering operational scalability and creating data silos.",
+      solution: `
+       Developed a custom, all-in-one CRM/ERP tool tailored for internal use. The platform facilitates:
+      - Onboarding and employee metrics tracking
+      - Financial management and invoicing
+      - Lead and client relationship management
+      - Project management and resource allocation
+      `,
+      results:
+        "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery."
+    },
     location: "Addis Ababa, Ethiopia",
     about: {
       link: "https://www.251communications.com/",
@@ -58,11 +79,20 @@ const ProjectCard = ({ project }: { project: Project }) => {
             {project.title}
           </h3>
         </div>
-
-        <p className="text-sm sm:text-base text-[#6C6C6C] leading-relaxed">
-          {project.description}
-        </p>
-
+        <div className="flex flex-col gap-1">
+          <p className="text-sm sm:text-base text-[#6C6C6C] leading-relaxed">
+            <span className="font-medium">Challenge: </span>
+            {project.details.challenge}
+          </p>
+          <p className="text-sm sm:text-base text-[#6C6C6C] leading-relaxed">
+            <span className="font-medium">Solution: </span>
+            {project.details.solution}
+          </p>
+          <p className="text-sm sm:text-base text-[#6C6C6C] leading-relaxed">
+            <span className="font-medium">Results: </span>
+            {project.details.results}
+          </p>
+        </div>
         <div className="text-sm sm:text-base text-[#4A4A4A] mt-auto uppercase">
           <span>{project.location}</span>
           <span className="mx-2">|</span>
