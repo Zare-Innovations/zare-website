@@ -6,6 +6,14 @@
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
 
+
+.header2 {
+  height: 90px;
+  padding-left: var(--mantine-spacing-md);
+  padding-right: var(--mantine-spacing-md);
+
+}
+
 .link {
   display: flex;
   align-items: center;

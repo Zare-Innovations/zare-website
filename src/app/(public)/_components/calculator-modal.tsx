@@ -36,7 +36,11 @@ const RATE_TABLE: Record<string, { marketRate: number; zareRate: number }> = {
   'Back Office Support Specialist': { marketRate: 22, zareRate: 9 },
 };
 
-export default function ZareEstimatorModal() {
+interface ZareEstimatorModalProps {
+  title?: string;
+}
+
+export default function ZareEstimatorModal({title}:ZareEstimatorModalProps) {
   const [open, { toggle, close }] = useDisclosure();
   const [isResultOpen, { open: openResult, close: closeResult }] =
     useDisclosure(false);
