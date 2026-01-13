@@ -1,95 +1,79 @@
-import { Card, Flex, Stack } from "@mantine/core";
-import Image from "next/image";
-import ornament1 from "../../../../public/what-we-do/ornament1.png";
-import ornament2 from "../../../../public/what-we-do/ornament2.png";
+import { Divider, Flex, Stack } from '@mantine/core';
+import Image from 'next/image';
 
 const services = [
   {
-    title: "Technology Talent Partnerships",
+    title: 'UI/UX Design',
 
-    icon: "/what-we-do/earth.svg",
+    icon: '/what-we-do/ui-ux.svg',
     description:
-      "We connect you with Ethiopia's top tech professionals: engineers, designers, analysts, and managers who bring both technical expertise and fresh perspective to your team. Our talent integrates seamlessly into your workflow at rates that make scaling your team straightforward and sustainable."
+      "We create user-centric, intuitive designs that not only look great but also enhance the overall user experience. Whether it’s a mobile app or a website, our designs are crafted to engage users and align with your brand's identity.",
   },
   {
-    title: "Technical Support & Maintenance",
-    icon: "/what-we-do/headset.svg",
+    title: 'Software Development',
+    icon: '/what-we-do/software-development.svg',
     description:
-      "24/7 technical assistance including system updates, performance monitoring, and troubleshooting to keep your software and infrastructure running smoothly."
+      "Our custom software solutions, ranging from mobile apps to web-based platforms, are designed to meet your business's unique needs. With a focus on innovation and efficiency, we build solutions that help your business grow and stay competitive.",
   },
   {
-    title: "Back Office Support",
-    icon: "/what-we-do/folder.svg",
+    title: 'Data Management and AI Solutions',
+    icon: '/what-we-do/data-management.svg',
     description:
-      "Our back-office support services include project management, administrative tasks, and accounting. We ensure that your internal operations run like clockwork, giving you the freedom to focus on your business growth without worrying about the day-to-day details."
+      'Our expertise in data scraping and research ensures you have access to critical information, while our machine learning and AI capabilities transform your data into actionable insights, helping you make informed, growth-oriented decisions.',
   },
   {
-    title: "Software Development & AI/ML Solutions",
-    icon: "/what-we-do/ai.svg",
+    title: 'Customer Support',
+    icon: '/what-we-do/customer-support.svg',
     description:
-      "Build intelligent, scalable solutions tailored to your business. From custom web and mobile applications to enterprise systems and AI agents, we deliver technology that automates workflows, enhances decision-making, and drives innovation."
+      'We offer seamless, multichannel support across phone, email, chat, and social media. Our team, proficient in the highest level of English communication, delivers quick and efficient solutions, ensuring your customers receive exceptional service every time.',
   },
   {
-    title: "Customer Service & Virtual Assistance",
-    icon: "/what-we-do/points.svg",
+    title: 'Back Office Support',
+    icon: '/what-we-do/backoffice.svg',
     description:
-      "Our team provides responsive multi-channel customer service and professional virtual assistance, handling everything from customer inquiries and support tickets to administrative tasks, scheduling, data entry, and business operations management."
-  }
+      'Our back-office support services include project management, administrative tasks, and accounting. We ensure that your internal operations run like clockwork, giving you the freedom to focus on your business growth without worrying about the day-to-day details.',
+  },
+  {
+    title: 'HR Outsourcing',
+    icon: '/what-we-do/hr-outsourcing.svg',
+    description:
+      'From onboarding to payroll and recruitment, our HR services cover everything you need to manage your team efficiently. We handle the details, so you can focus on driving your business forward, knowing that your HR functions are in expert hands.',
+  },
 ];
 
 export default function Services() {
   return (
     <Stack
-      className="relative bg-[#F5F7FB] md:p-12 gap-7 items-center max-sm:px-5 max-md:px-16 max-md:py-10 "
+      className="bg-[#0A293B] md:p-12 gap-3 text-white items-center"
       id="services"
     >
-      <Flex className="flex flex-col mx-auto gap-3 sm:gap-5 text-center">
-        <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center uppercase">
-          services we provide
-        </p>
-        <p className="text-xs sm:text-sm text-[#6C6C6C]">
-          From new digital projects to process optimization and support, we
-          partner with business to deliver impactful results.
-        </p>
+      <Flex className="flex flex-col mx-auto gap-2">
+        <p className="text-2xl mx-auto font-bold mt-8 md:mt-0">WHAT WE DO</p>
+        <Divider size="sm" className="w-full" color="cyan" />
       </Flex>
-      <Flex className="relative z-20 grid sm:grid-cols-2 xl:grid-cols-3 gap-4 mx-auto">
+      <Flex className="relative flex-col md:flex-row gap-6 items-center flex-wrap mx-auto">
+        <div className="hidden lg:block absolute top-1/2  translate-y-1/2 w-full mx-auto h-[1px] bg-gray-600">
+          <div className="absolute left-1/3 -translate-x-[50px] w-16 h-[2px] bg-[#0A293B] border-2 border-[#0A293B]"></div>
+          <div className="absolute left-2/3 -translate-x-[50px] w-16 h-[2px] -translate-y-1/2 bg-[#0A293B]  border-2 border-[#0A293B]"></div>
+        </div>
         {services.map((service, index) => (
-          <Card
+          <Flex
+            className={`flex-col border-b-[1px] lg:border-b-0  border-gray-600 w-full lg:w-[calc(33%-1rem)] p-6 gap-4 min-h-[300px] ${(index + 1) % 3 === 0 ? '' : 'lg:border-r-[1px]'}`}
             key={index}
-            className={` ${index === 3 && "xl:col-span-2"} ${index === services.length - 1 && "sm:max-xl:col-span-2"}`}
-            p={5}
           >
-            <Flex className={`flex-col p-6 gap-4 `}>
-              <div className="bg-[#F5F7FB] p-1.5 min-[500px]:p-2.5 rounded-md self-start">
-                <Image
-                  src={service.icon}
-                  alt={service.title}
-                  width={100}
-                  height={100}
-                  className="h-6 w-6 aspect-square"
-                />
-              </div>
+            <Image
+              src={service.icon}
+              alt={service.title}
+              width={100}
+              height={100}
+              className="h-6 w-6 aspect-square"
+            />
 
-              <p className="text-xl font-bold">{service.title}</p>
-              <p>{service.description}</p>
-            </Flex>
-          </Card>
+            <p className="text-xl font-bold">{service.title}</p>
+            <p>{service.description}</p>
+          </Flex>
         ))}
       </Flex>
-      <Image
-        src={ornament1}
-        alt=""
-        width={171}
-        height={100}
-        className="absolute top-[37%] left-0 -z-0 h-auto w-[171px] aspect-square"
-      />
-      <Image
-        src={ornament2}
-        alt=""
-        width={171}
-        height={100}
-        className="absolute bottom-[17%] right-0 -z-0 h-auto w-[171px] aspect-square"
-      />
     </Stack>
   );
 }
