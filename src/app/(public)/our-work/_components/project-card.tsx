@@ -12,12 +12,11 @@ export default function ProjectCard({ project }: { project: Project }) {
           <Image
             src={project.about.logo}
             alt="Company logo"
-            width={150}
+            width={100}
             height={60}
-            className="w-[150px] h-auto"
-            unoptimized
+            className="w-[100px] h-auto"
           />
-          <h3 className=" text-end min-[884px]:text-start text-lg min-[500px]:text-2xl sm:text-3xl lg:text-4xl font-bold text-black">
+          <h3 className=" text-end min-[884px]:text-start text-lg min-[500px]:text-2xl sm:text-3xl font-bold text-black">
             {project.title}
           </h3>
         </div>
