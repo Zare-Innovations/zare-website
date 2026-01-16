@@ -12,9 +12,8 @@ import Jobs from "./_components/jobs";
 
 export default function Home() {
   return (
-    <Stack >
-      <div className='px-4 lg:px-24'>
-      <HeroWeb/>
+    <Stack>
+      <Hero />
       <Companies />
       <Empowering />
       <Promise />
