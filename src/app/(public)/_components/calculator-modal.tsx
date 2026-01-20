@@ -49,6 +49,8 @@ export default function ZareEstimatorModal({title}:ZareEstimatorModalProps) {
     { open: openHourModal, close: closeHourModal },
   ] = useDisclosure(false);
 
+  console.log(title);
+
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [peopleCount, setPeopleCount] = useState('');
   const [customHoursPerWeek, setCustomHoursPerWeek] = useState<string | number>(

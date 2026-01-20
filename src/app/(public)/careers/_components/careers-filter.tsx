@@ -3,8 +3,8 @@ import { JobType } from "./careers-list";
 import { Button, Select, TextInput } from "@mantine/core";
 import { Filter } from "lucide-react";
 
-const jobLocs = ["Contract", "Hybrid", "On-Site", "Remote"];
-const jobTypes = ["Contract", "Part-Time", "Full-Time"];
+ const jobLocs = ['Remote' , 'On-site' , 'Hybrid'];
+  const jobTypes = ['Full-Time' , 'Part-Time' , 'Contract' , 'Freelance'];
 
 const CareersFilter = ({
   jobs,
