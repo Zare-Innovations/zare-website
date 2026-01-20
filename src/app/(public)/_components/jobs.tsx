@@ -12,7 +12,8 @@ export default function Jobs() {
 
   useEffect(() => {
     if (jobsDataResponse?.items) {
-      setJobs(jobsDataResponse.items);
+      const items = jobsDataResponse.items;
+      setJobs(items.length > 4 ? items.slice(0, 4) : items);
     }
   }, [jobsDataResponse]);
 
