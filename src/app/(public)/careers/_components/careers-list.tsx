@@ -37,7 +37,7 @@ const CareersList = () => {
       setError(null);
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/job?q=${query}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/job?q=${query}`
       );
       console.log(res);
       if (!res.ok) throw new Error("Failed to fetch jobs");

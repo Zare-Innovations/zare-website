@@ -16,8 +16,7 @@ export default function Jobs() {
       setIsLoading(true);
       setError(null);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/job`);
-      console.log(res);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/job`);
       if (!res.ok) throw new Error("Failed to fetch jobs");
       const data = await res.json();
 
