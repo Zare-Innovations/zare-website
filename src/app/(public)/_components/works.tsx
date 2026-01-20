@@ -1,141 +1,80 @@
-'use client';
-import { Divider, Flex, Stack } from '@mantine/core';
-import Image from 'next/image';
-import WorksFrame1 from './works-frame-1.png';
-import WorksFrame2 from './frame-2.png';
-import WorksFrame3 from './frame-3.png';
-import WorksFrame4 from './frame-4.png';
-import WorksBg from './works-bg.png';
-import { IconArrowUpRight } from '@tabler/icons-react';
-import { Carousel } from '@mantine/carousel';
-import Link from 'next/link';
-import carouselClassNames from './our-work.module.css';
+"use client";
+import { Flex, Stack } from "@mantine/core";
+import Link from "next/link";
+import { Project } from "../our-work/page";
+import ProjectCard from "../our-work/_components/project-card";
 
-const works = [
+const projects: Project[] = [
   {
-    title: 'HR Outsourcing',
-    src: WorksFrame1,
-    image: '/our-work/recruitment.png',
-    anchor: 'hr-outsourcing',
+    title: "Pharmaceutical Dashboard Design and Development",
+    details: {
+      challenge:
+        "The client had a powerful pharmacy tracking system but lacked the UI/UX expertise to create a user-friendly dashboard for it.",
+      solution:
+        "Provided end-to-end UI/UX design and frontend implementation for a comprehensive pharmaceutical operations dashboard, turning complex data into a clean and intuitive interface.",
+      results:
+        "Delivered an intuitive dashboard that streamlined pharmacy operations. The enhanced UI led to increased user engagement and greater data accessibility for faster decision-making."
+    },
+    location: "Addis Ababa, Ethiopia",
+    about: {
+      link: "https://medrafa.et/",
+      name: "Medrafa",
+      logo: "/our-work/madrafa-logo.png",
+      image: "/our-work/medrafa.png"
+    }
   },
   {
-    title: 'Software Development',
-    src: WorksFrame2,
-    image: '/our-work/dashboard-overview.png',
-    anchor: 'software-development',
-  },
-  {
-    title: 'Technology Consulting',
-    image: '/our-work/technical-consulting.png',
-    src: WorksFrame4,
-    anchor: 'technology-consulting',
-  },
-  {
-    title: 'Data Engineering & Insights',
-    src: WorksFrame3,
-    image: '/our-work/data-engineering.png',
-    anchor: 'data-engineering',
-  },
+    title: "Custom Development for ERP Tool",
+    details: {
+      challenge:
+        "Inefficient internal processes and a lack of centralized data management were hindering operational scalability and creating data silos.",
+      solution: `
+       Developed a custom, all-in-one CRM/ERP tool tailored for internal use. The platform facilitates:
+      - Onboarding and employee metrics tracking
+      - Financial management and invoicing
+      - Lead and client relationship management
+      - Project management and resource allocation
+      `,
+      results:
+        "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery."
+    },
+    location: "Addis Ababa, Ethiopia",
+    about: {
+      link: "https://www.251communications.com/",
+      name: " 251 Marketing & Communications",
+      logo: "/our-work/251-logo.png",
+      image: "/our-work/251-dashboard.png"
+    }
+  }
 ];
 
 export default function Works() {
   return (
     <Stack
-      className="min-h-[40dvh] w-full p-3 md:p-8 items-center text-white overflow-hidden"
-      style={{
-        backgroundImage: `url(${WorksBg.src})`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundColor: '#1e293b',
-      }}
+      className="relative md:p-12 gap-4 sm:gap-7 items-center max-sm:px-5 max-md:px-16 max-md:py-10 "
+      id="services"
     >
-      <p className="text-4xl font-semibold text-center">Our Work</p>
-      <Flex className="w-full gap-16 py-8 mt-16 h-[50%]">
-        <Carousel
-          className="w-full"
-          classNames={carouselClassNames}
-          controlSize={40}
-          align="start"
-          withControls={true}
-          containScroll="trimSnaps"
-          withIndicators
-          slideSize={{ base: '100%', sm: '50%', md: '33%', lg: '33%' }}
-          slideGap={{ base: 'sm', sm: 'md', md: 'lg', lg: 100 }}
-          height="100%"
-          styles={{
-            indicators: {
-              bottom: '-40px',
-              gap: '5px',
-              width: 'fit-content',
-              margin: 'auto',
-            },
-            indicator: {
-              height: '9px',
-              fill: 'white',
-            },
-            controls: {
-              scale: '105%',
-            },
-            control: {
-              backgroundColor: 'white',
-              color: 'black',
-            },
-          }}
-        >
-          {works?.map((work, index) => (
-            <Carousel.Slide key={index}>
-              <Flex
-                key={`work-${index}`}
-                className="relative flex-col gap-4 h-full border-white/40 border-2 rounded-[32px] bg-[#ffffff10]"
-              >
-                <p className="p-4 text-xl font-semibold">{work.title}</p>
-                <Divider size="sm" className="bg-white/40" />
-
-                <div className="clip-path bg-white">
-                  <svg width="0" height="0">
-                    <defs>
-                      <clipPath
-                        id="curveClip"
-                        clipPathUnits="objectBoundingBox"
-                      >
-                        <path
-                          d="M0,0 
-                          L0,1 L0.65,1 
-                          A0.1,0.1 0,0 0.75,0.9
-                          
-                          L0.75,0.8
-                          A0.1,0.1 0,0 1 0.85,0.7
-
-                          A0.15,0.15 0,0 0 1,0.55                                                                                  
-                          L1,0 Z"
-                        />
-                      </clipPath>
-                    </defs>
-                  </svg>
-
-                  <Image
-                    src={work.src.src}
-                    width={4000}
-                    height={4200}
-                    alt="Frame 1"
-                    className="w-full"
-                  />
-                </div>
-
-                <div className="w-28 h-28 flex items-center justify-center rounded-tl-full absolute bottom-0 right-0 z-10">
-                  <Link
-                    href={`/our-work#${work.anchor}`}
-                    className="flex items-center justify-center rounded-full bg-cyan-400 w-12 aspect-square h-12 p-2"
-                  >
-                    <IconArrowUpRight width={40} height={40} color="white" />
-                  </Link>
-                </div>
-              </Flex>
-            </Carousel.Slide>
-          ))}
-        </Carousel>
+      <Flex className="flex flex-col mx-auto gap-3 sm:gap-5 text-center">
+        <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center uppercase">
+          SOFTWARE SOLUTIONS BUILT TO SCALE
+        </p>
+        <p className="text-xs sm:text-sm text-[#6C6C6C]">
+          From enterprise platforms to AI-powered applications, we deliver
+          custom software solutions that solve real business challenges and
+          drive measurable results.
+        </p>
       </Flex>
+      <Flex className="flex-col w-full gap-5 sm:gap-7 py-8">
+        {projects.map((project) => (
+          <ProjectCard key={project.title} project={project} />
+        ))}
+      </Flex>
+      <Link
+        href="/our-work"
+        className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+      >
+        View All Projects
+      </Link>
     </Stack>
   );
 }
