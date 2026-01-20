@@ -32,7 +32,7 @@ function useJobDetail() {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/job/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/job/${id}`
       );
       if (!res.ok) throw new Error("Failed to fetch job detail");
       const data = await res.json();
