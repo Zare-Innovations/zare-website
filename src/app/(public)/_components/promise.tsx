@@ -25,9 +25,9 @@ const promises = [
 
 export default function Promise() {
   return (
-    <Stack className="px-5 md:px-16 my-8" id="about">
-      <Flex className="sm:flex-row flex-col-reverse gap-4 md:gap-6 items-center">
-        <Stack className="gap-3 lg:w-1/2">
+    <Stack className="px-5 md:px-16 my-8 pt-10 sm:pt-5" id="about">
+      <Flex className="sm:flex-row flex-col-reverse gap-4 md:gap-6 sm:items-center">
+        <div className="flex flex-col max-sm:items-center gap-3 lg:w-1/2">
           <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center sm:text-start uppercase">
             Our Commitment to{" "}
             <span className="text-cyan-500">Your Success</span>
@@ -51,14 +51,14 @@ export default function Promise() {
             ))}
           </Stack>
           <Link
-      href={consultationLink}
-      target="_blank"
-      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs mt-3 min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
-    >
-      Book a consultation
-    </Link>
+            href={consultationLink}
+            target="_blank"
+            className={`w-max flex items-center gap-3 text-center rounded-md px-3 min-[500px]:px-5 sm:px-8 text-xs mt-4 min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+          >
+            Book a consultation
+          </Link>
           
-        </Stack>
+        </div>
         <Image
           width={500}
           height={500}
