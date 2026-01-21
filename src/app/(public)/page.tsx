@@ -9,6 +9,7 @@ import Companies from './_components/companies';
 import CalculatorSection from './_components/calculator-section';
 import ProjectsOverview from "./_components/projects-overview";
 import Jobs from "./_components/jobs";
+import Contact from './_components/contact';
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
       <Works />
       <CalculatorSection />
       <Jobs />
+      <Contact />
     </Stack>
   );
 }
