@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import createGlobe from "cobe";
 import CountUp from "@/app/(public)/_components/count-up";
 import { consultationLink } from "@/constants";
+import ZareEstimatorModal from "./calculator-modal";
 
 const Globe = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -118,25 +119,6 @@ const HeroStats = () => {
   );
 };
 
-const NavLink = ({
-  href,
-  children,
-  outlined = false
-}: {
-  href: string;
-  children: React.ReactNode;
-  outlined?: boolean;
-}) => {
-  return (
-    <Link
-      href={href}
-      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base ${outlined ? "py-[7px] sm:py-2.5 border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white" : "py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1]"} transition-all duration-300`}
-    >
-      {children}
-    </Link>
-  );
-};
-
 export default function Hero() {
   return (
     <div className="relative w-screen flex justify-between gap-5 md:gap-7 p-4 min-[500px]:p-6 sm:px-16 overflow-x-hidden">
@@ -151,18 +133,15 @@ export default function Hero() {
         </p>
         <HeroStats />
         <div className="flex items-center gap-3 min-[500px]:gap-7">
-          {[
-            {
-              href: consultationLink,
-              label: "Book a consultation",
-              outlined: false
-            },
-            { href: "", label: "Compare Rates Instantly", outlined: true }
-          ].map((link, index) => (
-            <NavLink key={index} href={link.href} outlined={link.outlined}>
-              {link.label}
-            </NavLink>
-          ))}
+          
+          <Link
+      href={consultationLink}
+      target="_blank"
+      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+    >
+      Book a consultation
+    </Link>
+    <ZareEstimatorModal>Compare Rates Instantly</ZareEstimatorModal>
         </div>
       </div>
       <Globe />
