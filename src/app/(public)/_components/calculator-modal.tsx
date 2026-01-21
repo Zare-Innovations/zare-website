@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   Button,
@@ -38,9 +38,10 @@ const RATE_TABLE: Record<string, { marketRate: number; zareRate: number }> = {
 
 interface ZareEstimatorModalProps {
   title?: string;
+  children?: React.ReactNode
 }
 
-export default function ZareEstimatorModal({title}:ZareEstimatorModalProps) {
+export default function ZareEstimatorModal({title, children}:ZareEstimatorModalProps) {
   const [open, { toggle, close }] = useDisclosure();
   const [isResultOpen, { open: openResult, close: closeResult }] =
     useDisclosure(false);
@@ -141,11 +142,11 @@ export default function ZareEstimatorModal({title}:ZareEstimatorModalProps) {
   return (
     <Group className="px-0">
       <button
-        onClick={toggle}
-        className="flexsm:w-auto text-center font-semibold text-[#1a202c] bg-white border border-[#1a202c] hover:bg-[#1a202c] hover:text-white px-8 py-3 rounded transition duration-200"
-      >
-        Try Zare&apos;s ROI Calculator Now
-      </button>
+      onClick={toggle}
+      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs min-[430px]:text-sm min-[500px]:text-base py-[7px] sm:py-2.5 border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white transition-all duration-300`}
+    >
+      {children ? children : "Try Zare's ROI Calculator Now"}
+    </button>
 
       <SavingModal
         opened={isResultOpen}

@@ -5,6 +5,8 @@ import Image from "next/image";
 import carouselClassNames from "./testimonials.module.css";
 import quote from "../../../../public/testimonials/quote.png";
 import Link from "next/link";
+import { consultationLink } from "@/constants";
+import ZareEstimatorModal from "./calculator-modal";
 
 const testmonialsData = [
   {
@@ -132,19 +134,16 @@ export default function Testimonials() {
         ))}
       </Carousel>
       <div className="self-center flex items-center gap-3 min-[500px]:gap-7 mt-10 sm:mt-14">
-        {[
-          { href: "", label: "Book a consultation", outlined: false },
-          { href: "", label: "Compare Rates Instantly", outlined: true }
-        ].map((link, index) => (
+          
           <Link
-            key={index}
-            href={link.href}
-            className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base ${link.outlined ? "py-[7px] sm:py-2.5 border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white" : "py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1]"} transition-all duration-300`}
-          >
-            {link.label}
-          </Link>
-        ))}
-      </div>
+      href={consultationLink}
+      target="_blank"
+      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+    >
+      Book a consultation
+    </Link>
+    <ZareEstimatorModal>Compare Rates Instantly</ZareEstimatorModal>
+        </div>
     </Flex>
   );
 }
