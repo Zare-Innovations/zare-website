@@ -1,8 +1,9 @@
-import { Button, Flex, Stack } from "@mantine/core";
+import { Flex, Stack } from "@mantine/core";
 import Image from "next/image";
 import { IconChecks } from "@tabler/icons-react";
 import success from "../../../../public/assets/success.png";
 import Link from "next/link";
+import { consultationLink } from "@/constants";
 
 const promises = [
   {
@@ -31,7 +32,7 @@ export default function Promise() {
             Our Commitment to{" "}
             <span className="text-cyan-500">Your Success</span>
           </p>
-          <Stack className="space-y-2 px-8 lg:px-0 mt-4">
+          <Stack className=" px-8 lg:px-0 mt-4">
             {promises.map((promise, index) => (
               <Flex
                 className="gap-1 flex-col items-center sm:items-start"
@@ -39,7 +40,7 @@ export default function Promise() {
               >
                 <Flex className="gap-3 items-center text-center lg:text-start">
                   <IconChecks color="#10CFD1" className="sm:block hidden" />
-                  <p className="text-base sm:text-lg md:text-xl font-semibold text-center sm:text-start">
+                  <p className="text-base sm:text-lg font-semibold text-center sm:text-start">
                     {promise.title}
                   </p>
                 </Flex>
@@ -50,12 +51,13 @@ export default function Promise() {
             ))}
           </Stack>
           <Link
-            href="https://calendly.com/emanuel-ypgh/30min?month=2025-02"
-            className="mx-auto sm:ml-0 sm:mt-2"
-            target="_blank"
-          >
-            <Button size="lg">Book a Consulation</Button>
-          </Link>
+      href={consultationLink}
+      target="_blank"
+      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs mt-3 min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+    >
+      Book a consultation
+    </Link>
+          
         </Stack>
         <Image
           width={500}
