@@ -1,5 +1,22 @@
 import Image from 'next/image';
-import React from 'react';
+
+const logos = [
+  { url: "/our-work/logos/15.png", size: 100 },
+  { url: "/our-work/logos/1.png", size: 100 },
+  { url: "/our-work/logos/seed_of_life_white.svg", size: 65, bg: '#000' },
+  { url: "/our-work/logos/4.png", size: 145 },
+  { url: "/our-work/logos/251-logo.png", size: 60 },
+  { url: "/our-work/logos/5.png", size: 100 },
+  { url: "/our-work/logos/7.png", size: 80 },
+  { url: "/our-work/logos/exelia.png", size: 100 },
+  { url: "/our-work/logos/8.png", size: 90 },
+  { url: "/our-work/logos/9.png", size: 170 },
+  { url: "/our-work/logos/10.png", size: 120 },
+  { url: "/our-work/logos/11.svg", size: 100 },
+  { url: "/our-work/logos/12.png", size: 100 },
+  { url: "/our-work/logos/14.png", size: 60 },
+  { url: "/our-work/logos/13.png", size: 100 },
+];
 
 export default function Companies() {
   return (
@@ -7,25 +24,25 @@ export default function Companies() {
 
       {/* 🔵 TOP SLIDER — normal direction */}
       <div className="w-full inline-flex flex-nowrap overflow-hidden">
-        <ul className="flex items-center [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll">
+        <ul className="flex items-center [&_li]:mx-10 [&_img]:max-w-none animate-infinite-scroll">
           {logos.map((src, i) => (
             <li
               key={i}
               className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200"
             >
-              <Image width={100} height={100} alt="Company Logo" src={src} />
+              <Image width={src.size} height={src.size} alt="Company Logo" src={src.url} style={src.bg ? {backgroundColor: src.bg, padding: '7px'}: {}} />
             </li>
           ))}
         </ul>
 
         {/* duplicate for seamless loop */}
-        <ul className="flex items-center [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll">
+        <ul className="flex items-center [&_li]:mx-10 [&_img]:max-w-none animate-infinite-scroll">
           {logos.map((src, i) => (
             <li
               key={`dup-top-${i}`}
               className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200"
             >
-              <Image width={100} height={100} alt="Company Logo" src={src} />
+              <Image width={src.size} height={src.size} alt="Company Logo" src={src.url} style={src.bg ? {backgroundColor: src.bg, padding: '7px'}: {}} />
             </li>
           ))}
         </ul>
@@ -33,25 +50,25 @@ export default function Companies() {
 
       {/* 🔵 BOTTOM SLIDER — reversed direction */}
       <div className="w-full inline-flex flex-nowrap overflow-hidden">
-        <ul className="flex items-center [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll [animation-direction:reverse]">
+        <ul className="flex items-center [&_li]:mx-10 [&_img]:max-w-none animate-infinite-scroll [animation-direction:reverse]">
           {logos.map((src, i) => (
             <li
               key={`bottom-${i}`}
               className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200"
             >
-              <Image width={120} height={120} alt="Company Logo" src={src} />
+              <Image width={src.size} height={src.size} alt="Company Logo" src={src.url} style={src.bg ? {backgroundColor: src.bg, padding: '7px'}: {}} />
             </li>
           ))}
         </ul>
 
         {/* duplicate for seamless reverse loop */}
-        <ul className="flex items-center [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll [animation-direction:reverse]">
+        <ul className="flex items-center [&_li]:mx-10 [&_img]:max-w-none animate-infinite-scroll [animation-direction:reverse]">
           {logos.map((src, i) => (
             <li
               key={`dup-bottom-${i}`}
               className="hover:saturate-100 hover:opacity-100 saturate-0 opacity-45 transition-all duration-200"
             >
-              <Image width={120} height={120} alt="Company Logo" src={src} />
+              <Image width={src.size} height={src.size} alt="Company Logo" src={src.url} style={src.bg ? {backgroundColor: src.bg, padding: '7px'}: {}} />
             </li>
           ))}
         </ul>
@@ -60,22 +77,3 @@ export default function Companies() {
     </div>
   );
 }
-
-/* you can include this inside the file or import it */
-const logos = [
-  "/our-work/logos/1.png",
-  "/our-work/logos/15.png",
-  "/our-work/logos/seed_of_life_white.svg",
-  "/our-work/logos/3.png",
-  "/our-work/logos/4.png",
-  "/our-work/logos/5.png",
-  "/our-work/logos/exelia.png",
-  "/our-work/logos/7.png",
-  "/our-work/logos/8.png",
-  "/our-work/logos/9.png",
-  "/our-work/logos/10.png",
-  "/our-work/logos/11.svg",
-  "/our-work/logos/12.png",
-  "/our-work/logos/13.png",
-  "/our-work/logos/14.png",
-];
