@@ -66,24 +66,24 @@ export const projectCategories: ProjectsList[] = [
           image: "/our-work/medrafa.png",
         },
       },
-      {
-        title: "Numedic LLC - AI-Powered Medical Research Tool",
-        location: "Washington, D.C., USA",
-        details: {
-          challenge:
-            "Medical researchers were slowed down by manual, inefficient, and error-prone systematic literature review processes.",
-          solution:
-            "Architected a revolutionary research tool using a multi-agent AI system to automate and optimize literature searches in a compliant, structured workflow.",
-          results:
-            "Delivered a flagship AI platform that dramatically accelerates research timelines and improves the accuracy of systematic reviews, transforming a critical part of the medical research process.",
-        },
-        about: {
-          link: "/",
-          name: "Numedic LLC",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
-        },
-      },
+      // {
+      //   title: "Numedic LLC - AI-Powered Medical Research Tool",
+      //   location: "Washington, D.C., USA",
+      //   details: {
+      //     challenge:
+      //       "Medical researchers were slowed down by manual, inefficient, and error-prone systematic literature review processes.",
+      //     solution:
+      //       "Architected a revolutionary research tool using a multi-agent AI system to automate and optimize literature searches in a compliant, structured workflow.",
+      //     results:
+      //       "Delivered a flagship AI platform that dramatically accelerates research timelines and improves the accuracy of systematic reviews, transforming a critical part of the medical research process.",
+      //   },
+      //   about: {
+      //     link: "/",
+      //     name: "Numedic LLC",
+      //     logo: PLACEHOLDER_LOGO,
+      //     image: PLACEHOLDER_IMAGE,
+      //   },
+      // },
       {
         title: "KeySquare Labs - Custom Geotagging Software",
         location: "Virginia, USA",
@@ -96,10 +96,10 @@ export const projectCategories: ProjectsList[] = [
             "Empowered the client with a powerful, custom-built tool that unlocked new data analysis capabilities. The client stated: \"Great experience with Zare; we have one of the most talented engineers to work with, couldn't be happier!\"",
         },
         about: {
-          link: "/",
+          link: "https://www.keysquarelabs.com/",
           name: "KeySquare Labs",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
+          logo: '/our-work/logos/keysquare.png',
+          image: '/our-work/shots/keysquare.png',
         },
       },
     ],
@@ -121,10 +121,10 @@ export const projectCategories: ProjectsList[] = [
             "Successfully integrated three high-performing developers into the client's team, cutting talent overhead costs by over 50% while exceeding all performance expectations.",
         },
         about: {
-          link: "/",
+          link: "https://pickrellglobaltechnologies.com/",
           name: "Pickrell Global Technologies",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
+          logo: '/our-work/logos/pickrell.png',
+          image: '/our-work/shots/pickrell.png',
         },
       },
       {
@@ -139,10 +139,10 @@ export const projectCategories: ProjectsList[] = [
             "The client successfully closed a critical skills gap by hiring a full-time remote designer who consistently exceeds performance expectations and brings a world-class design perspective.",
         },
         about: {
-          link: "/",
+          link: "https://www.exeliatech.com/",
           name: "Exelia Technologies",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
+          logo: '/our-work/logos/exelia-transparent.png',
+          image: '/our-work/shots/exelia.png',
         },
       },
       {
@@ -157,10 +157,10 @@ export const projectCategories: ProjectsList[] = [
             "Established a highly efficient and professional customer service operation that delivers exceptional service at a fraction of the cost, allowing the client to focus on core business growth.",
         },
         about: {
-          link: "/",
+          link: "https://crdle.com/",
           name: "CRDLE",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
+          logo: '/our-work/logos/crdle.png',
+          image: '/our-work/shots/crdle.png',
         },
       },
       {
@@ -175,10 +175,10 @@ export const projectCategories: ProjectsList[] = [
             "Successfully delivered a vetted pipeline of over 80 qualified candidates within one month, enabling a smooth, on-schedule operational launch for the new African branch.",
         },
         about: {
-          link: "/",
+          link: "https://www.kagool.com/",
           name: "Kagool",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
+          logo: '/our-work/logos/kagol.svg',
+          image: '/our-work/shots/kagol.png',
         },
       },
     ],
@@ -200,30 +200,30 @@ export const projectCategories: ProjectsList[] = [
             "Delivered a clean, verified, and actionable database of 200 key media contacts, empowering the client to launch a highly effective and targeted outreach campaign.",
         },
         about: {
-          link: "/",
+          link: "https://africacommunicationsgroup.com/",
           name: "Africa Communications Media Group",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
+          logo: '/our-work/logos/acmg.png',
+          image: '/our-work/shots/acmg.png',
         },
       },
-      {
-        title: "Ubutix - Marketing Intelligence",
-        location: "London, UK",
-        details: {
-          challenge:
-            "To support its platform launch, the client required targeted market intelligence and lead-generation data on potential partners and sponsors across Africa.",
-          solution:
-            "Provided comprehensive data scraping and data mining services to build targeted marketing lists and gather intelligence on event organizers and corporate entities.",
-          results:
-            "Equipped the Ubutix marketing team with valuable, actionable data that fueled their strategic outreach and was instrumental in securing early partnerships and driving user adoption.",
-        },
-        about: {
-          link: "/",
-          name: "Ubutix",
-          logo: PLACEHOLDER_LOGO,
-          image: PLACEHOLDER_IMAGE,
-        },
-      },
+      // {
+      //   title: "Ubutix - Marketing Intelligence",
+      //   location: "London, UK",
+      //   details: {
+      //     challenge:
+      //       "To support its platform launch, the client required targeted market intelligence and lead-generation data on potential partners and sponsors across Africa.",
+      //     solution:
+      //       "Provided comprehensive data scraping and data mining services to build targeted marketing lists and gather intelligence on event organizers and corporate entities.",
+      //     results:
+      //       "Equipped the Ubutix marketing team with valuable, actionable data that fueled their strategic outreach and was instrumental in securing early partnerships and driving user adoption.",
+      //   },
+      //   about: {
+      //     link: "/",
+      //     name: "Ubutix",
+      //     logo: PLACEHOLDER_LOGO,
+      //     image: PLACEHOLDER_IMAGE,
+      //   },
+      // },
     ],
   },
 ];
