@@ -20,21 +20,21 @@ export default function ProjectCard({ project }: { project: Project }) {
             {project.title}
           </h3>
         </div>
-        <div className="flex flex-col gap-1">
-          <p className="text-sm sm:text-base text-[#6C6C6C] leading-relaxed">
+        <div className="flex flex-col gap-2.5">
+          <p className="text-sm sm:text-base xl2:text-xl text-[#6C6C6C] leading-relaxed">
             <span className="font-medium">Challenge: </span>
             {project.details.challenge}
           </p>
-          <p className="text-sm sm:text-base text-[#6C6C6C] leading-relaxed">
+          <p className="text-sm sm:text-base xl2:text-xl text-[#6C6C6C] leading-relaxed">
             <span className="font-medium">Solution: </span>
             {project.details.solution}
           </p>
-          <p className="text-sm sm:text-base text-[#6C6C6C] leading-relaxed">
+          <p className="text-sm sm:text-base xl2:text-xl text-[#6C6C6C] leading-relaxed">
             <span className="font-medium">Results: </span>
             {project.details.results}
           </p>
         </div>
-        <div className="text-sm sm:text-base text-[#4A4A4A] mt-auto uppercase">
+        <div className="text-sm sm:text-base text-[#4A4A4A] mt-2 uppercase">
           <span>{project.location}</span>
           <span className="mx-2">|</span>
           <Link

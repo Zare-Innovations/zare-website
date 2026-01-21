@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import tailwindcssAnimate from "tailwindcss-animate"; // 1. Add this import
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -10,6 +10,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        "xl2": "1920px"
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -83,5 +86,5 @@ export default {
       }
     }
   },
-  plugins: [tailwindcssAnimate] // 2. Change require() to the variable name
+  plugins: [tailwindcssAnimate]
 } satisfies Config;
