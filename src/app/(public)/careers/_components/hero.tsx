@@ -15,8 +15,7 @@ export default function Hero() {
         All Open Positions
       </h1>
       <p className="z-10 text-base">
-        Work in a vibrant workspace that is remote first and dedicated to help
-        you thrive
+        Join Zare Innovations and work on real projects for global clients. Build AI systems, enterprise software, and innovative solutions while growing your skills in a supportive, collaborative environment.
       </p>
     </div>
   );
