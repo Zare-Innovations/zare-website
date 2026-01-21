@@ -81,16 +81,8 @@ export default function Testimonials() {
             margin: "auto"
           },
           indicator: {
-            height: "9px"
+            height: "9px",
           },
-          controls: {
-            scale: "105%"
-          },
-          control: {
-            backgroundColor: "transparent",
-            color: "#9ca3af",
-            border: "none"
-          }
         }}
       >
         {testmonialsData?.map((testimonial, index) => (
@@ -126,7 +118,7 @@ export default function Testimonials() {
                 src={testimonial.logo}
                 width={200}
                 height={100}
-                className={`w-24 sm:w-40 mt-4 ${index === 1 ? "bg-[#0a293b]" : ""}`}
+                className={`${index === 3 ? 'w-44 sm:w-60 h-auto': 'w-24 sm:w-40'} mt-4 ${index === 1 ? "bg-[#0a293b] px-2 rounded-md" : ""}`}
                 unoptimized
               />
             </Flex>

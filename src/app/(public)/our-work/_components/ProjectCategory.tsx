@@ -21,7 +21,7 @@ export default function ProjectCategory({ category }: { category: Category }) {
         withIndicators
         slideSize={{ base: "100%", md: "100%" }}
         slideGap={{ base: "sm", sm: "md", md: "lg" }}
-        withControls={false}
+        withControls={true}
         height="100%"
         className="w-full mt-10"
         controlSize={40}
@@ -38,17 +38,12 @@ export default function ProjectCategory({ category }: { category: Category }) {
           controls: {
             scale: "105%"
           },
-          control: {
-            backgroundColor: "cyan",
-            color: "#9ca3af",
-            border: "none"
-          }
         }}
       >
         {category.projects.map((project, index) => (
           <CarouselSlide
             key={index}
-            className="flex-col w-full gap-5 sm:gap-7 py-8 sm:px-10"
+            className="py-8"
           >
             <ProjectCard project={project} />
           </CarouselSlide>
