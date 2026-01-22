@@ -1,41 +1,20 @@
 "use client";
 
-import { Flex, Stack } from "@mantine/core";
+import { Card, Flex, Stack } from "@mantine/core";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { JobType } from "../careers/_components/careers-list";
 import CareerCard from "../careers/_components/career-card";
+import { Job, useGetJobsQuery } from "@/store/api/job.api";
 
 export default function Jobs() {
-  const [results, setResults] = useState<JobType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchJobs = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/job`);
-      if (!res.ok) throw new Error("Failed to fetch jobs");
-      const data = await res.json();
-
-      if (data.total > 4) {
-        setResults(data.items.slice(0, 4));
-      } else {
-        setResults(data.items);
-      }
-    } catch (err) {
-      setError("Something went wrong, " + (err as Error).message);
-      setResults([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const { data: jobsDataResponse, isLoading, isError } = useGetJobsQuery({});
 
   useEffect(() => {
-    fetchJobs();
-  }, []);
+    if (jobsDataResponse?.items) {
+      setJobs(jobsDataResponse.items);
+    }
+  }, [jobsDataResponse]);
 
   return (
     <Stack
@@ -70,10 +49,20 @@ export default function Jobs() {
               </div>
             </div>
           ))
-        ) : error ? (
-          <div>{error}</div>
+        ) : isError ? (
+          <Card className="w-max self-center flex flex-col items-center gap-3">
+            <span className="text-red-600">
+              Unabe to load Jobs, please refresh the page!
+            </span>
+            <Link
+              href="/careers"
+              className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+            >
+              View all jobs Openings
+            </Link>
+          </Card>
         ) : (
-          results.map((job, i) => <CareerCard key={job.id + i} job={job} />)
+          jobs.map((job, i) => <CareerCard key={job.id} job={job} />)
         )}
       </Flex>
       <Link
