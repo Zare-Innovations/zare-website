@@ -12,7 +12,12 @@ export default function Jobs() {
 
   useEffect(() => {
     if (jobsDataResponse?.items) {
-      setJobs(jobsDataResponse.items);
+      // Limit to 4 jobs for display
+      if (jobsDataResponse.items.length > 4) {
+        setJobs(jobsDataResponse.items.slice(0, 4));
+      } else {
+        setJobs(jobsDataResponse.items);
+      }
     }
   }, [jobsDataResponse]);
 
