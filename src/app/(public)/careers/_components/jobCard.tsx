@@ -1,12 +1,15 @@
-'use client';
+"use client";
 import { useEffect, useRef, useState } from "react";
 import JobsApplyModal from "./JobsApplyModal";
 import { Job } from "@/store/api/job.api";
 
-
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr);
-  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 };
 type JobCardProps = {
   job: Job;
@@ -26,15 +29,19 @@ export default function JobCard({ job }: JobCardProps) {
     }
   }, [job.description]);
 
-  const tags = job.skills.split(",").map(tag => tag.trim()); // convert skills string to array
+  const tags = job.skills.split(",").map((tag) => tag.trim()); // convert skills string to array
 
   return (
     <div className="w-full mx-auto bg-white shadow-lg rounded-lg p-4 px-6 border">
-      <h2 className="text-[0.95rem] sm:text-base font-medium mb-4">{job.title}</h2>
+      <h2 className="text-[0.95rem] sm:text-base font-medium mb-4">
+        {job.title}
+      </h2>
 
       <div className="flex w-full justify-between flex-wrap gap-4 mb-4 text-[0.8rem]">
         <div>
-          <span className="text-teal-600 font-semibold">Years of Experience</span>
+          <span className="text-teal-600 font-semibold">
+            Years of Experience
+          </span>
           <p className="text-gray-500 text-sm">{job.yearsOfExperience}</p>
         </div>
         <div>
@@ -59,8 +66,9 @@ export default function JobCard({ job }: JobCardProps) {
 
       <p
         ref={ref}
-        className={`text-[#64748B] text-[0.8rem] sm:text-[0.85rem] mb-2 leading-[1.59] tracking-[0.05em] transition-all duration-300 ${expanded ? "" : "line-clamp-3"
-          }`}
+        className={`text-[#64748B] text-[0.8rem] sm:text-[0.85rem] mb-2 leading-[1.59] tracking-[0.05em] transition-all duration-300 ${
+          expanded ? "" : "line-clamp-3"
+        }`}
       >
         {job.description}
       </p>
@@ -87,7 +95,7 @@ export default function JobCard({ job }: JobCardProps) {
             </span>
           ))}
         </div>
-        <JobsApplyModal  />
+        <JobsApplyModal />
       </div>
     </div>
   );
