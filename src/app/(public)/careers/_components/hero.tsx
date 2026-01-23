@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function Hero() {
   return (
@@ -8,14 +8,16 @@ export default function Hero() {
         backgroundImage: `url(/careers/hero.svg)`,
         backgroundPosition: "center",
         backgroundSize: "cover",
-        backgroundColor: "#0a293b"
+        backgroundColor: "#0a293b",
       }}
     >
       <h1 className="z-10 text-[36px] font-bold uppercase">
         All Open Positions
       </h1>
       <p className="z-10 text-base">
-        Join Zare Innovations and work on real projects for global clients. Build AI systems, enterprise software, and innovative solutions while growing your skills in a supportive, collaborative environment.
+        Join Zare Innovations and work on real projects for global clients.
+        Build AI systems, enterprise software, and innovative solutions while
+        growing your skills in a supportive, collaborative environment.
       </p>
     </div>
   );

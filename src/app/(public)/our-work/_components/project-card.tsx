@@ -1,7 +1,6 @@
 import { Card, Flex } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import { Project } from "../page";
 
 export default function ProjectCard({ project }: { project: Project }) {
@@ -14,7 +13,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             alt="Company logo"
             width={100}
             height={60}
-            className="w-[100px] h-auto"
+            className="min-w-[70px] w-[70px] sm:min-w-[100px] sm:w-[100px] h-auto"
           />
           <h3 className=" text-end min-[884px]:text-start text-lg min-[500px]:text-2xl sm:text-3xl font-bold text-black">
             {project.title}
