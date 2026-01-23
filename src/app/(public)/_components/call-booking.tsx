@@ -22,6 +22,7 @@ import {
 import { DatePicker } from "@mantine/dates";
 import { ClockIcon } from "lucide-react";
 import styles from "./call-booking.module.css";
+import CalendlyEmbed from "@/components/ui/calendly-embed";
 
 const DAYS_IN_ADVANCE = 14;
 const from = new Date();
@@ -390,7 +391,7 @@ export default function CallBooking() {
             and find the best approach for executing it.{" "}
           </p>
         </Flex>
-        {selectedDate && selectedTime && (
+        {/* {selectedDate && selectedTime && (
           <AppointmentModal
             opened={modalOpen}
             onClose={() => setModalOpen(false)}
@@ -406,7 +407,8 @@ export default function CallBooking() {
           setSelectedDate={setSelectedDate}
           selectedTime={selectedTime}
           setSelectedTime={setSelectedTime}
-        />
+        /> */}
+        <CalendlyEmbed url="https://calendly.com/sgc93/30min" />
       </Flex>
 
       <Flex className="relative z-10 flex-col gap-10 justify-center items-center">
