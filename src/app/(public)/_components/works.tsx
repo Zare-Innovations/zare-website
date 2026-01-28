@@ -6,6 +6,24 @@ import ProjectCard from "../our-work/_components/project-card";
 
 const projects: Project[] = [
   {
+    title: "Pickrell Global Technologies",
+    location: "Pennsylvania, USA",
+    details: {
+      challenge:
+        "The client needed to expand its software team but was hindered by the high overhead costs and intense competition for talent in the USA.",
+      solution:
+        "Sourced, vetted, and recruited three full-time remote software developers from Ethiopia, creating a cost-effective and highly skilled global talent pipeline.",
+      results:
+        "Successfully integrated three high-performing developers into the client's team, cutting talent overhead costs by over 50% while exceeding all performance expectations.",
+    },
+    about: {
+      link: "https://pickrellglobaltechnologies.com/",
+      name: "Pickrell Global Technologies",
+      logo: '/our-work/logos/pickrell.png',
+      image: '/our-work/shots/pickrell.png',
+    },
+  },
+  {
     title: "Pharmaceutical Dashboard Design and Development",
     details: {
       challenge:

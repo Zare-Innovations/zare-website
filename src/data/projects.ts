@@ -20,13 +20,9 @@ export interface ProjectsList {
   projects: Project[];
 }
 
-// Placeholders for logo and image if missing
-const PLACEHOLDER_LOGO = "/our-work/251-logo.png";
-const PLACEHOLDER_IMAGE = "/our-work/251-dashboard.png";
-
 export const projectCategories: ProjectsList[] = [
   {
-    category: "Software & AI Development",
+    category: "Custom Software & AI Solutions",
     description:
       "Bespoke software engineering and AI-driven solutions built to address unique operational and business challenges. Our expertise covers full-stack development, custom ERP and CRM systems, next-generation UI/UX, and pioneering AI applications—delivering measurable improvements in efficiency, data integration, and decision-making for organizations across industries.",
     projects: [
@@ -110,7 +106,7 @@ export const projectCategories: ProjectsList[] = [
       "Global talent sourcing and business process outsourcing for technology and customer service needs. We help clients overcome local talent shortages and reduce operational costs by recruiting, vetting, and integrating high-performing remote technical teams or customer support agents, yielding seamless expansion and notable cost-efficiency.",
     projects: [
       {
-        title: "Pickrell Global Technologies - Remote Developer Team",
+        title: "Pickrell Global Technologies",
         location: "Pennsylvania, USA",
         details: {
           challenge:

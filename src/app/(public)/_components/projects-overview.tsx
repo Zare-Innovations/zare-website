@@ -2,7 +2,7 @@ import { Card, Stack } from "@mantine/core";
 import Image from "next/image";
 import project1 from "../../../../public/projects/project1.png";
 import project2 from "../../../../public/projects/project2.png";
-import project3 from "../../../../public/projects/project3.png";
+import project3 from "../../../../public/projects/project3.svg";
 import project4 from "../../../../public/projects/project4.png";
 
 import {
@@ -22,6 +22,7 @@ function TiltImg({ imgUrl }: { imgUrl: string }) {
             <Image
               src={imgUrl}
               fill
+              quality={100}
               alt="project-shot"
               className="object-cover w-full h-full"
               sizes="(max-width: 768px) 100vw, 50vw"
