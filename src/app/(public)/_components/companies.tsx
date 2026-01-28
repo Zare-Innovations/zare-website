@@ -1,25 +1,35 @@
 import Image from 'next/image';
 
 const logos = [
-  { url: "/our-work/logos/15.png", size: 100 },
-  { url: "/our-work/logos/1.png", size: 100 },
+  { url: "/our-work/logos/good-firms.png", size: 100 },
+  { url: "/our-work/logos/afig-funds.png", size: 100 },
   { url: "/our-work/logos/seed_of_life_white.svg", size: 65, bg: '#000' },
   { url: "/our-work/logos/acmg.png", size: 100 },
   { url: "/our-work/logos/251-logo.png", size: 60 },
   { url: "/our-work/logos/exelia.png", size: 100 },
-  { url: "/our-work/logos/7.png", size: 80 },
+  { url: "/our-work/logos/10-13.png", size: 80 },
   { url: "/our-work/logos/pickrell.png", size: 170 },
-  { url: "/our-work/logos/8.png", size: 90 },
-  { url: "/our-work/logos/10.png", size: 120 },
-  { url: "/our-work/logos/11.svg", size: 100 },
+  { url: "/our-work/logos/ubutix.png", size: 90 },
+  { url: "/our-work/logos/mela.png", size: 120 },
+  { url: "/our-work/logos/kagol.svg", size: 80 },
+  { url: "/our-work/logos/hk.svg", size: 100 },
   { url: "/our-work/logos/keysquare.png", size: 60 },
+  { url: "/our-work/logos/sabbell.png", size: 160 },
+  { url: "/our-work/logos/betterlife.svg", size: 65 },
   { url: "/our-work/logos/crdle.png", size: 100 },
-  { url: "/our-work/logos/13.png", size: 100 },
+  { url: "/our-work/logos/AHF-logo.png", size: 100 },
+  { url: "/our-work/logos/usp.png", size: 100 },
+  { url: "/our-work/logos/signature-logo.svg", size: 50 },
+  { url: "/our-work/logos/gursha.png", size: 150 },
+  { url: "/our-work/logos/kazana.png", size: 70 },
+  { url: "/our-work/logos/sunbeam-logo.png", size: 75 },
+  { url: "/our-work/logos/strat-tech.png", size: 80 },
+  { url: "/our-work/logos/just-kids.png", size: 70 },
 ];
 
 export default function Companies() {
   return (
-    <div className="w-full flex flex-col gap-4 mt-10 overflow-hidden ">
+    <div className="w-full flex flex-col gap-4 mt-10 mb-14 overflow-hidden ">
 
       {/* 🔵 TOP SLIDER — normal direction */}
       <div className="w-full inline-flex flex-nowrap overflow-hidden">
@@ -72,7 +82,6 @@ export default function Companies() {
           ))}
         </ul>
       </div>
-
     </div>
   );
 }
