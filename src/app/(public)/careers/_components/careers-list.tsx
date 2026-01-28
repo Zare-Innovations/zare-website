@@ -170,13 +170,18 @@ const CareersList = () => {
           </div>
         ))
       ) : error ? (
-          <Card className="w-max self-center flex flex-col items-center gap-3">
-            <span className="text-red-600">
-              Something went wrong, please try again!
-            </span>
+          <Card className="w-max self-center flex flex-col items-center gap-5">
+            <div className="flex flex-col items-center">
+              <span className="text-red-600">
+                Failed to load job openings, please try again!
+              </span>
+              <span className="text-black/70 text-sm">
+                If this error is persistent, please feel free contact us directly.
+              </span>
+            </div>
             <button
               onClick={refetch}
-              className={`w-full flex items-center gap-3 rounded-md px-2.5 py-1.5  text-xs min-[430px]:text-sm min-[500px]:text-base border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white transition-all duration-300`}
+              className={`w-full flex items-center justify-center gap-3 rounded-md px-2.5 py-1.5  text-xs min-[430px]:text-sm min-[500px]:text-base border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white transition-all duration-300`}
             >
               <IconRefresh size={19} />
               <span className="">Try again</span>
