@@ -19,7 +19,7 @@ const CareerCard = ({ job }: { job: Job }) => {
       </p>
 
       <div className="flex flex-wrap gap-2.5 text-sm mt-auto capitalize">
-        <span className="text-cyan-500 border border-cyan-500 rounded-full px-3 py-1">
+        <span className="text-cyan-500 border border-cyan-500 rounded-full px-3 py-1 line-clamp-4 text-ellipsis">
           {job.location}
         </span>
         <span className="text-cyan-500 border border-cyan-500 rounded-full px-3 py-1">

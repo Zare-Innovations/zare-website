@@ -31,9 +31,9 @@ export default function Jobs() {
           innovations
         </p>
       </Flex>
-      <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
         {isLoading ? (
-          Array.from("jobs").map((j, i) => (
+          <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
+          {Array.from("jobs").map((j, i) => (
             <div
               key={j + i}
               className="h-56 flex flex-col gap-4 p-3 sm:p-5 lg:p-7 bg-[#000]/5 rounded-sm"
@@ -49,29 +49,36 @@ export default function Jobs() {
                 <div className=" w-1/6 h-full bg-[#0001] animate-pulse rounded-full" />
               </div>
             </div>
-          ))
+          ))}</Flex>
         ) : isError ? (
-          <Card className="w-max self-center flex flex-col items-center gap-3">
+          <Card className=" w-max flex flex-col items-center gap-3">
             <span className="text-red-600">
-              Unabe to load Jobs, please refresh the page!
+              Unabe to load job openings, please refresh the page!
             </span>
             <Link
               href="/careers"
               className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
             >
-              View all jobs Openings
+              View all job Openings
             </Link>
           </Card>
         ) : (
-          jobs.map((job, i) => <CareerCard key={job.id} job={job} />)
+          jobs.length === 0 ? 
+          <Card className="w-max self-center flex flex-col items-center gap-3">
+            <span className="text-black/70">
+              We have no oppened possition yet, but feel free to contact us for further notice.
+            </span>
+          </Card> : 
+          <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
+            {jobs.map((job, i) => <CareerCard key={job.id} job={job} />)}
+          </Flex>
         )}
-      </Flex>
-      <Link
+     { !isError && <Link
         href="/careers"
         className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
       >
-        View All Job Openings
-      </Link>
+        View all job openings
+      </Link>}
     </Stack>
   );
 }
