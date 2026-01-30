@@ -4,8 +4,8 @@ import { Project } from "../page";
 
 export default function ProjectCard({ project }: { project: Project }) {
   return (
-    <article className="flex flex-col-reverse min-[884px]:flex-row gap-6 sm:gap-8 p-5 sm:p-8 lg:p-10 rounded-lg bg-white shadow-md border border-cyan-950/10">
-      <div className="flex flex-col gap-4 justify-between flex-1 min-w-0">
+    <article className="w-full flex flex-col-reverse min-[884px]:flex-row gap-6 sm:gap-8 p-5 sm:p-8 lg:p-10 rounded-lg bg-white shadow-md border border-cyan-950/10">
+      <div className="w-full flex flex-col gap-4 justify-between flex-1 min-w-0">
         <div className="flex flex-row items-start min-[884px]:flex-col justify-between gap-4">
           <Image
             src={project.about.logo}
