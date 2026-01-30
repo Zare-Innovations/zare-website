@@ -13,3 +13,12 @@
     background-color: #0a293b;
   }
 }
+
+@media (max-width: 1149px) {
+  .controls {
+    top: unset;
+    bottom: 20px;
+    left: -6px;
+    right: -6px;
+  }
+}
