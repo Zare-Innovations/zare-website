@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Burger, Divider, Drawer, Group, ScrollArea } from "@mantine/core";
+import { Burger, Divider, Drawer, ScrollArea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,13 +18,9 @@ export function NavBar() {
     useDisclosure(false);
 
   return (
-    <Box>
+    <div>
       <header className="h-[90px] px-4 border-b border-gray-200 dark:border-neutral-800">
-        <Group
-          justify="space-between"
-          h="100%"
-          className="min-[500px]:px-3 sm:px-12"
-        >
+        <div className="flex items-center justify-between h-full min-[500px]:px-3 sm:px-12">
           <div className="w-36">
             <Link href="/">
               <Image
@@ -37,7 +33,7 @@ export function NavBar() {
             </Link>
           </div>
 
-          <Group h="100%" gap={0} visibleFrom="md">
+          <div className="hidden md:flex items-center h-full gap-0">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -47,13 +43,13 @@ export function NavBar() {
                 {link.label}
               </Link>
             ))}
-          </Group>
+          </div>
           <Burger
             opened={drawerOpened}
             onClick={toggleDrawer}
             hiddenFrom="md"
           />
-        </Group>
+        </div>
       </header>
 
       <Drawer
@@ -80,6 +76,6 @@ export function NavBar() {
           ))}
         </ScrollArea>
       </Drawer>
-    </Box>
+    </div>
   );
 }
