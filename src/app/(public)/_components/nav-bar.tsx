@@ -2,9 +2,16 @@
 
 import { Box, Burger, Divider, Drawer, Group, ScrollArea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import classes from "./nav-bar.module.css";
 import Image from "next/image";
 import Link from "next/link";
+
+const navLinks = [
+  { href: "/#aboutUs", label: "About Us" },
+  { href: "/#services", label: "Services" },
+  { href: "/our-work", label: "Portfolio" },
+  { href: "/careers", label: "Careers" },
+  { href: "#contact-us", label: "Contact Us" },
+];
 
 export function NavBar() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -12,11 +19,11 @@ export function NavBar() {
 
   return (
     <Box>
-      <header className={classes.header}>
+      <header className="h-[90px] px-4 border-b border-gray-200 dark:border-neutral-800">
         <Group
           justify="space-between"
           h="100%"
-          className=" min-[500px]:px-3 sm:px-12"
+          className="min-[500px]:px-3 sm:px-12"
         >
           <div className="w-36">
             <Link href="/">
@@ -31,21 +38,15 @@ export function NavBar() {
           </div>
 
           <Group h="100%" gap={0} visibleFrom="md">
-            <Link href="/#aboutUs" className={classes.link}>
-              About Us
-            </Link>
-            <Link href="/#services" className={classes.link}>
-              Services
-            </Link>
-            <Link href="/our-work" className={classes.link}>
-              Portfolio
-            </Link>
-            <Link href="/careers" className={classes.link}>
-              Careers
-            </Link>
-            <Link href="#contact-us" className={classes.link}>
-              Contact Us
-            </Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="flex items-center h-full px-4 no-underline text-black dark:text-white font-medium text-base hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors duration-300"
+              >
+                {link.label}
+              </Link>
+            ))}
           </Group>
           <Burger
             opened={drawerOpened}
@@ -67,21 +68,16 @@ export function NavBar() {
         <ScrollArea h="calc(100vh - 80px)" mx="-md" className="space-y-5">
           <Divider my="sm" />
 
-          <Link href="/#aboutUs" className={classes.link}>
-            About Us
-          </Link>
-          <Link href="/#services" className={classes.link}>
-            Services
-          </Link>
-          <Link href="/our-work" className={classes.link}>
-            Portfolio
-          </Link>
-          <Link href="/careers" className={classes.link}>
-            Careers
-          </Link>
-          <Link href="#contact-us" className={classes.link}>
-            Contact Us
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="flex items-center h-[42px] w-full px-4 no-underline text-black dark:text-white font-medium text-base hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors duration-300"
+              onClick={closeDrawer}
+            >
+              {link.label}
+            </Link>
+          ))}
         </ScrollArea>
       </Drawer>
     </Box>
