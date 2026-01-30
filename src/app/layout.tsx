@@ -52,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${gotham.className}  antialiased outline overflow-x-hidden`}
+        className={`${gotham.className} antialiased overflow-x-hidden`}
       >
         <Providers>
         <RootStyleRegistry>{children}</RootStyleRegistry>
