@@ -5,11 +5,40 @@
 @layer tailwind {
   @tailwind base;
 }
+
 @tailwind components;
 @tailwind utilities;
 
 html {
   scroll-behavior: smooth;
+}
+
+@property --num {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+.count-up {
+  counter-reset: num var(--num);
+  animation: count-up 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  font-variant-numeric: tabular-nums;
+}
+
+.count-up::after {
+  content: counter(num) attr(data-suffix);
+}
+
+@keyframes count-up {
+  from {
+    --num: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .count-up {
+    animation: none;
+  }
 }
 
 .clip-path {
@@ -18,8 +47,7 @@ html {
 }
 
 .logo-filter {
-  filter: invert(10%) sepia(39%) saturate(2691%) hue-rotate(177deg)
-    brightness(92%) contrast(92%);
+  filter: invert(10%) sepia(39%) saturate(2691%) hue-rotate(177deg) brightness(92%) contrast(92%);
 }
 
 
@@ -52,6 +80,7 @@ html {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -86,6 +115,7 @@ html {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
