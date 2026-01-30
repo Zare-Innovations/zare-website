@@ -15,40 +15,38 @@ export default function ProjectCategory({ category }: { category: Category }) {
         </h2>
         <p className="text-[#6C6C6C]">{category.description}</p>
       </div>
-
-      <Carousel
-        classNames={projectClasses}
-        withIndicators
-        slideSize={{ base: "100%", md: "100%" }}
-        slideGap={{ base: "sm", sm: "md", md: "lg" }}
-        withControls={true}
-        height="100%"
-        className="w-full mt-10"
-        controlSize={40}
-        styles={{
-          indicators: {
-            top: "-24px",
-            zIndex: "100",
-            gap: "5px",
-            width: "fit-content"
-          },
-          indicator: {
-            height: "9px"
-          },
-          controls: {
-            scale: "105%"
-          },
-        }}
-      >
-        {category.projects.map((project, index) => (
-          <CarouselSlide
-            key={index}
-            className="py-8"
-          >
-            <ProjectCard project={project} />
-          </CarouselSlide>
-        ))}
-      </Carousel>
+      <div className={`${projectClasses.carouselWrapper} w-full mt-10`}>
+        <Carousel
+          classNames={projectClasses}
+          withIndicators
+          slideSize={{ base: "100%", md: "100%" }}
+          slideGap={{ base: "sm", sm: "md", md: "lg" }}
+          withControls={true}
+          height="100%"
+          className="w-full"
+          controlSize={40}
+          styles={{
+            indicators: {
+              top: "-24px",
+              zIndex: "100",
+              gap: "5px",
+              width: "fit-content"
+            },
+            indicator: {
+              height: "9px"
+            },
+          }}
+        >
+          {category.projects.map((project, index) => (
+            <CarouselSlide
+              key={index}
+              className="py-8"
+            >
+              <ProjectCard project={project} />
+            </CarouselSlide>
+          ))}
+        </Carousel>
+      </div>
     </div>
   );
 }
