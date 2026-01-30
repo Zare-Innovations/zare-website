@@ -74,12 +74,10 @@ export default function Works() {
     >
       <Flex className="flex flex-col mx-auto gap-3 sm:gap-5 text-center">
         <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center uppercase">
-          SOFTWARE SOLUTIONS BUILT TO SCALE
+          SOFTWARE THAT SHIPS, TEAMS THAT SCALE.
         </p>
         <p className="text-xs sm:text-sm text-[#6C6C6C]">
-          From enterprise platforms to AI-powered applications, we deliver
-          custom software solutions that solve real business challenges and
-          drive measurable results.
+          Build AI-powered applications and enterprise platforms with us, or scale your engineering team with lean full-stack talent from Ethiopia. Modern solutions, real results, half the cost.
         </p>
       </Flex>
       <Flex className="flex-col w-full gap-5 sm:gap-7 py-8">
