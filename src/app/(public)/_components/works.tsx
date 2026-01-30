@@ -38,7 +38,7 @@ const projects: Project[] = [
       link: "https://medrafa.et/",
       name: "Medrafa",
       logo: "/our-work/madrafa-logo.png",
-      image: "/our-work/medrafa.png"
+      image: "/our-work/shots/madrafa.png"
     }
   },
   {
@@ -46,22 +46,17 @@ const projects: Project[] = [
     details: {
       challenge:
         "Inefficient internal processes and a lack of centralized data management were hindering operational scalability and creating data silos.",
-      solution: `
-       Developed a custom, all-in-one CRM/ERP tool tailored for internal use. The platform facilitates:
-      - Onboarding and employee metrics tracking
-      - Financial management and invoicing
-      - Lead and client relationship management
-      - Project management and resource allocation
-      `,
+      solution:
+        "Developed a custom, all-in-one CRM/ERP tool tailored for internal use. The platform facilitates onboarding and employee metrics tracking, financial management and invoicing, lead and client relationship management, project management and resource allocation.",
       results:
-        "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery."
+        "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery.",
     },
     location: "Addis Ababa, Ethiopia",
     about: {
       link: "https://www.251communications.com/",
       name: " 251 Marketing & Communications",
       logo: "/our-work/251-logo.png",
-      image: "/our-work/251-dashboard.png"
+      image: "/our-work/shots/251-dashboard.png"
     }
   }
 ];
