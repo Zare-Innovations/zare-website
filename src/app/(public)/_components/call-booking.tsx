@@ -1,6 +1,6 @@
 "use client";
 
-import { IconPhone, IconMail, IconMapPin } from "@tabler/icons-react";
+import { IconPhone, IconMail, IconMapPin, IconBrandWhatsapp } from "@tabler/icons-react";
 import Link from "next/link";
 import mapBg from "../../../../public/map.png";
 import Image from "next/image";
@@ -431,11 +431,13 @@ export default function CallBooking() {
               +251911407401
             </Link>
             <Link
-              href="tel:+17033955235"
+              href="https://wa.me/251938169380"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 text-base font-medium"
             >
-              <IconPhone size={20} />
-              +1 703-395-5235
+              <IconBrandWhatsapp size={20} />
+              +251938169380
             </Link>
           </Flex>
 
