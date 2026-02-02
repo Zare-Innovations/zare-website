@@ -29,7 +29,7 @@ const logos = [
 
 export default function Companies() {
   return (
-    <div className="w-full flex flex-col gap-4 mt-10 mb-14 overflow-hidden ">
+    <div className="w-full flex flex-col sm:gap-4 mt-10 mb-14 overflow-hidden ">
 
       {/* 🔵 TOP SLIDER — normal direction */}
       <div className="w-full inline-flex flex-nowrap overflow-hidden">
