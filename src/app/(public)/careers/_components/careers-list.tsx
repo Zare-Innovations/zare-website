@@ -195,12 +195,11 @@ const CareersList = () => {
                   <span className="text-zinc-600 text-lg">
                     No job found with this filtering or query.
                   </span>
-                  : <>
-                    <span className="text-zinc-600 text-lg">
-                      No jobs available, please contact us for further notice.
-                    </span>
-                    <ContactUsForm />
-                  </>}
+                  : <Card className="self-center flex flex-col items-center text-center gap-3">
+                      <span className="text-black/70 text-wrap">
+                        No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1">careers@zareinnovations.com</a>, we'd love to connect.
+                      </span>
+                    </Card>}
               </Card> :
               <div className="grid md:grid-cols-2 w-full gap-5 sm:gap-7">
                 {results.map((job, i) => <CareerCard key={job.id + i} job={job} />)}
