@@ -64,16 +64,16 @@ export default function Jobs() {
           </Card>
         ) : (
           jobs.length === 0 ? 
-          <Card className="w-max self-center flex flex-col items-center gap-3">
-            <span className="text-black/70">
-              We have no oppened possition yet, but feel free to contact us for further notice.
+          <Card className="self-center flex flex-col items-center text-center gap-3">
+            <span className="text-black/70 text-wrap">
+              No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1">careers@zareinnovations.com</a>, we'd love to connect.
             </span>
           </Card> : 
           <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
             {jobs.map((job, i) => <CareerCard key={job.id} job={job} />)}
           </Flex>
         )}
-     { !isError && <Link
+     { !isError && jobs.length > 0 && <Link
         href="/careers"
         className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
       >
