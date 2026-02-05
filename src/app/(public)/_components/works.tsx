@@ -1,7 +1,7 @@
 "use client";
 import { Flex, Stack } from "@mantine/core";
 import Link from "next/link";
-import { Project } from "../our-work/page";
+import type { Project } from "@/data/projects";
 import ProjectCard from "../our-work/_components/project-card";
 
 const projects: Project[] = [

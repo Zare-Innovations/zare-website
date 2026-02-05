@@ -4,9 +4,9 @@ import React from "react";
 import ProjectCard from "./project-card";
 import { Carousel, CarouselSlide } from "@mantine/carousel";
 import projectClasses from "./projects.module.css";
-import { Category } from "../page";
+import type { ProjectsList } from "@/data/projects";
 
-export default function ProjectCategory({ category }: { category: Category }) {
+export default function ProjectCategory({ category }: { category: ProjectsList }) {
   return (
     <div className="w-full " id={category.category.trim().split(" ").join("-")}>
       <div className="flex flex-col items-start gap-2">
