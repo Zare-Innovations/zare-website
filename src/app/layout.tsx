@@ -37,10 +37,58 @@ const gotham = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Zare Innovations',
-  description: 'Zare Innovations | Revolutionize Your Business',
+  metadataBase: new URL('https://zareinnovations.com'),
+  title: {
+    default: 'Zare Innovations | Revolutionize Your Business',
+    template: '%s | Zare Innovations',
+  },
+  description:
+    'Zare Innovations delivers custom software, AI solutions, talent outsourcing, and data intelligence services to help businesses scale globally.',
+  keywords: [
+    'custom software development',
+    'AI solutions',
+    'talent outsourcing',
+    'BPO',
+    'data intelligence',
+    'Zare Innovations',
+  ],
+  authors: [{ name: 'Zare Innovations' }],
+  creator: 'Zare Innovations',
+  publisher: 'Zare Innovations',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Zare Innovations',
+    images: [
+      {
+        url: '/zare-logo_lg.png',
+        width: 1200,
+        height: 630,
+        alt: 'Zare Innovations',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/zare-logo_lg.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://zareinnovations.com',
+  },
   icons: {
     icon: '/zare-logo-footer.svg',
+    apple: '/zare-logo_lg.png',
   },
 };
 
