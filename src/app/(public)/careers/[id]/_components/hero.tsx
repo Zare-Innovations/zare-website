@@ -1,5 +1,5 @@
 import React from 'react';
-import { JobType } from '../page';
+import type { JobType } from '@/types/job';
 
 export default function Hero({job}:{job: JobType}) {
   return (

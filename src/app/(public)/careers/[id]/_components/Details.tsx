@@ -1,7 +1,7 @@
 "use client";
 
 import { Flex } from "@mantine/core";
-import { JobType } from "../page";
+import type { JobType } from "@/types/job";
 
 const aboutZare = (
   <p className="z-10 text-[15px] min-[501px]:text-base text-black/80">
