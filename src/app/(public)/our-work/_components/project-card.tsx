@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/projects";
 
-export default function ProjectCard({ project }: { project: Project }) {
+export default function ProjectCard({ project, isWeb}: { project: Project, isWeb?: boolean }) {
   return (
-    <article className="w-full flex flex-col-reverse min-[884px]:flex-row gap-6 sm:gap-8 p-5 sm:p-8 lg:p-10 rounded-lg bg-white shadow-md border border-cyan-950/10">
-      <div className="w-full flex flex-col gap-4 justify-between flex-1 min-w-0">
+    <article className={`w-full ${isWeb ? 'flex flex-col-reverse min-[884px]:flex-row-reverse': 'flex flex-col-reverse min-[884px]:flex-row'} gap-6 sm:gap-8 p-5 sm:p-8 lg:p-10 rounded-lg bg-white shadow-md border border-cyan-950/10`}>
+      <div className={`w-full flex flex-col gap-4 ${isWeb ? 'justify-center': 'justify-between'} flex-1 min-w-0`}>
         <div className="flex flex-row items-start min-[884px]:flex-col justify-between gap-4">
           <Image
             src={project.about.logo}
@@ -14,12 +14,20 @@ export default function ProjectCard({ project }: { project: Project }) {
             height={60}
             className="w-[70px] sm:w-[100px] h-auto flex-shrink-0"
           />
+          {isWeb ? <Link
+              href={project.about.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-start text-lg min-[500px]:text-2xl sm:text-3xl font-bold text-black"
+            >
+              {project.title.toUpperCase()}
+            </Link> : 
           <h3 className="text-start text-lg min-[500px]:text-2xl sm:text-3xl font-bold text-black">
             {project.title}
-          </h3>
+          </h3>}
         </div>
 
-        <div className="flex flex-col gap-2.5">
+        {!isWeb && <div className="flex flex-col gap-2.5">
           <p className="text-sm sm:text-base xl2:text-lg text-[#6C6C6C] leading-relaxed">
             <span className="font-medium text-black/75">Challenge: </span>
             {project.details.challenge}
@@ -32,19 +40,24 @@ export default function ProjectCard({ project }: { project: Project }) {
             <span className="font-medium text-black/75">Results: </span>
             {project.details.results}
           </p>
-        </div>
+        </div>}
 
         <div className="flex gap-1 flex-wrap text-sm sm:text-base text-[#4A4A4A] mt-2 uppercase">
           <span className="w-max">{project.location}</span>
-          <span className="mx-2">|</span>
-          <Link
-            href={project.about.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-max font-medium transition-colors duration-300 hover:text-cyan-500"
-          >
-            {project.about.name.toUpperCase()}
-          </Link>
+          {
+          !isWeb && 
+          <>
+            <span className="mx-2">|</span>
+            <Link
+              href={project.about.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-max font-medium transition-colors duration-300 hover:text-cyan-500"
+            >
+              {project.about.name.toUpperCase()}
+            </Link>
+          </>
+          }
         </div>
       </div>
 
