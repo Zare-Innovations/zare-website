@@ -52,7 +52,7 @@ export default function Booking() {
   {/* LEFT COLUMN — PHONES */}
   <div className="flex flex-col gap-3">
     <p className="flex items-center gap-2">
-      <IconPhone /> <span>+251911407401</span>
+      <IconPhone /> <span>+251938169380</span>
     </p>
 
     <p className="flex items-center gap-2">

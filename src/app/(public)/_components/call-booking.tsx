@@ -424,20 +424,20 @@ export default function CallBooking() {
         <Flex className=" flex-col sm:flex-row gap-4 justify-center sm:items-center">
           <Flex className="flex flex-col gap-4">
             <Link
-              href="tel:+251911407401"
+              href="tel:+251938169380"
               className="flex items-center gap-2 text-base font-medium"
             >
               <IconPhone size={20} />
-              +251911407401
+              +251938169380
             </Link>
             <Link
-              href="https://wa.me/251938169380"
+              href="https://wa.me/17033955235"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-base font-medium"
             >
               <IconBrandWhatsapp size={20} />
-              +251938169380
+              +17033955235
             </Link>
           </Flex>
 
