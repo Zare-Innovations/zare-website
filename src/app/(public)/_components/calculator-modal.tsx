@@ -76,6 +76,21 @@ export default function ZareEstimatorModal({title, children}:ZareEstimatorModalP
     startDate?: string;
   }>({});
 
+  const resetForm = () => {
+    setSelectedRole(null);
+    setPeopleCount('');
+    setCustomHoursPerWeek(0);
+    setEmploymentType(undefined);
+    setStartDate(null);
+    setResult({});
+    setErrors({});
+  };
+
+  const handleClose = () => {
+    close();
+    resetForm();
+  };
+
   const handleCalculate = () => {
     const newErrors: typeof errors = {};
 
@@ -127,6 +142,7 @@ export default function ZareEstimatorModal({title, children}:ZareEstimatorModalP
     const savingsPercent = (savings / marketCost) * 100;
 
     close();
+    resetForm();
     openResult();
     setResult({
       role,
@@ -237,7 +253,7 @@ export default function ZareEstimatorModal({title, children}:ZareEstimatorModalP
       {/* Estimator Modal */}
       <Modal
         opened={open}
-        onClose={close}
+        onClose={handleClose}
         size={1000}
         // padding="xl"
         centered
