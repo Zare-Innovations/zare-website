@@ -27,7 +27,7 @@ export const projectCategories: ProjectsList[] = [
       "Bespoke software engineering and AI-driven solutions built to address unique operational and business challenges. Our expertise covers full-stack development, custom ERP and CRM systems, next-generation UI/UX, and pioneering AI applications—delivering measurable improvements in efficiency, data integration, and decision-making for organizations across industries.",
     projects: [
       {
-        title: "251 Marketing - Custom ERP/CRM Tool",
+        title: "Custom ERP/CRM Tool",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge:
@@ -45,7 +45,7 @@ export const projectCategories: ProjectsList[] = [
         },
       },
       {
-        title: "Medrafa - Pharmaceutical Operations Dashboard",
+        title: "Pharmaceutical Operations Dashboard",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge:
@@ -62,26 +62,8 @@ export const projectCategories: ProjectsList[] = [
           image: "/our-work/medrafa.png",
         },
       },
-      // {
-      //   title: "Numedic LLC - AI-Powered Medical Research Tool",
-      //   location: "Washington, D.C., USA",
-      //   details: {
-      //     challenge:
-      //       "Medical researchers were slowed down by manual, inefficient, and error-prone systematic literature review processes.",
-      //     solution:
-      //       "Architected a revolutionary research tool using a multi-agent AI system to automate and optimize literature searches in a compliant, structured workflow.",
-      //     results:
-      //       "Delivered a flagship AI platform that dramatically accelerates research timelines and improves the accuracy of systematic reviews, transforming a critical part of the medical research process.",
-      //   },
-      //   about: {
-      //     link: "/",
-      //     name: "Numedic LLC",
-      //     logo: PLACEHOLDER_LOGO,
-      //     image: PLACEHOLDER_IMAGE,
-      //   },
-      // },
       {
-        title: "KeySquare Labs - Custom Geotagging Software",
+        title: "Custom Geotagging Software",
         location: "Virginia, USA",
         details: {
           challenge:
@@ -124,7 +106,7 @@ export const projectCategories: ProjectsList[] = [
         },
       },
       {
-        title: "Exelia Technologies - Global UI/UX Designer Hire",
+        title: "Global UI/UX Designer Hire",
         location: "Nicosia, Cyprus",
         details: {
           challenge:
@@ -142,7 +124,7 @@ export const projectCategories: ProjectsList[] = [
         },
       },
       {
-        title: "CRDLE - Customer Service BPO",
+        title: "Customer Service BPO",
         location: "Pittsburgh, Pennsylvania, USA",
         details: {
           challenge:
@@ -160,7 +142,7 @@ export const projectCategories: ProjectsList[] = [
         },
       },
       {
-        title: "Kagool - Rapid Talent Acquisition",
+        title: "Rapid Talent Acquisition",
         location: "London, UK",
         details: {
           challenge:
@@ -180,13 +162,13 @@ export const projectCategories: ProjectsList[] = [
     ],
   },
   {
-    category: "Data Mining & Intelligence",
+    category: "Data-Driven Consulting & Intelligence Solutins",
     description:
-      "Precise data acquisition, cleaning, and analysis to fuel marketing, communications, and strategic decision-making. We enable organizations to accelerate outreach and build powerful business intelligence through customized data mining operations, systematic lead generation, and creation of actionable datasets across diverse markets.",
+      " We combine precise data mining and analysis with strategic consulting expertise to help organizations make better decisions. Our services span data acquisition and cleaning, business intelligence development, lead generation, and strategic advisory, enabling you to accelerate outreach and build lasting competitive advantages.",
     projects: [
       {
-        title: "Africa Communications Media Group - Media Database",
-        location: "Pan-African",
+        title: "Media Database",
+        location: "Sandton, South Africa",
         details: {
           challenge:
             "The client needed a comprehensive media contact list to support a pan-African communications campaign but lacked the resources to collect the data manually.",
@@ -202,24 +184,117 @@ export const projectCategories: ProjectsList[] = [
           image: '/our-work/shots/acmg.png',
         },
       },
-      // {
-      //   title: "Ubutix - Marketing Intelligence",
-      //   location: "London, UK",
-      //   details: {
-      //     challenge:
-      //       "To support its platform launch, the client required targeted market intelligence and lead-generation data on potential partners and sponsors across Africa.",
-      //     solution:
-      //       "Provided comprehensive data scraping and data mining services to build targeted marketing lists and gather intelligence on event organizers and corporate entities.",
-      //     results:
-      //       "Equipped the Ubutix marketing team with valuable, actionable data that fueled their strategic outreach and was instrumental in securing early partnerships and driving user adoption.",
-      //   },
-      //   about: {
-      //     link: "/",
-      //     name: "Ubutix",
-      //     logo: PLACEHOLDER_LOGO,
-      //     image: PLACEHOLDER_IMAGE,
-      //   },
-      // },
     ],
   },
+  {
+    category: 'Website development',
+    description: 'We specialize in crafting exceptional websites and intuitive UI/UX designs, delivering engaging digital experiences that captivate users and drive results.',
+    projects: [
+      {
+        title: 'GURSHA ETHIOPIAN KITCHEN',
+        location: "Nairobi, Kenya",
+        details: {
+          challenge: "",
+          solution: "",
+          results: "",
+        },
+        about: {
+          link: "https://www.gursha.com/",
+          name: "",
+          logo: '/our-work/logos/gursha.png',
+          image: '/our-work/shots/gursha.png',
+        },
+      },
+      {
+        title: 'KAZANA Group',
+        location: "Addis Ababa, Ethiopia",
+        details: {
+          challenge: "",
+          solution: "",
+          results: "",
+        },
+        about: {
+          link: "https://www.kazanagroup.com/",
+          name: "",
+          logo: '/our-work/logos/kazana.png',
+          image: '/our-work/shots/kazana.png',
+        },
+      },
+      {
+        title: 'Just Kids Autism Center',
+        location: "Addis Ababa, Ethiopia",
+        details: {
+          challenge: "",
+          solution: "",
+          results: "",
+        },
+        about: {
+          link: "https://www.justkidsmn.com/",
+          name: "",
+          logo: '/our-work/logos/just-kids.png',
+          image: '/our-work/shots/just-kids.png',
+        },
+      },
+      {
+        title: 'Better Life',
+        location: "Addis Ababa, Ethiopia",
+        details: {
+          challenge: "",
+          solution: "",
+          results: "",
+        },
+        about: {
+          link: "https://www.betterlifeorg.com/",
+          name: "",
+          logo: '/our-work/logos/betterlife.svg',
+          image: '/our-work/shots/better-life.png',
+        },
+      },
+      {
+        title: 'Sunbeam ABA Center',
+        location: "Addis Ababa, Ethiopia",
+        details: {
+          challenge: "",
+          solution: "",
+          results: "",
+        },
+        about: {
+          link: "https://www.sunbeamaba.com/",
+          name: "",
+          logo: '/our-work/logos/sunbeam-logo.png',
+          image: '/our-work/shots/sunbeam.png',
+        },
+      },
+      {
+        title: 'HK Financial Advisory LLC',
+        location: "Addis Ababa, Ethiopia",
+        details: {
+          challenge: "",
+          solution: "",
+          results: "",
+        },
+        about: {
+          link: "https://www.hkfinancialadvisory.com/",
+          name: "",
+          logo: '/our-work/logos/hk.svg',
+          image: '/our-work/shots/hk.png',
+        },
+      },
+      {
+        title: 'Signature Residence',
+        location: "Addis Ababa, Ethiopia",
+        details: {
+          challenge: "",
+          solution: "",
+          results: "",
+        },
+        about: {
+          link: "https://thesignatureresidence.com/",
+          name: "",
+          logo: '/our-work/logos/signature-logo.svg',
+          image: '/our-work/shots/signature.png',
+        },
+      },
+    ]
+  }
 ];

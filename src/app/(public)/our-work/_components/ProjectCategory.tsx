@@ -7,6 +7,9 @@ import projectClasses from "./projects.module.css";
 import type { ProjectsList } from "@/data/projects";
 
 export default function ProjectCategory({ category }: { category: ProjectsList }) {
+
+  const isWeb = category.category === 'Website development';
+
   return (
     <div className="w-full " id={category.category.trim().split(" ").join("-")}>
       <div className="flex flex-col items-start gap-2">
@@ -42,7 +45,7 @@ export default function ProjectCategory({ category }: { category: ProjectsList }
               key={index}
               className="py-8"
             >
-              <ProjectCard project={project} />
+              <ProjectCard project={project} isWeb={isWeb}/>
             </CarouselSlide>
           ))}
         </Carousel>
