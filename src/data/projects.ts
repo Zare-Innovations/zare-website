@@ -35,14 +35,14 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Developed a custom, all-in-one CRM/ERP tool tailored for internal use. The platform facilitates onboarding and employee metrics tracking, financial management and invoicing, lead and client relationship management, project management and resource allocation.",
           results:
-            "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery.",
+            "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery."
         },
         about: {
           link: "https://www.251communications.com/",
           name: "251 Marketing & Communications",
           logo: "/our-work/251-logo.png",
-          image: "/our-work/251-dashboard.png",
-        },
+          image: "/our-work/251-dashboard.png"
+        }
       },
       {
         title: "Pharmaceutical Operations Dashboard",
@@ -53,14 +53,14 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Provided end-to-end UI/UX design and frontend implementation for a comprehensive pharmaceutical operations dashboard, turning complex data into a clean and intuitive interface.",
           results:
-            "Delivered an intuitive dashboard that streamlined pharmacy operations. The enhanced UI led to increased user engagement and greater data accessibility for faster decision-making.",
+            "Delivered an intuitive dashboard that streamlined pharmacy operations. The enhanced UI led to increased user engagement and greater data accessibility for faster decision-making."
         },
         about: {
           link: "https://medrafa.et/",
           name: "Medrafa",
           logo: "/our-work/madrafa-logo.png",
-          image: "/our-work/medrafa.png",
-        },
+          image: "/our-work/shots/madrafa.png"
+        }
       },
       {
         title: "Custom Geotagging Software",
@@ -71,16 +71,16 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Designed and developed a high-performance, customized geotagging software solution using the .NET framework, tailored to the client's unique data requirements.",
           results:
-            "Empowered the client with a powerful, custom-built tool that unlocked new data analysis capabilities. The client stated: \"Great experience with Zare; we have one of the most talented engineers to work with, couldn't be happier!\"",
+            'Empowered the client with a powerful, custom-built tool that unlocked new data analysis capabilities. The client stated: "Great experience with Zare; we have one of the most talented engineers to work with, couldn\'t be happier!"'
         },
         about: {
           link: "https://www.keysquarelabs.com/",
           name: "KeySquare Labs",
-          logo: '/our-work/logos/keysquare.png',
-          image: '/our-work/shots/keysquare.png',
-        },
-      },
-    ],
+          logo: "/our-work/logos/keysquare.png",
+          image: "/our-work/shots/keysquare.png"
+        }
+      }
+    ]
   },
   {
     category: "Talent & BPO Operations",
@@ -96,14 +96,14 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Sourced, vetted, and recruited three full-time remote software developers from Ethiopia, creating a cost-effective and highly skilled global talent pipeline.",
           results:
-            "Successfully integrated three high-performing developers into the client's team, cutting talent overhead costs by over 50% while exceeding all performance expectations.",
+            "Successfully integrated three high-performing developers into the client's team, cutting talent overhead costs by over 50% while exceeding all performance expectations."
         },
         about: {
           link: "https://pickrellglobaltechnologies.com/",
           name: "Pickrell Global Technologies",
-          logo: '/our-work/logos/pickrell.png',
-          image: '/our-work/shots/pickrell.png',
-        },
+          logo: "/our-work/logos/pickrell.png",
+          image: "/our-work/shots/pickrell.png"
+        }
       },
       {
         title: "Global UI/UX Designer Hire",
@@ -114,14 +114,14 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Conducted a targeted global search to identify and facilitate the direct hire of a top-tier remote UI/UX Designer from Ethiopia.",
           results:
-            "The client successfully closed a critical skills gap by hiring a full-time remote designer who consistently exceeds performance expectations and brings a world-class design perspective.",
+            "The client successfully closed a critical skills gap by hiring a full-time remote designer who consistently exceeds performance expectations and brings a world-class design perspective."
         },
         about: {
           link: "https://www.exeliatech.com/",
           name: "Exelia Technologies",
-          logo: '/our-work/logos/exelia-transparent.png',
-          image: '/our-work/shots/exelia.png',
-        },
+          logo: "/our-work/logos/exelia-transparent.png",
+          image: "/our-work/shots/exelia.png"
+        }
       },
       {
         title: "Customer Service BPO",
@@ -132,14 +132,14 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Deployed a full-service Business Process Outsourcing (BPO) solution, managing a dedicated team of customer service representatives from Ethiopia.",
           results:
-            "Established a highly efficient and professional customer service operation that delivers exceptional service at a fraction of the cost, allowing the client to focus on core business growth.",
+            "Established a highly efficient and professional customer service operation that delivers exceptional service at a fraction of the cost, allowing the client to focus on core business growth."
         },
         about: {
           link: "https://crdle.com/",
           name: "CRDLE",
-          logo: '/our-work/logos/crdle.png',
-          image: '/our-work/shots/crdle.png',
-        },
+          logo: "/our-work/logos/crdle.png",
+          image: "/our-work/shots/crdle.png"
+        }
       },
       {
         title: "Rapid Talent Acquisition",
@@ -150,21 +150,21 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Deployed a rapid, high-volume talent acquisition strategy, leveraging deep local networks and an accelerated vetting process.",
           results:
-            "Successfully delivered a vetted pipeline of over 80 qualified candidates within one month, enabling a smooth, on-schedule operational launch for the new African branch.",
+            "Successfully delivered a vetted pipeline of over 80 qualified candidates within one month, enabling a smooth, on-schedule operational launch for the new African branch."
         },
         about: {
           link: "https://www.kagool.com/",
           name: "Kagool",
-          logo: '/our-work/logos/kagol.svg',
-          image: '/our-work/shots/kagol.png',
-        },
-      },
-    ],
+          logo: "/our-work/logos/kagol.svg",
+          image: "/our-work/shots/kagol.png"
+        }
+      }
+    ]
   },
   {
     category: "Data-Driven Consulting & Intelligence Solutins",
     description:
-      " We combine precise data mining and analysis with strategic consulting expertise to help organizations make better decisions. Our services span data acquisition and cleaning, business intelligence development, lead generation, and strategic advisory, enabling you to accelerate outreach and build lasting competitive advantages.",
+      "We combine precise data mining and analysis with strategic consulting expertise to help organizations make better decisions. Our services span data acquisition and cleaning, business intelligence development, lead generation, and strategic advisory, enabling you to accelerate outreach and build lasting competitive advantages.",
     projects: [
       {
         title: "Media Database",
@@ -175,126 +175,162 @@ export const projectCategories: ProjectsList[] = [
           solution:
             "Executed a targeted data mining operation to collect contact details and social media information for 200 journalists across the African continent.",
           results:
-            "Delivered a clean, verified, and actionable database of 200 key media contacts, empowering the client to launch a highly effective and targeted outreach campaign.",
+            "Delivered a clean, verified, and actionable database of 200 key media contacts, empowering the client to launch a highly effective and targeted outreach campaign."
         },
         about: {
           link: "https://africacommunicationsgroup.com/",
           name: "Africa Communications Media Group",
-          logo: '/our-work/logos/acmg.png',
-          image: '/our-work/shots/acmg.png',
-        },
+          logo: "/our-work/logos/acmg.png",
+          image: "/our-work/shots/acmg.png"
+        }
       },
-    ],
+      {
+        title: "Remote Back Office Support Specialist Placement",
+        location: "Washington, D.C",
+        details: {
+          challenge:
+            "The client needed a skilled back office support specialist to handle administrative operations but faced high local hiring costs and a competitive talent market in Washington, D.C.",
+          solution:
+            "Conducted a targeted global talent search and facilitated the direct hire of a qualified remote back office support specialist from Ethiopia, providing comprehensive vetting and onboarding support.",
+          results:
+            "Successfully placed a high-performing back office specialist who seamlessly integrated into the client's operations while maintaining exceptional service quality and reliability."
+        },
+        about: {
+          link: "https://1013enterprise.com/",
+          name: "10.13 Enterprise",
+          logo: "/our-work/logos/10-13.png",
+          image: "/our-work/shots/10-13.png"
+        }
+      },
+      {
+        title: "Technology Consulting Services",
+        location: "Washington, District of Columbia",
+        details: {
+          challenge:
+            "A half-billion-dollar private equity fund needed comprehensive technology infrastructure and systems to support their operations, including investor reporting capabilities and ESG data management.",
+          results:
+            "Services include: Needs analysis and SAAS tool selection for a robust CRM, Automated ESG data collection and reporting systems, AI and ML enhancements for investor reporting, Custom development for an international e-commerce platform and Integrated AI tools for streamlining board meeting summary documents",
+          solution: "Delivered comprehensive technology consulting services."
+        },
+        about: {
+          link: "https://www.afigfunds.com/",
+          name: "AFIG FUNDS",
+          logo: "/our-work/logos/afig-funds.png",
+          image: "/our-work/shots/afig-funds.png"
+        }
+      }
+    ]
   },
   {
-    category: 'Website development',
-    description: 'We specialize in crafting exceptional websites and intuitive UI/UX designs, delivering engaging digital experiences that captivate users and drive results.',
+    category: "Website development",
+    description:
+      "We specialize in crafting exceptional websites and intuitive UI/UX designs, delivering engaging digital experiences that captivate users and drive results.",
     projects: [
       {
-        title: 'GURSHA ETHIOPIAN KITCHEN',
+        title: "GURSHA ETHIOPIAN KITCHEN",
         location: "Nairobi, Kenya",
         details: {
           challenge: "",
           solution: "",
-          results: "",
+          results: ""
         },
         about: {
           link: "https://www.gursha.com/",
           name: "",
-          logo: '/our-work/logos/gursha.png',
-          image: '/our-work/shots/gursha.png',
-        },
+          logo: "/our-work/logos/gursha.png",
+          image: "/our-work/shots/gursha.png"
+        }
       },
       {
-        title: 'KAZANA Group',
+        title: "KAZANA Group",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge: "",
           solution: "",
-          results: "",
+          results: ""
         },
         about: {
           link: "https://www.kazanagroup.com/",
           name: "",
-          logo: '/our-work/logos/kazana.png',
-          image: '/our-work/shots/kazana.png',
-        },
+          logo: "/our-work/logos/kazana.png",
+          image: "/our-work/shots/kazana.png"
+        }
       },
       {
-        title: 'Just Kids Autism Center',
+        title: "Just Kids Autism Center",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge: "",
           solution: "",
-          results: "",
+          results: ""
         },
         about: {
           link: "https://www.justkidsmn.com/",
           name: "",
-          logo: '/our-work/logos/just-kids.png',
-          image: '/our-work/shots/just-kids.png',
-        },
+          logo: "/our-work/logos/just-kids.png",
+          image: "/our-work/shots/just-kids.png"
+        }
       },
       {
-        title: 'Better Life',
+        title: "Better Life",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge: "",
           solution: "",
-          results: "",
+          results: ""
         },
         about: {
           link: "https://www.betterlifeorg.com/",
           name: "",
-          logo: '/our-work/logos/betterlife.svg',
-          image: '/our-work/shots/better-life.png',
-        },
+          logo: "/our-work/logos/betterlife.svg",
+          image: "/our-work/shots/better-life.png"
+        }
       },
       {
-        title: 'Sunbeam ABA Center',
+        title: "Sunbeam ABA Center",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge: "",
           solution: "",
-          results: "",
+          results: ""
         },
         about: {
           link: "https://www.sunbeamaba.com/",
           name: "",
-          logo: '/our-work/logos/sunbeam-logo.png',
-          image: '/our-work/shots/sunbeam.png',
-        },
+          logo: "/our-work/logos/sunbeam-logo.png",
+          image: "/our-work/shots/sunbeam.png"
+        }
       },
       {
-        title: 'HK Financial Advisory LLC',
+        title: "HK Financial Advisory LLC",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge: "",
           solution: "",
-          results: "",
+          results: ""
         },
         about: {
           link: "https://www.hkfinancialadvisory.com/",
           name: "",
-          logo: '/our-work/logos/hk.svg',
-          image: '/our-work/shots/hk.png',
-        },
+          logo: "/our-work/logos/hk.svg",
+          image: "/our-work/shots/hk.png"
+        }
       },
       {
-        title: 'Signature Residence',
+        title: "Signature Residence",
         location: "Addis Ababa, Ethiopia",
         details: {
           challenge: "",
           solution: "",
-          results: "",
+          results: ""
         },
         about: {
           link: "https://thesignatureresidence.com/",
           name: "",
-          logo: '/our-work/logos/signature-logo.svg',
-          image: '/our-work/shots/signature.png',
-        },
-      },
+          logo: "/our-work/logos/signature-logo.svg",
+          image: "/our-work/shots/signature.png"
+        }
+      }
     ]
   }
 ];
