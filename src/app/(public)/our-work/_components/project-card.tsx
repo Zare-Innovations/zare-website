@@ -18,7 +18,7 @@ export default function ProjectCard({ project, isWeb}: { project: Project, isWeb
               href={project.about.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-start text-lg min-[500px]:text-2xl sm:text-3xl font-bold text-black"
+              className="text-start text-lg min-[500px]:text-2xl sm:text-3xl font-bold text-black transition-all duration-300 hover:text-cyan-500"
             >
               {project.title.toUpperCase()}
             </Link> : 
