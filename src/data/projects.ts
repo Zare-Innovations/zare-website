@@ -158,7 +158,24 @@ export const projectCategories: ProjectsList[] = [
           logo: "/our-work/logos/kagol.svg",
           image: "/our-work/shots/kagol.png"
         }
-      }
+      }, {
+        title: "Remote Back Office Support Specialist Placement",
+        location: "Washington, D.C",
+        details: {
+          challenge:
+            "The client needed a skilled back office support specialist to handle administrative operations but faced high local hiring costs and a competitive talent market in Washington, D.C.",
+          solution:
+            "Conducted a targeted global talent search and facilitated the direct hire of a qualified remote back office support specialist from Ethiopia, providing comprehensive vetting and onboarding support.",
+          results:
+            "Successfully placed a high-performing back office specialist who seamlessly integrated into the client's operations while maintaining exceptional service quality and reliability."
+        },
+        about: {
+          link: "https://1013enterprise.com/",
+          name: "10.13 Enterprise",
+          logo: "/our-work/logos/10-13.png",
+          image: "/our-work/shots/10-13.png"
+        }
+      },
     ]
   },
   {
@@ -182,24 +199,6 @@ export const projectCategories: ProjectsList[] = [
           name: "Africa Communications Media Group",
           logo: "/our-work/logos/acmg.png",
           image: "/our-work/shots/acmg.png"
-        }
-      },
-      {
-        title: "Remote Back Office Support Specialist Placement",
-        location: "Washington, D.C",
-        details: {
-          challenge:
-            "The client needed a skilled back office support specialist to handle administrative operations but faced high local hiring costs and a competitive talent market in Washington, D.C.",
-          solution:
-            "Conducted a targeted global talent search and facilitated the direct hire of a qualified remote back office support specialist from Ethiopia, providing comprehensive vetting and onboarding support.",
-          results:
-            "Successfully placed a high-performing back office specialist who seamlessly integrated into the client's operations while maintaining exceptional service quality and reliability."
-        },
-        about: {
-          link: "https://1013enterprise.com/",
-          name: "10.13 Enterprise",
-          logo: "/our-work/logos/10-13.png",
-          image: "/our-work/shots/10-13.png"
         }
       },
       {
