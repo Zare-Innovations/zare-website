@@ -258,7 +258,7 @@ export const projectCategories: ProjectsList[] = [
       },
       {
         title: "Just Kids Autism Center",
-        location: "Addis Ababa, Ethiopia",
+        location: "Minnesota, USA",
         details: {
           challenge: "",
           solution: "",
@@ -273,7 +273,7 @@ export const projectCategories: ProjectsList[] = [
       },
       {
         title: "Better Life",
-        location: "Addis Ababa, Ethiopia",
+        location: "Oregon, USA",
         details: {
           challenge: "",
           solution: "",
@@ -288,7 +288,7 @@ export const projectCategories: ProjectsList[] = [
       },
       {
         title: "Sunbeam ABA Center",
-        location: "Addis Ababa, Ethiopia",
+        location: "Oregon, USA",
         details: {
           challenge: "",
           solution: "",
@@ -303,7 +303,7 @@ export const projectCategories: ProjectsList[] = [
       },
       {
         title: "HK Financial Advisory LLC",
-        location: "Addis Ababa, Ethiopia",
+        location: "Virginia, USA",
         details: {
           challenge: "",
           solution: "",
@@ -329,6 +329,21 @@ export const projectCategories: ProjectsList[] = [
           name: "",
           logo: "/our-work/logos/signature-logo.svg",
           image: "/our-work/shots/signature.png"
+        }
+      },
+      {
+        title: "Sabbell",
+        location: "Addis Ababa, Ethiopia",
+        details: {
+          challenge: "",
+          solution: "",
+          results: ""
+        },
+        about: {
+          link: "https://sabbell.com/",
+          name: "",
+          logo: "/our-work/logos/sabbell.png",
+          image: "/our-work/shots/sabbell.png"
         }
       }
     ]
