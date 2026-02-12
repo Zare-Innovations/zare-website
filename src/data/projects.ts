@@ -88,7 +88,7 @@ export const projectCategories: ProjectsList[] = [
       "Global talent sourcing and business process outsourcing for technology and customer service needs. We help clients overcome local talent shortages and reduce operational costs by recruiting, vetting, and integrating high-performing remote technical teams or customer support agents, yielding seamless expansion and notable cost-efficiency.",
     projects: [
       {
-        title: "Pickrell Global Technologies",
+        title: "Remote Software Development Team",
         location: "Pennsylvania, USA",
         details: {
           challenge:
