@@ -10,9 +10,10 @@ import {
   Modal,
   Flex,
 } from '@mantine/core';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 
 export default function SavingModal({
@@ -34,16 +35,37 @@ export default function SavingModal({
 }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const dismissToast = () => {
+    const wasSuccess = toast?.type === 'success';
+    setToast(null);
+    if (wasSuccess) {
+      setEmail('');
+      setError('');
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(dismissToast, 5000);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+    setToast(null);
     if (!z.string().email().safeParse(email).success) {
       setError('Please enter a valid email address.');
       return;
     }
+
+    setLoading(true);
     try {
-      await fetch(
+      const res = await fetch(
         'https://landing.zareinnovations.com/api/resource-rate/send-email',
         {
           method: 'POST',
@@ -59,13 +81,18 @@ export default function SavingModal({
           }),
         }
       );
-    } catch (err) {
-      console.error('Error sending email:', err);
-      setError('Failed to send email. Please try again later.');
-      return;
-    }
 
-    onClose();
+      if (!res.ok) {
+        setToast({ type: 'error', message: 'Failed to send email. Please try again later.' });
+        return;
+      }
+
+      setToast({ type: 'success', message: 'Your savings report has been sent to your email!' });
+    } catch (err) {
+      setToast({ type: 'error', message: 'Failed to send email. Please try again later.' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,6 +100,49 @@ export default function SavingModal({
   <form onSubmit={e=>handleSubmit(e)}>
     <Box bg="#ffffff">
       <Container size="lg" className=' md:py-4'>
+        {/* Toast Modal */}
+        <Modal
+          opened={!!toast}
+          onClose={dismissToast}
+          size="sm"
+          centered
+          withCloseButton={false}
+          zIndex={1000}
+          overlayProps={{ backgroundOpacity: 0.3 }}
+          styles={{
+            content: { borderRadius: '16px' },
+          }}
+        >
+          <Stack align="center" gap="md" py="md">
+            <Box
+              className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                toast?.type === 'success' ? 'bg-teal-100' : 'bg-red-100'
+              }`}
+            >
+              {toast?.type === 'success' ? (
+                <IconCheck size={32} className="text-teal-600" />
+              ) : (
+                <IconX size={32} className="text-red-600" />
+              )}
+            </Box>
+            <Text fw={700} size="lg" c={toast?.type === 'success' ? 'teal' : 'red'}>
+              {toast?.type === 'success' ? 'Success' : 'Error'}
+            </Text>
+            <Text ta="center" c="dimmed" size="sm">
+              {toast?.message}
+            </Text>
+            <Button
+              onClick={dismissToast}
+              color={toast?.type === 'success' ? 'teal' : 'red'}
+              radius="md"
+              fullWidth
+              maw={200}
+            >
+              OK
+            </Button>
+          </Stack>
+        </Modal>
+
         {/* Progress Indicator */}
         <Group justify="center" mb={20}>
           <Box className="w-full ">
@@ -171,9 +241,10 @@ export default function SavingModal({
                 />
      <button
   type="submit"
-  className="w-full sm:w-auto bg-[#1e293b] text-white px-8 h-12 rounded-lg font-medium text-base hover:bg-[#0f172a] transition-colors"
+  disabled={loading}
+  className="w-full sm:w-auto bg-[#1e293b] text-white px-8 h-12 rounded-lg font-medium text-base hover:bg-[#0f172a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 >
-  Submit
+  {loading ? 'Submiting...' : 'Submit'}
 </button>
               </Flex>
 
