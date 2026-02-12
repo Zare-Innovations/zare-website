@@ -13,10 +13,7 @@ import {
 function TiltImg({ imgUrl }: { imgUrl: string }) {
   return (
     <Tilt className="w-full h-full " maxTilt={10} perspective={600}>
-      <TiltContent
-        asChild
-        className="rounded-md overflow-hidden max-sm:shadow-[0.5px_0.5px_5px_1px_rgba(0,0,0,0.2)]"
-      >
+      <TiltContent className="rounded-md overflow-hidden max-sm:shadow-[0.5px_0.5px_5px_1px_rgba(0,0,0,0.2)]">
         <Card className="w-full h-full p-0 flex items-center justify-center overflow-hidden">
           <div className="relative w-full aspect-[4/2]">
             <Image
@@ -40,7 +37,7 @@ export default function ProjectsOverview() {
       <div className="grid grid-cols-2 gap-y-4 sm:gap-4 lg:px-20">
         {[project1, project3, project4, project2].map((project, index) => (
           <div
-            className={`w-full h-full min-h-0 ${index === 0 && " max-sm:translate-x-6"} ${index === 1 && "max-sm:-translate-y-6 max-sm:-translate-x-6"} ${index === 3 && " max-sm:-translate-x-6"} ${index === 2 && " max-sm:translate-y-6 max-sm:translate-x-6"}`}
+            className={`w-full h-full min-h-0 relative z-0 ${index === 0 ? "max-sm:translate-x-6" : ""} ${index === 1 ? "max-sm:-translate-y-6 max-sm:-translate-x-6" : ""} ${index === 2 ? "max-sm:translate-y-6 max-sm:translate-x-6" : ""} ${index === 3 ? "max-sm:-translate-x-6" : ""}`}
             key={index}
           >
             <TiltImg imgUrl={project.src} />
