@@ -13,7 +13,6 @@ import {
   type SearchableColumn,
   type SelectedFilter,
 } from "@/app/utility/build-where";
-import ContactUsForm from "../../_components/contact-us";
 
 export interface JobType {
   id: string;
@@ -119,14 +118,14 @@ const CareersList = () => {
   useEffect(() => {
     if (!mounted.current) {
       if (jobsDataResponse?.items) {
-        setAllJobs(jobsDataResponse.items);
-        mounted.current = true;
+        // setAllJobs(jobsDataResponse.items);
+        // mounted.current = true;
       }
     }
   }, [jobsDataResponse]);
 
   // Memoize results
-  const results = jobsDataResponse?.items ?? [];
+  const results = allJobs ?? [];
 
   const errorMsg = error
     ? typeof error === "string"
@@ -136,10 +135,11 @@ const CareersList = () => {
 
   // Use isFetching for loading indicator, not just isLoading
   const showLoading = isFetching;
+  const showFilter = results.length > 0 || showLoading;
 
   return (
     <Flex className="relative flex flex-col gap-7 md:gap-10 px-5 md:px-16 pt-10 pb-20">
-      <CareersFilter
+      {showFilter && <CareersFilter
         jobs={allJobs}
         isFetching={isLoading}
         selectedLoc={selectedLoc}
@@ -150,7 +150,7 @@ const CareersList = () => {
         setSelectedTitle={setSelectedTitle}
         setSelectedType={setSelectedType}
         setQuery={setQuery}
-      />
+      />}
       {showLoading ? (
         Array.from("jobs").map((j, i) => (
           <div
@@ -189,18 +189,18 @@ const CareersList = () => {
           </Card>
         ) : (
             results.length === 0 ?
-              <Card className="w-max self-center flex flex-col items-center gap-5 max-sm:px-5 max-md:px-16">
+              <div className="h-[40dvh] w-full self-center flex flex-col items-center justify-center gap-5 max-sm:px-5 max-md:px-16">
                 {query || selectedLoc || selectedTitle || selectedType
                   ?
                   <span className="text-zinc-600 text-lg">
                     No job found with this filtering or query.
                   </span>
-                  : <Card className="self-center flex flex-col items-center text-center gap-3">
+                  : <Card className="md:max-w-4xl self-center flex flex-col items-center text-center gap-3">
                       <span className="text-black/70 text-wrap">
-                        No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1">careers@zareinnovations.com</a>, we'd love to connect.
+                        No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">careers@zareinnovations.com</a>, we'd love to connect.
                       </span>
                     </Card>}
-              </Card> :
+              </div> :
               <div className="grid md:grid-cols-2 w-full gap-5 sm:gap-7">
                 {results.map((job, i) => <CareerCard key={job.id + i} job={job} />)}
               </div>
