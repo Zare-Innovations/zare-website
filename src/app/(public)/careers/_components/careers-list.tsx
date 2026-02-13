@@ -189,7 +189,7 @@ const CareersList = () => {
           </Card>
         ) : (
             results.length === 0 ?
-              <div className="h-[40dvh] w-full self-center flex flex-col items-center justify-center gap-5 max-sm:px-5 max-md:px-16">
+              <div className="h-[30dvh] sm:h-[40dvh] w-full self-center flex flex-col items-center justify-center gap-5 max-sm:px-5 max-md:px-16">
                 {query || selectedLoc || selectedTitle || selectedType
                   ?
                   <span className="text-zinc-600 text-lg">
