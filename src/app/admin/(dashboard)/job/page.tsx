@@ -100,14 +100,14 @@ const router = useRouter();
         await refetch(); 
         setModalOpen(false);
         setSelectedJobId(null);
-      } catch {
+      } catch (error: any) {
         setModalOpen(false)
+        console.error('Delete job failed:', error);
         notifications.show({
           title: 'Delete Failed',
-          message: 'Cannot delete this job. Please try again.',
+          message: error?.data?.message || error?.message || 'Cannot delete this job. Please try again.',
           color: 'red',
         });
-        ;
       }
     }
   };
