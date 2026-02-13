@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Metadata } from 'next';
 import Hero from "./_components/hero";
 import CareersList from './_components/careers-list';

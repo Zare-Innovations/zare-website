@@ -10,7 +10,7 @@ export function Jobs() {
 
     useEffect(() => {
         if (jobsDataResponse?.items) {
-            setJobListings(jobsDataResponse.items);
+            // setJobListings(jobsDataResponse.items);
         }
     }, [jobsDataResponse]);
 

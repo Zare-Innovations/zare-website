@@ -12,8 +12,8 @@ export default function Jobs() {
 
   useEffect(() => {
     if (jobsDataResponse?.items) {
-      const items = jobsDataResponse.items;
-      setJobs(items.length > 4 ? items.slice(0, 4) : items);
+      // const items = jobsDataResponse.items;
+      // setJobs(items.length > 4 ? items.slice(0, 4) : items);
     }
   }, [jobsDataResponse]);
 
@@ -64,9 +64,9 @@ export default function Jobs() {
           </Card>
         ) : (
           jobs.length === 0 ? 
-          <Card className="self-center flex flex-col items-center text-center gap-3">
+          <Card className="md:max-w-4xl self-center flex flex-col items-center text-center gap-3">
             <span className="text-black/70 text-wrap">
-              No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1">careers@zareinnovations.com</a>, we'd love to connect.
+              No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">careers@zareinnovations.com</a>, we'd love to connect.
             </span>
           </Card> : 
           <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
