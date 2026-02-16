@@ -66,7 +66,6 @@ export async function submitJobApply(formData: FormData): Promise<{
     sendBody.append("coverLetter", message);
     if (userFile) sendBody.append("userFile", userFile);
 
-    console.log(sendBody)
 
     // const result = await fetch(
     //   `${process.env.NEXT_PUBLIC_BASE_URL}/api/applied-jobs`,
@@ -86,7 +85,6 @@ export async function submitJobApply(formData: FormData): Promise<{
         "Thank you for applying! We have received your application and will get back to you shortly."
     };
   } catch (err: unknown) {
-    console.log(err);
 
     return {
       success: false,

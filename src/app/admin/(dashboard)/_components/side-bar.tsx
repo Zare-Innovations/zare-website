@@ -26,8 +26,6 @@ export default function Sidebar() {
 
    const { data: profile} = useProfileQuery();
 
-   console.log("Profile Data:", profile);
-
   // const router = useRouter();
   const pathname = usePathname();
 

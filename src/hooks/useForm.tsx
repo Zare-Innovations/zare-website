@@ -25,7 +25,6 @@ export default function useContactForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    console.log(name, value, formData);
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
@@ -103,7 +102,6 @@ export default function useContactForm() {
         message:
           'Thank you for reaching out to us! We have received your inquiry and will get back to you shortly.',
       });
-      console.log('Email sent');
     } catch {
       setLoading(false);
       notifications.show({
