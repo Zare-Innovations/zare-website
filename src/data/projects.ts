@@ -179,7 +179,7 @@ export const projectCategories: ProjectsList[] = [
     ]
   },
   {
-    category: "Data-Driven Consulting & Intelligence Solutins",
+    category: "Data-Driven Consulting & Intelligence Solutions",
     description:
       "We combine precise data mining and analysis with strategic consulting expertise to help organizations make better decisions. Our services span data acquisition and cleaning, business intelligence development, lead generation, and strategic advisory, enabling you to accelerate outreach and build lasting competitive advantages.",
     projects: [
