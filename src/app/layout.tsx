@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     template: '%s | Zare Innovations',
   },
   description:
-    'Zare Innovations delivers custom software, AI solutions, talent outsourcing, and data intelligence services to help businesses scale globally.',
+    'Zare Innovations is a technology company based in Ethiopia and the USA, delivering custom software development, AI solutions, talent outsourcing, and data intelligence services to help businesses scale globally.',
   keywords: [
     'custom software development',
     'AI solutions',
@@ -51,6 +51,14 @@ export const metadata: Metadata = {
     'BPO',
     'data intelligence',
     'Zare Innovations',
+    'tech companies in Ethiopia',
+    'software companies in Ethiopia',
+    'software development Ethiopia',
+    'IT company Addis Ababa',
+    'tech company USA',
+    'software outsourcing Ethiopia',
+    'African tech company',
+    'Ethiopian software company',
   ],
   authors: [{ name: 'Zare Innovations' }],
   creator: 'Zare Innovations',
@@ -61,7 +69,7 @@ export const metadata: Metadata = {
     siteName: 'Zare Innovations',
     images: [
       {
-        url: '/zare-logo_lg.png',
+        url: '/zare-logo.jpg',
         width: 1200,
         height: 630,
         alt: 'Zare Innovations',
@@ -70,7 +78,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/zare-logo_lg.png'],
+    images: ['/zare-logo.jpg'],
   },
   robots: {
     index: true,
@@ -87,8 +95,8 @@ export const metadata: Metadata = {
     canonical: 'https://zareinnovations.com',
   },
   icons: {
-    icon: '/zare-logo-footer.svg',
-    apple: '/zare-logo_lg.png',
+    icon: '/zare-logo.jpg',
+    apple: '/zare-logo.jpg',
   },
 };
 
