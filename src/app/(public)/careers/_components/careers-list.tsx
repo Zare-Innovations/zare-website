@@ -43,7 +43,7 @@ const CareersList = () => {
   const primaryColumn: SearchableColumn = [
     { label: "Title", value: "title" },
     { label: "Description", value: "description" },
-    { label: "Skills", value: "skills" },
+    { label: "Skills", value: "skills" }
   ];
 
   // Convert filter selections to SelectedFilter format
@@ -55,7 +55,7 @@ const CareersList = () => {
         field: "title",
         operator: "=",
         value: selectedTitle,
-        filterLabel: selectedTitle,
+        filterLabel: selectedTitle
       });
     }
     if (selectedType) {
@@ -64,7 +64,7 @@ const CareersList = () => {
         field: "workType",
         operator: "=",
         value: selectedType,
-        filterLabel: selectedType,
+        filterLabel: selectedType
       });
     }
     if (selectedLoc) {
@@ -73,7 +73,7 @@ const CareersList = () => {
         field: "location",
         operator: "=",
         value: selectedLoc,
-        filterLabel: selectedLoc,
+        filterLabel: selectedLoc
       });
     }
     return filters;
@@ -84,7 +84,7 @@ const CareersList = () => {
     const where = buildWhere({
       primaryColumn,
       search: debouncedSearch,
-      selectedFilters,
+      selectedFilters
     });
 
     // Always include orderBy for consistent sorting
@@ -93,9 +93,9 @@ const CareersList = () => {
       orderBy: [
         {
           column: "createdAt",
-          direction: "DESC",
-        },
-      ],
+          direction: "DESC"
+        }
+      ]
     };
 
     if (where.length > 0) {
@@ -105,52 +105,53 @@ const CareersList = () => {
     return query;
   }, [primaryColumn, debouncedSearch, selectedFilters]);
 
-  const {
-    data: jobsDataResponse,
-    isLoading,
-    isFetching,
-    error,
-    refetch,
-  } = useGetJobsQuery(queryArgs);
+  // const {
+  //   data: jobsDataResponse,
+  //   isLoading,
+  //   isFetching,
+  //   error,
+  //   refetch
+  // } = useGetJobsQuery(queryArgs);
 
   // It should not change when filtering/searching. Use a ref to track mount for clarity.
-  const mounted = useRef(false);
-  useEffect(() => {
-    if (!mounted.current) {
-      if (jobsDataResponse?.items) {
-        // setAllJobs(jobsDataResponse.items);
-        // mounted.current = true;
-      }
-    }
-  }, [jobsDataResponse]);
+  // const mounted = useRef(false);
+  // useEffect(() => {
+  //   if (!mounted.current) {
+  //     if (jobsDataResponse?.items) {
+  //       // setAllJobs(jobsDataResponse.items);
+  //       // mounted.current = true;
+  //     }
+  //   }
+  // }, [jobsDataResponse]);
 
   // Memoize results
   const results = allJobs ?? [];
 
-  const errorMsg = error
-    ? typeof error === "string"
-      ? error
-      : "Failed to fetch jobs"
-    : null;
-
   // Use isFetching for loading indicator, not just isLoading
-  const showLoading = isFetching;
-  const showFilter = results.length > 0 || showLoading;
+  // const showLoading = isFetching;
+  // const showFilter = results.length > 0 || showLoading;
+  const isLoading = false;
+  const showLoading = false;
+  const showFilter = false;
+  const error = false;
+  const refetch = () => {};
 
   return (
     <Flex className="relative flex flex-col gap-7 md:gap-10 px-5 md:px-16 pt-10 pb-20">
-      {showFilter && <CareersFilter
-        jobs={allJobs}
-        isFetching={isLoading}
-        selectedLoc={selectedLoc}
-        selectedTitle={selectedTitle}
-        selectedType={selectedType}
-        query={query}
-        setSelectedLoc={setSelectedLoc}
-        setSelectedTitle={setSelectedTitle}
-        setSelectedType={setSelectedType}
-        setQuery={setQuery}
-      />}
+      {showFilter && (
+        <CareersFilter
+          jobs={allJobs}
+          isFetching={isLoading}
+          selectedLoc={selectedLoc}
+          selectedTitle={selectedTitle}
+          selectedType={selectedType}
+          query={query}
+          setSelectedLoc={setSelectedLoc}
+          setSelectedTitle={setSelectedTitle}
+          setSelectedType={setSelectedType}
+          setQuery={setQuery}
+        />
+      )}
       {showLoading ? (
         Array.from("jobs").map((j, i) => (
           <div
@@ -170,40 +171,49 @@ const CareersList = () => {
           </div>
         ))
       ) : error ? (
-          <Card className="w-max self-center flex flex-col items-center gap-5">
-            <div className="flex flex-col items-center">
-              <span className="text-red-600">
-                Failed to load job openings, please try again!
+        <Card className="w-max self-center flex flex-col items-center gap-5">
+          <div className="flex flex-col items-center">
+            <span className="text-red-600">
+              Failed to load job openings, please try again!
+            </span>
+            <span className="text-black/70 text-sm">
+              If this error is persistent, please feel free contact us directly.
+            </span>
+          </div>
+          <button
+            onClick={refetch}
+            className={`w-full flex items-center justify-center gap-3 rounded-md px-2.5 py-1.5  text-xs min-[430px]:text-sm min-[500px]:text-base border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white transition-all duration-300`}
+          >
+            <IconRefresh size={19} />
+            <span className="">Try again</span>
+          </button>
+        </Card>
+      ) : results.length === 0 ? (
+        <div className="h-[30dvh] sm:h-[40dvh] w-full self-center flex flex-col items-center justify-center gap-5 max-sm:px-5 max-md:px-16">
+          {query || selectedLoc || selectedTitle || selectedType ? (
+            <span className="text-zinc-600 text-lg">
+              No job found with this filtering or query.
+            </span>
+          ) : (
+            <Card className="md:max-w-4xl self-center flex flex-col items-center text-center gap-3">
+              <span className="text-black/70 text-wrap">
+                No open roles at the moment, but great talent is always welcome.
+                If you're looking for meaningful work with a collaborative team,
+                reach out to{" "}
+                <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">
+                  careers@zareinnovations.com
+                </a>
+                , we'd love to connect.
               </span>
-              <span className="text-black/70 text-sm">
-                If this error is persistent, please feel free contact us directly.
-              </span>
-            </div>
-            <button
-              onClick={refetch}
-              className={`w-full flex items-center justify-center gap-3 rounded-md px-2.5 py-1.5  text-xs min-[430px]:text-sm min-[500px]:text-base border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white transition-all duration-300`}
-            >
-              <IconRefresh size={19} />
-              <span className="">Try again</span>
-            </button>
-          </Card>
-        ) : (
-            results.length === 0 ?
-              <div className="h-[30dvh] sm:h-[40dvh] w-full self-center flex flex-col items-center justify-center gap-5 max-sm:px-5 max-md:px-16">
-                {query || selectedLoc || selectedTitle || selectedType
-                  ?
-                  <span className="text-zinc-600 text-lg">
-                    No job found with this filtering or query.
-                  </span>
-                  : <Card className="md:max-w-4xl self-center flex flex-col items-center text-center gap-3">
-                      <span className="text-black/70 text-wrap">
-                        No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">careers@zareinnovations.com</a>, we'd love to connect.
-                      </span>
-                    </Card>}
-              </div> :
-              <div className="grid md:grid-cols-2 w-full gap-5 sm:gap-7">
-                {results.map((job, i) => <CareerCard key={job.id + i} job={job} />)}
-              </div>
+            </Card>
+          )}
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 w-full gap-5 sm:gap-7">
+          {results.map((job, i) => (
+            <CareerCard key={job.id + i} job={job} />
+          ))}
+        </div>
       )}
     </Flex>
   );
