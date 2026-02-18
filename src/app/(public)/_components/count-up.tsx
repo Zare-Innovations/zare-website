@@ -6,7 +6,7 @@ type StatProps = {
 
 export default function CountUp({ label, end, suffix = "" }: StatProps) {
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-center min-[500px]:items-start">
       <span
         className="count-up text-2xl min-[478px]:text-3xl md:text-[36px] font-medium text-cyan-500"
         style={{ "--num": end } as React.CSSProperties}
