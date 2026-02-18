@@ -8,14 +8,16 @@ import { Job, useGetJobsQuery } from "@/store/api/job.api";
 
 export default function Jobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const { data: jobsDataResponse, isLoading, isError } = useGetJobsQuery({});
+  const isLoading = false;
+  const isError = false;
+  // const { data: jobsDataResponse, isLoading, isError } = useGetJobsQuery({});
 
-  useEffect(() => {
-    if (jobsDataResponse?.items) {
-      // const items = jobsDataResponse.items;
-      // setJobs(items.length > 4 ? items.slice(0, 4) : items);
-    }
-  }, [jobsDataResponse]);
+  // useEffect(() => {
+  //   if (jobsDataResponse?.items) {
+  //     // const items = jobsDataResponse.items;
+  //     // setJobs(items.length > 4 ? items.slice(0, 4) : items);
+  //   }
+  // }, [jobsDataResponse]);
 
   return (
     <Stack
@@ -31,8 +33,8 @@ export default function Jobs() {
           innovations
         </p>
       </Flex>
-        {isLoading ? (
-          <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
+      {isLoading ? (
+        <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
           {Array.from("jobs").map((j, i) => (
             <div
               key={j + i}
@@ -49,36 +51,47 @@ export default function Jobs() {
                 <div className=" w-1/6 h-full bg-[#0001] animate-pulse rounded-full" />
               </div>
             </div>
-          ))}</Flex>
-        ) : isError ? (
-          <Card className=" w-max flex flex-col items-center gap-3">
-            <span className="text-red-600">
-              Unabe to load job openings, please refresh the page!
-            </span>
-            <Link
-              href="/careers"
-              className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
-            >
-              View all job Openings
-            </Link>
-          </Card>
-        ) : (
-          jobs.length === 0 ? 
-          <Card className="md:max-w-4xl self-center flex flex-col items-center text-center gap-3">
-            <span className="text-black/70 text-wrap">
-              No open roles at the moment, but great talent is always welcome. If you're looking for meaningful work with a collaborative team, reach out to <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">careers@zareinnovations.com</a>, we'd love to connect.
-            </span>
-          </Card> : 
-          <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
-            {jobs.map((job, i) => <CareerCard key={job.id} job={job} />)}
-          </Flex>
-        )}
-     { !isError && jobs.length > 0 && <Link
-        href="/careers"
-        className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
-      >
-        View all job openings
-      </Link>}
+          ))}
+        </Flex>
+      ) : isError ? (
+        <Card className=" w-max flex flex-col items-center gap-3">
+          <span className="text-red-600">
+            Unabe to load job openings, please refresh the page!
+          </span>
+          <Link
+            href="/careers"
+            className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+          >
+            View all job Openings
+          </Link>
+        </Card>
+      ) : jobs.length === 0 ? (
+        <Card className="md:max-w-4xl self-center flex flex-col items-center text-center gap-3">
+          <span className="text-black/70 text-wrap">
+            No open roles at the moment, but great talent is always welcome. If
+            you're looking for meaningful work with a collaborative team, reach
+            out to{" "}
+            <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">
+              careers@zareinnovations.com
+            </a>
+            , we'd love to connect.
+          </span>
+        </Card>
+      ) : (
+        <Flex className="grid md:grid-cols-2 w-full gap-5 sm:gap-7 py-8">
+          {jobs.map((job, i) => (
+            <CareerCard key={job.id} job={job} />
+          ))}
+        </Flex>
+      )}
+      {!isError && jobs.length > 0 && (
+        <Link
+          href="/careers"
+          className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+        >
+          View all job openings
+        </Link>
+      )}
     </Stack>
   );
 }
