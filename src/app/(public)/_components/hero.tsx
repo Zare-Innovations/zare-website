@@ -7,7 +7,7 @@ import CountUp from "@/app/(public)/_components/count-up";
 import { consultationLink } from "@/constants";
 import ZareEstimatorModal from "./calculator-modal";
 
-const Globe = () => {
+const Globe = ({ isMobile }: { isMobile: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -82,8 +82,12 @@ const Globe = () => {
   }, []);
 
   return (
-    <div className="relative h-auto w-1/4 min-[1000px]:w-2/5 min-[1270px]:w-1/2 flex items-end">
-      <div className="h-auto max-[1000px]:absolute max-[400px]:-right-[330%] max-[450px]:-right-[300%] max-[600px]:-right-[250%] max-md:-right-[160%] max-[1000px]:-right-[100%] w-[350px] min-[450px]:w-[400px] min-[950px]:w-[500px] min-[1000px]:w-full flex-1 flex justify-end">
+    <div
+      className={`${isMobile ? "" : "relative h-auto w-1/4 min-[1000px]:w-2/5 min-[1270px]:w-1/2 flex items-end"}`}
+    >
+      <div
+        className={`w-[350px] min-[450px]:w-[400px] min-[950px]:w-[500px] min-[1000px]:w-full h-auto ${isMobile ? "" : "max-[600px]:-right-[250%] max-md:-right-[160%] max-[1000px]:-right-[100%] flex-1 flex justify-end"}`}
+      >
         <canvas
           ref={canvasRef}
           style={{
@@ -122,29 +126,33 @@ const HeroStats = () => {
 export default function Hero() {
   return (
     <div className="relative w-screen flex justify-between gap-5 md:gap-7 p-4 min-[500px]:p-6 sm:px-16 overflow-x-hidden">
-      <div className="max-w-3/4 max-md:w-3/4 min-[1000px]:min-w-1/2 flex-1 flex flex-col items-start justify-center gap-3 min-[450px]:gap-5 z-10 bg-gradient-to-r from-white via-white/90">
-        <p className="overflow-hidden text-2xl min-[450px]:text-3xl sm:text-4xl md:text-5xl min-[1150px]:text-6xl text-start font-medium">
-          Revolutionize Your Business with <br />
+      <div className="w-full min-[500px]:max-w-3/4 max-md:w-3/4 min-[1000px]:min-w-1/2 flex-1 flex flex-col items-center min-[500px]:items-start justify-center gap-3 min-[450px]:gap-5 z-10 bg-gradient-to-r from-white via-white/90 max-[500px]:text-center">
+        <p className="overflow-hidden text-2xl min-[450px]:text-3xl sm:text-4xl md:text-5xl min-[1150px]:text-6xl min-[500px]:text-start font-medium">
+          Revolutionize Your Business with <br className="max-[500px]:hidden" />
           <span className="text-cyan-500"> Zare Innovations</span>
         </p>
         <p className="min-[450px]:text-lg md:text-[24px] text-black">
           Elevate your business with our diverse range of services, where
           quality meets affordability.
         </p>
+        <div className="min-[500px]:hidden flex items-center justify-center -mt-8 -mb-6">
+          <Globe isMobile />
+        </div>
         <HeroStats />
         <div className="flex items-center gap-3 min-[500px]:gap-7">
-          
           <Link
-      href={consultationLink}
-      target="_blank"
-      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
-    >
-      Book a consultation
-    </Link>
-    <ZareEstimatorModal>Compare Rates Instantly</ZareEstimatorModal>
+            href={consultationLink}
+            target="_blank"
+            className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
+          >
+            Book a consultation
+          </Link>
+          <ZareEstimatorModal>Compare Rates Instantly</ZareEstimatorModal>
         </div>
       </div>
-      <Globe />
+      <div className="hidden min-[500px]:flex items-center justify-center relative">
+        <Globe isMobile={false} />
+      </div>
     </div>
   );
 }
