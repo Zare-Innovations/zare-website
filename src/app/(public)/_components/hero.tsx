@@ -83,21 +83,17 @@ const Globe = ({ isMobile }: { isMobile: boolean }) => {
 
   return (
     <div
-      className={`${isMobile ? "" : "relative h-auto w-1/4 min-[1000px]:w-2/5 min-[1270px]:w-1/2 flex items-end"}`}
+      className={`w-[350px] min-[450px]:w-[400px] min-[950px]:w-[500px] min-[1000px]:w-full h-auto ${isMobile ? "" : "max-[600px]:-right-[250%] max-md:-right-[160%] max-[1000px]:-right-[100%] flex-1 flex justify-end"}`}
     >
-      <div
-        className={`w-[350px] min-[450px]:w-[400px] min-[950px]:w-[500px] min-[1000px]:w-full h-auto ${isMobile ? "" : "max-[600px]:-right-[250%] max-md:-right-[160%] max-[1000px]:-right-[100%] flex-1 flex justify-end"}`}
-      >
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: "100%",
-            height: "auto",
-            maxWidth: 600,
-            aspectRatio: 1
-          }}
-        />
-      </div>
+      <canvas
+        ref={canvasRef}
+        style={{
+          width: "100%",
+          height: "auto",
+          maxWidth: 600,
+          aspectRatio: 1
+        }}
+      />
     </div>
   );
 };
@@ -135,7 +131,7 @@ export default function Hero() {
           Elevate your business with our diverse range of services, where
           quality meets affordability.
         </p>
-        <div className="min-[500px]:hidden flex items-center justify-center -mt-8 -mb-6">
+        <div className="w-[350px] min-[500px]:hidden flex items-center justify-center -mt-8 -mb-6">
           <Globe isMobile />
         </div>
         <HeroStats />
@@ -150,8 +146,12 @@ export default function Hero() {
           <ZareEstimatorModal>Compare Rates Instantly</ZareEstimatorModal>
         </div>
       </div>
-      <div className="hidden min-[500px]:flex items-center justify-center relative">
-        <Globe isMobile={false} />
+      <div className="hidden min-[500px]:flex justify-center relative h-auto w-1/4 min-[1000px]:w-2/5 min-[1270px]:w-1/2 items-end">
+        <div
+          className={`w-[350px] min-[450px]:w-[400px] min-[950px]:w-[500px] min-[1000px]:w-full h-auto max-[600px]:-right-[250%] max-md:-right-[160%] max-[1000px]:-right-[100%] flex-1 flex justify-end`}
+        >
+          <Globe isMobile={false} />
+        </div>
       </div>
     </div>
   );
