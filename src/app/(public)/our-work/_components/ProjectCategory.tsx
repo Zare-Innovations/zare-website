@@ -32,20 +32,16 @@ export default function ProjectCategory({ category }: { category: ProjectsList }
             indicators: {
               top: "-24px",
               zIndex: "100",
-              gap: "5px",
-              width: "fit-content"
+              gap: "5px"
             },
             indicator: {
               height: "9px"
-            },
+            }
           }}
         >
           {category.projects.map((project, index) => (
-            <CarouselSlide
-              key={index}
-              className="py-8"
-            >
-              <ProjectCard project={project} isWeb={isWeb}/>
+            <CarouselSlide key={index} className="h-full py-8">
+              <ProjectCard project={project} isWeb={isWeb} />
             </CarouselSlide>
           ))}
         </Carousel>
