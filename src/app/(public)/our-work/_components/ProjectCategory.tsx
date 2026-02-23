@@ -32,7 +32,8 @@ export default function ProjectCategory({ category }: { category: ProjectsList }
             indicators: {
               top: "-24px",
               zIndex: "100",
-              gap: "5px"
+              gap: "5px",
+              justifyContent: "flex-start"
             },
             indicator: {
               height: "9px"
