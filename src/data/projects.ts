@@ -234,7 +234,7 @@ export const projectCategories: ProjectsList[] = [
           results: ""
         },
         about: {
-          link: "https://www.gursha.com/",
+          link: "https://gursharestaurant.com",
           name: "",
           logo: "/our-work/logos/gursha.png",
           image: "/our-work/shots/gursha.png"
@@ -294,7 +294,7 @@ export const projectCategories: ProjectsList[] = [
           results: ""
         },
         about: {
-          link: "https://www.sunbeamaba.com/",
+          link: "https://www.sunbeamaba.org",
           name: "",
           logo: "/our-work/logos/sunbeam-logo.png",
           image: "/our-work/shots/sunbeam.png"
