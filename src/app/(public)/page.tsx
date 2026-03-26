@@ -59,10 +59,10 @@ const organizationJsonLd = {
   address: [
     {
       '@type': 'PostalAddress',
-      streetAddress: '5501 Seminary Road, Unit 1710 South',
-      addressLocality: 'Falls Church',
-      addressRegion: 'VA',
-      postalCode: '22041',
+      streetAddress: '651 N Broad St, Suite 201',
+      addressLocality: 'Middletown',
+      addressRegion: 'DE',
+      postalCode: '19709',
       addressCountry: 'US',
     },
     {
@@ -126,7 +126,7 @@ const localBusinessUSAJsonLd = {
   '@id': 'https://zareinnovations.com/#usa-office',
   name: 'Zare Innovations - USA',
   description:
-    'Technology company in Falls Church, Virginia offering custom software development, AI solutions, talent outsourcing, and data intelligence services.',
+    'Technology company in Middletown, Delaware offering custom software development, AI solutions, talent outsourcing, and data intelligence services.',
   url: 'https://zareinnovations.com',
   logo: 'https://zareinnovations.com/zare-logo.jpg',
   image: 'https://zareinnovations.com/zare-logo.jpg',
@@ -142,8 +142,8 @@ const localBusinessUSAJsonLd = {
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: 38.8462,
-    longitude: -77.1533,
+    latitude: 39.4496,
+    longitude: -75.7163,
   },
   priceRange: '$$',
   openingHours: 'Mo-Fr 09:00-18:00',

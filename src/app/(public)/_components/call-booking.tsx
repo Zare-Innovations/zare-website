@@ -454,8 +454,8 @@ export default function CallBooking() {
           <div className="flex items-start gap-2">
             <IconMapPin size={20} />
             <span className="flex-1 text-[15px]">
-              5501 Seminary Road, Falls Church VA, 22041, Unit 1710 South,
-              22041, United States
+              651 N Broad St, Suite 201, Middletown, Delaware, 19709,
+              United States
             </span>
           </div>
           <div className="flex items-start gap-2">
