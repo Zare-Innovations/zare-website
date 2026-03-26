@@ -78,7 +78,7 @@ export default function Booking() {
 
 
           <p className="flex items-center gap-2  mt-4 ">
-            <img src="/assets/location.svg" alt="location" className="inline-block w-5 h-5" />    5501 Seminary Road, Falls Church VA, 22041,Unit 1710 South, 22041, United States
+            <img src="/assets/location.svg" alt="location" className="inline-block w-5 h-5" />    651 N Broad St, Suite 201, Middletown, Delaware, 19709, United States
           </p>
           <p className="flex items-center gap-2  ">
           <img src="/assets/location.svg" alt="location" className="inline-block w-5 h-5" />      Meskel Flower, Astor Plaza 3rd Floor, Addis Ababa, Ethiopia

@@ -71,8 +71,8 @@ export default function ContactUsForm() {
                 <Flex className="flex gap-1 sm:gap-2 flex-col">
                   <p className="text-lg font-semibold">USA</p>
                   <Flex className="gap-2 text-sm">
-                    5501 Seminary Road, Falls Church VA, 22041, Apt 1710 South,
-                    22041, United States
+                    651 N Broad St, Suite 201, Middletown, Delaware, 19709,
+                    United States
                   </Flex>
                   <p className="text-lg font-semibold">Ethiopia</p>
                   <Flex className="gap-2 text-sm z-10">
