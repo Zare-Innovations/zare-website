@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zare Innovations — Contract Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #faf8f4;
+    --cream: #f2ede3;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --gold-dark: #a07830;
+    --muted: #8a8070;
+    --border: #ddd8cc;
+    --success: #2d6a4f;
+    --error: #8b2635;
+    --white: #ffffff;
+    --shadow: 0 4px 24px rgba(15,14,12,0.08);
+    --shadow-lg: 0 12px 48px rgba(15,14,12,0.14);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(201,168,76,0.04) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  header {
+    position: relative; z-index: 10;
+    padding: 24px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(250,248,244,0.92);
+    backdrop-filter: blur(8px);
+  }
+
+  .logo { display: flex; flex-direction: column; gap: 2px; }
+  .logo-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; letter-spacing: 0.02em; }
+  .logo-sub { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  .header-badge {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; color: var(--muted);
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px;
+  }
+  .header-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+
+  .btn-back {
+    display: flex; align-items: center; gap: 7px;
+    background: none; border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 8px 16px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.83rem; font-weight: 500; color: var(--muted);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* Google user chip */
+  #user-chip {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; color: var(--muted);
+  }
+  #user-chip img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--gold-light); }
+  #user-chip span { font-weight: 500; color: var(--ink); }
+  #sign-out-btn {
+    background: none; border: 1px solid var(--border); border-radius: 5px;
+    padding: 4px 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem; color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+  #sign-out-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  main {
+    position: relative; z-index: 1;
+    max-width: 820px; margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+
+  .screen { animation: fadeUp 0.45s ease both; }
+  .screen-header { margin-bottom: 48px; }
+  .screen-label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .screen-label::before { content: ''; display: block; width: 24px; height: 1.5px; background: var(--gold); }
+  .screen-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; line-height: 1.2; }
+  .screen-desc { color: var(--muted); font-size: 0.9rem; margin-top: 8px; font-weight: 300; line-height: 1.6; }
+
+  .form-section {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 36px; margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .section-label {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 24px; padding-bottom: 14px; border-bottom: 1px solid var(--cream);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-row:last-child { margin-bottom: 0; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field label { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; }
+  .field label span.req { color: var(--gold); margin-left: 3px; }
+  .field input {
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    color: var(--ink); background: var(--paper);
+    border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 11px 14px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus {
+    border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); background: var(--white);
+  }
+  .field input::placeholder { color: #bbb5a8; }
+  .field .hint { font-size: 0.75rem; color: var(--muted); font-weight: 300; }
+
+  /* Bullet / Bulk toggle */
+  .bullet-mode-toggle {
+    display: flex; gap: 0; margin-bottom: 12px;
+    border: 1.5px solid var(--border); border-radius: 7px; overflow: hidden; width: fit-content;
+  }
+  .mode-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+    padding: 7px 16px; color: var(--muted); transition: all 0.2s;
+  }
+  .mode-btn.active { background: var(--ink); color: var(--paper); }
+  .mode-btn:first-child { border-right: 1px solid var(--border); }
+
+  .bullet-editor {
+    background: var(--paper); border: 1.5px solid var(--border);
+    border-radius: 7px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .bullet-editor:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+  .bullet-list { padding: 10px 8px; min-height: 140px; }
+  .bullet-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 3px 4px; border-radius: 5px; margin-bottom: 2px;
+  }
+  .bullet-item:hover { background: var(--cream); }
+  .bullet-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 9px; }
+  .bullet-input {
+    flex: 1; font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    color: var(--ink); background: transparent; border: none; outline: none; padding: 4px 0; line-height: 1.6;
+  }
+  .bullet-del {
+    background: none; border: none; cursor: pointer; color: #ccc;
+    padding: 4px; border-radius: 3px; transition: color 0.15s; font-size: 1rem; line-height: 1; flex-shrink: 0;
+  }
+  .bullet-del:hover { color: var(--error); }
+  .bullet-actions {
+    border-top: 1px solid var(--border); padding: 8px 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .add-bullet-btn {
+    background: none; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+    color: var(--gold-dark); display: flex; align-items: center; gap: 6px; padding: 4px 0; transition: color 0.2s;
+  }
+  .add-bullet-btn:hover { color: var(--gold); }
+  .bullet-count { font-size: 0.75rem; color: var(--muted); }
+
+  #bulk-area { display: flex; flex-direction: column; gap: 10px; }
+  #bulk-textarea {
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    color: var(--ink); background: var(--paper);
+    border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 14px; outline: none; min-height: 160px; line-height: 1.7;
+    transition: border-color 0.2s, box-shadow 0.2s; resize: vertical;
+  }
+  #bulk-textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); background: var(--white); }
+  #bulk-textarea::placeholder { color: #bbb5a8; }
+  .bulk-convert-btn {
+    align-self: flex-start;
+    background: var(--ink); border: none; border-radius: 7px;
+    padding: 9px 20px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.83rem; font-weight: 500; color: var(--paper);
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 7px;
+  }
+  .bulk-convert-btn:hover { background: #2a2820; }
+
+  .form-actions { display: flex; gap: 12px; align-items: center; justify-content: flex-end; margin-top: 32px; }
+
+  .btn-reset {
+    background: none; border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 12px 24px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+  .btn-reset:hover { border-color: var(--ink); color: var(--ink); }
+
+  .btn-primary {
+    background: var(--ink); border: none; border-radius: 7px;
+    padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    font-weight: 500; color: var(--paper); cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px; letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: #2a2820; transform: translateY(-1px); box-shadow: var(--shadow); }
+
+  .btn-gold {
+    background: var(--gold); border: none; border-radius: 7px;
+    padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    font-weight: 600; color: var(--white); cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px; letter-spacing: 0.02em;
+  }
+  .btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.3); }
+  .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-outline {
+    background: none; border: 1.5px solid var(--border); border-radius: 7px;
+    padding: 12px 22px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    font-weight: 500; color: var(--ink); cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px; text-decoration: none;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold-dark); }
+  .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Preview */
+  .preview-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
+  }
+  .preview-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; }
+  .preview-subtitle { font-size: 0.8rem; color: var(--muted); }
+  .preview-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  .preview-container {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .preview-header-bar {
+    background: var(--cream); border-bottom: 1px solid var(--border);
+    padding: 12px 24px; display: flex; align-items: center; gap: 8px;
+  }
+  .preview-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .preview-dot:nth-child(1) { background: #f87171; }
+  .preview-dot:nth-child(2) { background: #fbbf24; }
+  .preview-dot:nth-child(3) { background: #34d399; }
+  .preview-url {
+    flex: 1; background: var(--white); border: 1px solid var(--border);
+    border-radius: 4px; padding: 4px 10px; font-size: 0.75rem; color: var(--muted); margin-left: 8px;
+  }
+
+  #contract-preview {
+    padding: 52px 64px; font-family: 'Georgia', serif;
+    font-size: 0.88rem; line-height: 1.85; color: #1a1a1a;
+    max-height: 680px; overflow-y: auto;
+  }
+  #contract-preview::-webkit-scrollbar { width: 6px; }
+  #contract-preview::-webkit-scrollbar-track { background: var(--cream); }
+  #contract-preview::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  #contract-preview h1 { font-size: 1.05rem; text-align: center; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 28px; }
+  #contract-preview h2 { font-size: 0.9rem; margin: 20px 0 8px; }
+  #contract-preview p { margin-bottom: 12px; }
+  #contract-preview ul, #contract-preview ol { margin: 8px 0 12px 24px; }
+  #contract-preview li { margin-bottom: 4px; }
+  .highlight-field { background: rgba(201,168,76,0.15); border-radius: 3px; padding: 1px 3px; color: var(--gold-dark); font-weight: 600; }
+
+  /* Loading overlay */
+  #loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(250,248,244,0.9); backdrop-filter: blur(4px);
+    z-index: 100; display: none;
+    flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  }
+  #loading-overlay.show { display: flex; }
+  .spinner { width: 38px; height: 38px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .loading-text { font-size: 0.88rem; color: var(--muted); }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 32px; right: 32px;
+    padding: 14px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;
+    box-shadow: var(--shadow-lg); z-index: 200;
+    transform: translateY(20px); opacity: 0; transition: all 0.3s; max-width: 380px;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { background: #f0faf5; border-left: 4px solid var(--success); color: var(--success); }
+  #toast.error { background: #fdf2f4; border-left: 4px solid var(--error); color: var(--error); }
+  #toast.info { background: #fffbeb; border-left: 4px solid var(--gold); color: var(--gold-dark); }
+
+  .hidden { display: none !important; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    header { padding: 20px 24px; }
+    main { padding: 40px 20px 60px; }
+    .form-row { grid-template-columns: 1fr; }
+    .form-section { padding: 24px 20px; }
+    #contract-preview { padding: 32px 24px; }
+    .preview-toolbar { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">Working...</div>
+</div>
+<div id="toast"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-name">Zare Innovations</div>
+    <div class="logo-sub">Contract Generator</div>
+  </div>
+  <div class="header-right">
+    <div id="header-badge" class="header-badge">No login required for form</div>
+    <div id="user-chip" class="hidden">
+      <img id="user-avatar" src="" alt=""/>
+      <span id="user-name"></span>
+      <button id="sign-out-btn" onclick="signOut()">Sign out</button>
+    </div>
+    <button id="back-btn" class="btn-back hidden" onclick="goHome()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Home
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── FORM SCREEN ── -->
+  <div id="form-screen" class="screen">
+    <div class="screen-header">
+      <div class="screen-label">New Contract</div>
+      <div class="screen-title">Employee Details</div>
+      <div class="screen-desc">Fill in the fields below and preview the contract. Google sign-in is only needed when opening in Docs or downloading.</div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">Employee Information</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Employee Name <span class="req">*</span></label>
+          <input type="text" id="f-employee-name" placeholder="e.g. Abebe Girma"/>
+        </div>
+        <div class="field">
+          <label>Job Title <span class="req">*</span></label>
+          <input type="text" id="f-job-title" placeholder="e.g. Software Engineer"/>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Residential Address <span class="req">*</span></label>
+          <input type="text" id="f-address" placeholder="e.g. Addis Ababa, Bole Sub-City, Woreda 03"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">Contract Terms</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Effective Date <span class="req">*</span></label>
+          <input type="date" id="f-effective-date"/>
+        </div>
+        <div class="field">
+          <label>Contract End Date <span class="req">*</span></label>
+          <input type="date" id="f-end-date"/>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Monthly Salary <span class="req">*</span></label>
+          <input type="text" id="f-salary" placeholder='e.g. ETB 25,000 or "$3,500"'/>
+          <span class="hint">Include currency and full amount as it should appear in the contract.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">Roles & Responsibilities</div>
+      <div class="field">
+        <label>Responsibilities <span class="req">*</span></label>
+        <div class="bullet-mode-toggle">
+          <button class="mode-btn active" id="mode-bullet" onclick="setMode('bullet')">Bullet editor</button>
+          <button class="mode-btn" id="mode-bulk" onclick="setMode('bulk')">Bulk paste</button>
+        </div>
+
+        <div id="bullet-editor-wrap">
+          <div class="bullet-editor">
+            <div class="bullet-list" id="bullet-list"></div>
+            <div class="bullet-actions">
+              <button class="add-bullet-btn" onclick="addBullet()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add responsibility
+              </button>
+              <span class="bullet-count" id="bullet-count">0 items</span>
+            </div>
+          </div>
+          <span class="hint" style="margin-top:6px;display:block;">Press Enter to add the next bullet. Backspace on an empty bullet removes it.</span>
+        </div>
+
+        <div id="bulk-area" class="hidden">
+          <textarea id="bulk-textarea" placeholder="Paste all responsibilities here — one per line, or separated by dashes/bullets. Example:&#10;&#10;- Design and develop software features&#10;- Review and test code changes&#10;- Collaborate with the product team"></textarea>
+          <button class="bulk-convert-btn" onclick="convertBulk()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            Convert to bullets
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-reset" onclick="resetForm()">Clear form</button>
+      <button class="btn-primary" onclick="generatePreview()">
+        Preview Contract
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── ACCESS DENIED SCREEN ── -->
+  <div id="access-denied-screen" class="screen hidden" style="text-align:center;padding:80px 32px;">
+    <div style="width:64px;height:64px;margin:0 auto 28px;background:#8b2635;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(139,38,53,0.25);">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;margin-bottom:12px;">Access Denied</h2>
+    <p style="color:var(--muted);font-size:0.92rem;max-width:400px;margin:0 auto 8px;line-height:1.7;">
+      <strong id="denied-email" style="color:var(--ink);"></strong> is not authorised to use this tool.
+    </p>
+    <p style="color:var(--muted);font-size:0.88rem;max-width:400px;margin:0 auto 32px;line-height:1.7;">
+      Only <strong>@zareinnovations.com</strong> accounts are allowed. Please sign in with your Zare Innovations Google account.
+    </p>
+    <button onclick="signOut()" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--ink);border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;color:var(--paper);cursor:pointer;">
+      Try a different account
+    </button>
+  </div>
+
+  <!-- ── PREVIEW SCREEN ── -->
+  <div id="preview-screen" class="screen hidden">
+    <div class="preview-toolbar">
+      <div>
+        <div class="screen-label" style="margin-bottom:4px;">Preview</div>
+        <div class="preview-name" id="preview-employee-name">—</div>
+        <div class="preview-subtitle" id="preview-subtitle">—</div>
+      </div>
+      <div class="preview-actions">
+        <button class="btn-outline" id="open-docs-btn" onclick="openInGoogleDocs()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Open in Google Docs
+        </button>
+        <button class="btn-gold" id="download-btn" onclick="downloadPDF()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <div class="preview-container">
+      <div class="preview-header-bar">
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+        <div class="preview-url" id="preview-url-bar">Contract Preview</div>
+      </div>
+      <div id="contract-preview"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── CONFIG ────────────────────────────────────────
+// Hosted at: https://zareinnovations.com/contract-generator.html
+// Authorized JavaScript Origins in Google Cloud Console must include:
+//   https://zareinnovations.com
+const GOOGLE_CLIENT_ID = '143847906983-0h1f8nvq9svb8stkvpd7de2og2d8m7iu.apps.googleusercontent.com';
+const TEMPLATE_DOC_ID  = '1DhXGvOMED_35xzd7iwmeJiAdkrVTt3hWLI_X1-P3V3A';
+const COMPANY_ADDRESS  = '651 N Broad St, Suite 201, Middletown, Delaware 19709';
+const ALLOWED_DOMAIN   = 'zareinnovations.com';
+const SCOPES = [
+  'https://www.googleapis.com/auth/drive',
+  'https://www.googleapis.com/auth/drive.file',
+  'https://www.googleapis.com/auth/documents',
+  'profile',
+  'email'
+].join(' ');
+
+// ── AUTH STATE ────────────────────────────────────
+let accessToken = null;
+let tokenClient = null;
+let pendingAction = null; // 'docs' | 'pdf'
+
+function initTokenClient() {
+  if (tokenClient) return;
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: SCOPES,
+    callback: async (resp) => {
+      if (resp.error) {
+        showToast('Sign-in failed: ' + resp.error, 'error');
+        hideLoading();
+        return;
+      }
+      accessToken = resp.access_token;
+      await fetchUserProfile();
+      // Execute the action that triggered sign-in
+      if (pendingAction === 'docs') await doOpenInGoogleDocs();
+      else if (pendingAction === 'pdf') await doDownloadPDF();
+      pendingAction = null;
+    }
+  });
+}
+
+async function fetchUserProfile() {
+  const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const p = await res.json();
+
+  // Domain restriction — only @zareinnovations.com allowed
+  const email = p.email || '';
+  if (!email.endsWith('@' + ALLOWED_DOMAIN)) {
+    accessToken = null;
+    hideLoading();
+    showAccessDenied(email);
+    throw new Error('Unauthorized domain: ' + email);
+  }
+
+  document.getElementById('user-avatar').src = p.picture || '';
+  document.getElementById('user-name').textContent = p.name || email;
+  document.getElementById('user-chip').classList.remove('hidden');
+  document.getElementById('header-badge').classList.add('hidden');
+}
+
+function signOut() {
+  accessToken = null;
+  document.getElementById('user-chip').classList.add('hidden');
+  document.getElementById('header-badge').classList.remove('hidden');
+  document.getElementById('access-denied-screen').classList.add('hidden');
+  document.getElementById('form-screen').classList.remove('hidden');
+  showToast('Signed out.', 'info');
+}
+
+function showAccessDenied(email) {
+  document.getElementById('denied-email').textContent = email;
+  document.getElementById('form-screen').classList.add('hidden');
+  document.getElementById('preview-screen').classList.add('hidden');
+  document.getElementById('access-denied-screen').classList.remove('hidden');
+  document.getElementById('back-btn').classList.add('hidden');
+}
+
+// Ensure we have a valid token before running an action
+function requireAuth(action) {
+  if (accessToken) {
+    if (action === 'docs') doOpenInGoogleDocs();
+    else if (action === 'pdf') doDownloadPDF();
+    return;
+  }
+  pendingAction = action;
+  showLoading('Waiting for Google sign-in...');
+  initTokenClient();
+  tokenClient = null; // reset so new scopes take effect
+  initTokenClient();
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+// ── MODE TOGGLE ───────────────────────────────────
+function setMode(mode) {
+  document.getElementById('mode-bullet').classList.toggle('active', mode === 'bullet');
+  document.getElementById('mode-bulk').classList.toggle('active', mode === 'bulk');
+  document.getElementById('bullet-editor-wrap').classList.toggle('hidden', mode === 'bulk');
+  document.getElementById('bulk-area').classList.toggle('hidden', mode === 'bullet');
+}
+
+function convertBulk() {
+  const raw = document.getElementById('bulk-textarea').value.trim();
+  if (!raw) { showToast('Please paste some responsibilities first.', 'error'); return; }
+  const lines = raw.split('\n').map(l => l.replace(/^[\s\-•*\d.)]+/, '').trim()).filter(Boolean);
+  if (!lines.length) { showToast('Could not parse any responsibilities.', 'error'); return; }
+  document.getElementById('bullet-list').innerHTML = '';
+  lines.forEach(l => addBullet(l, false));
+  updateBulletCount();
+  document.getElementById('bulk-textarea').value = '';
+  setMode('bullet');
+  showToast(`${lines.length} responsibilities imported!`, 'success');
+}
+
+// ── BULLETS ───────────────────────────────────────
+function addBullet(text = '', focusIt = true) {
+  const list = document.getElementById('bullet-list');
+  const item = document.createElement('div');
+  item.className = 'bullet-item';
+  item.innerHTML = `
+    <div class="bullet-dot"></div>
+    <input class="bullet-input" type="text" placeholder="Responsibility..."
+      value="${escAttr(text)}"
+      onkeydown="bulletKeydown(event,this)"
+      oninput="updateBulletCount()"/>
+    <button class="bullet-del" onclick="removeBullet(this)" title="Remove">×</button>
+  `;
+  list.appendChild(item);
+  if (focusIt) item.querySelector('.bullet-input').focus();
+  updateBulletCount();
+}
+
+function removeBullet(btn) { btn.closest('.bullet-item').remove(); updateBulletCount(); }
+
+function bulletKeydown(e, input) {
+  if (e.key === 'Enter') { e.preventDefault(); addBullet(); }
+  else if (e.key === 'Backspace' && input.value === '') {
+    e.preventDefault();
+    const item = input.closest('.bullet-item');
+    const prev = item.previousElementSibling;
+    item.remove(); updateBulletCount();
+    if (prev) prev.querySelector('.bullet-input').focus();
+  }
+}
+
+function updateBulletCount() {
+  const n = document.querySelectorAll('.bullet-input').length;
+  document.getElementById('bullet-count').textContent = `${n} item${n !== 1 ? 's' : ''}`;
+}
+
+function getBullets() {
+  return [...document.querySelectorAll('.bullet-input')].map(i => i.value.trim()).filter(Boolean);
+}
+
+// ── FORM ──────────────────────────────────────────
+function resetForm() {
+  ['f-employee-name','f-job-title','f-address','f-effective-date','f-end-date','f-salary']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('bullet-list').innerHTML = '';
+  document.getElementById('bulk-textarea').value = '';
+  setMode('bullet');
+  addBullet(); updateBulletCount();
+}
+
+function v(id) { return document.getElementById(id).value.trim(); }
+
+function getFormData() {
+  return {
+    EMPLOYEE_NAME: v('f-employee-name'),
+    JOB_TITLE: v('f-job-title'),
+    EMPLOYEE_RESIDENTIAL_ADDRESS: v('f-address'),
+    EFFECTIVE_DATE: formatDate(v('f-effective-date')),
+    CONTRACT_END_DATE: formatDate(v('f-end-date')),
+    SALARY: v('f-salary'),
+    bullets: getBullets()
+  };
+}
+
+function validateForm(d) {
+  if (!d.EMPLOYEE_NAME) return 'Please enter the employee name.';
+  if (!d.JOB_TITLE) return 'Please enter the job title.';
+  if (!d.EMPLOYEE_RESIDENTIAL_ADDRESS) return 'Please enter the residential address.';
+  if (!d.EFFECTIVE_DATE) return 'Please select the effective date.';
+  if (!d.CONTRACT_END_DATE) return 'Please select the contract end date.';
+  if (!d.SALARY) return 'Please enter the salary.';
+  if (!d.bullets.length) return 'Please add at least one responsibility.';
+  return null;
+}
+
+function formatDate(val) {
+  if (!val) return '';
+  const d = new Date(val + 'T12:00:00');
+  return isNaN(d) ? '' : d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+}
+
+// ── SCREENS ───────────────────────────────────────
+let currentData = null;
+
+function generatePreview() {
+  const data = getFormData();
+  const err = validateForm(data);
+  if (err) { showToast(err, 'error'); return; }
+  currentData = data;
+
+  document.getElementById('preview-employee-name').textContent = data.EMPLOYEE_NAME;
+  document.getElementById('preview-subtitle').textContent = `${data.JOB_TITLE} · ${data.EFFECTIVE_DATE} – ${data.CONTRACT_END_DATE}`;
+  document.getElementById('preview-url-bar').textContent = `${data.EMPLOYEE_NAME} — ${data.JOB_TITLE} Contract`;
+  document.getElementById('contract-preview').innerHTML = buildContractHTML(data);
+  showScreen('preview');
+}
+
+function goHome() { showScreen('form'); }
+
+function showScreen(name) {
+  document.getElementById('form-screen').classList.toggle('hidden', name !== 'form');
+  document.getElementById('preview-screen').classList.toggle('hidden', name !== 'preview');
+  document.getElementById('back-btn').classList.toggle('hidden', name === 'form');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── CONTRACT HTML (preview only) ──────────────────
+function buildContractHTML(d) {
+  const jt = esc(d.JOB_TITLE);
+  const h  = s => `<mark class="highlight-field">${s}</mark>`;
+  const bullets = d.bullets.map(b => `<li>${esc(b)}</li>`).join('');
+
+  return `
+<h1>${h(jt)} AGREEMENT</h1>
+<p>THIS AGREEMENT (the "Agreement"), effective as of the <strong>${h(esc(d.EFFECTIVE_DATE))}</strong> is entered into by and between <strong>ZARE INNOVATIONS LLC</strong>, having its registered business address at ${esc(COMPANY_ADDRESS)}, USA, represented by its President, <strong>Emanuel Samuel</strong>, hereinafter referred to as ("COMPANY"), and</p>
+<p>${h(esc(d.EMPLOYEE_NAME))}, a citizen of Ethiopia and resident of Ethiopia, having a principal residential address at <strong>${h(esc(d.EMPLOYEE_RESIDENTIAL_ADDRESS))}</strong>; on the bases of the following terms — hereinafter the ("${h(jt)}").</p>
+<p><strong>WHEREAS</strong>, ${h(jt)} is primarily involved in providing a service to COMPANY on the grounds of ${h(jt)}. <strong>WHEREAS</strong>, COMPANY is an outsourcing and related services provider; and <strong>WHEREAS</strong>, COMPANY has the need for a ${h(jt)}, which ${h(jt)} is willing to provide pursuant to this Agreement.</p>
+<p><strong>NOW THEREFORE</strong>, in consideration of the mutual promises contained herein, the parties hereto agree as follows:</p>
+<h2>1. Engagement</h2>
+<p>COMPANY hereby engages ${h(jt)}, and ${h(jt)} hereby accepts the engagement, to perform the services hereinafter described.</p>
+<h2>2. Service and Support</h2>
+<p>${h(jt)} shall use its best efforts to provide COMPANY with information and developments related to his/her field of work, including: (a) Providing access to necessary resources; (b) Helping ${h(jt)} understand business goals; (c) Providing feedback; (d) Documentation; (e) Such other services as agreed.</p>
+<h2>3. Roles and Responsibilities of the ${h(jt)}</h2>
+<ul>${bullets}</ul>
+<h2>4. Delegation</h2>
+<p>${h(jt)} shall have authority to provide services in Section 2. ${h(jt)} shall not act on behalf of COMPANY regarding matters requiring member approval, unless such approval has been obtained.</p>
+<h2>5. Third-Party Vendors</h2>
+<p>COMPANY shall reimburse ${h(jt)} for its share of any third-party Provided Services upon demand.</p>
+<h2>6. Compensation</h2>
+<p>COMPANY shall pay ${h(jt)} a total NET pay of <strong>${h(esc(d.SALARY))}</strong> monthly from <strong>${h(esc(d.EFFECTIVE_DATE))}</strong> to <strong>${h(esc(d.CONTRACT_END_DATE))}</strong>. After which the contract will be up for update or termination as decided by COMPANY.</p>
+<h2>7. Expenses</h2>
+<p>COMPANY shall reimburse ${h(jt)} for all reasonable out-of-pocket expenses incurred hereunder, in addition to compensation under Section 6.</p>
+<h2>8. Term and Termination</h2>
+<p><strong>(a)</strong> Effective as of <strong>${h(esc(d.EFFECTIVE_DATE))}</strong>, continuing unless terminated per Section 8(b)/(c).<br/>
+<strong>(b)</strong> Termination: <strong>I.</strong> Material breach — 7 days to cure, 20 days to terminate. <strong>II.</strong> Immediate on insolvency. <strong>III.</strong> Mutual agreement. <strong>IV.</strong> 7 days written notice by either party.<br/>
+<strong>(c)</strong> Termination does not relieve liability for prior breaches.</p>
+<h2>9. Nature of Relationship</h2>
+<p>${h(jt)} is an independent contractor, not an employee, partner, or joint venturer of COMPANY.</p>
+<h2>10. Indemnification</h2>
+<p><strong>(a)</strong> ${h(jt)} shall indemnify COMPANY from claims arising from ${h(jt)}'s breach. <strong>(b)</strong> COMPANY shall indemnify ${h(jt)} from claims arising from ${h(jt)}'s performance, except for gross negligence or willful misconduct.</p>
+<h2>11–19. General Provisions</h2>
+<p>Representations · Assignment · Governing Law (Delaware) · Jurisdiction (Delaware) · Notices · Amendment & Entire Agreement · Severability · Absence of Waiver · Counterparts — all as set forth in the full agreement.</p>
+<p style="margin-top:40px;"><strong>IN WITNESS WHEREOF</strong>, the parties have entered into this Agreement as of the day and year first above written.</p>
+<table style="width:100%;margin-top:32px;font-size:0.85rem;border-collapse:collapse;">
+  <tr>
+    <td style="width:50%;padding-right:32px;vertical-align:top;">
+      <p><strong>For the COMPANY:</strong></p>
+      <p style="margin-top:36px;">Name: ___________________________</p>
+      <p style="margin-top:18px;">Signature: _______________________</p>
+    </td>
+    <td style="width:50%;padding-left:32px;vertical-align:top;">
+      <p><strong>For the ${h(jt)}:</strong></p>
+      <p style="margin-top:36px;">Name: ___________________________</p>
+      <p style="margin-top:18px;">Signature: _______________________</p>
+    </td>
+  </tr>
+</table>`;
+}
+
+// ── GOOGLE DOCS ACTIONS ───────────────────────────
+
+// Public entry points — trigger auth if needed
+function openInGoogleDocs() { requireAuth('docs'); }
+function downloadPDF()      { requireAuth('pdf'); }
+
+// Called after auth is confirmed
+async function doOpenInGoogleDocs() {
+  if (!currentData) return;
+  showLoading('Creating filled Google Doc...');
+  try {
+    const docId = await createFilledCopy(currentData);
+    hideLoading();
+    showToast('Opening filled contract in Google Docs...', 'success');
+    window.open(`https://docs.google.com/document/d/${docId}/edit`, '_blank');
+  } catch(e) {
+    hideLoading();
+    showToast('Error: ' + (e.message || 'Could not create document.'), 'error');
+    console.error(e);
+  }
+}
+
+async function doDownloadPDF() {
+  if (!currentData) return;
+  showLoading('Creating filled contract...');
+  try {
+    const docId = await createFilledCopy(currentData);
+
+    setLoadingText('Exporting to PDF...');
+    const pdfRes = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${docId}/export?mimeType=application/pdf`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    if (!pdfRes.ok) throw new Error(`Export failed: ${pdfRes.status}`);
+
+    const blob = await pdfRes.blob();
+
+    // Delete the temporary doc
+    await fetch(`https://www.googleapis.com/drive/v3/files/${docId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+
+    // Trigger download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentData.EMPLOYEE_NAME} — ${currentData.JOB_TITLE} Contract.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    hideLoading();
+    showToast('PDF downloaded successfully!', 'success');
+  } catch(e) {
+    hideLoading();
+    showToast('Error: ' + (e.message || 'Could not generate PDF.'), 'error');
+    console.error(e);
+  }
+}
+
+// Core: copy template + fill all placeholders
+async function createFilledCopy(d) {
+  // 1. Copy the template doc
+  const copyRes = await gDrive('POST',
+    `https://www.googleapis.com/drive/v3/files/${TEMPLATE_DOC_ID}/copy`,
+    { name: `${d.EMPLOYEE_NAME} — ${d.JOB_TITLE} Contract (Draft)` }
+  );
+  const newId = copyRes.id;
+
+  // 2. Build replace requests
+  const bulletText = d.bullets.map(b => `• ${b}`).join('\n');
+  const replacements = {
+    '{EMPLOYEE_NAME}':               d.EMPLOYEE_NAME,
+    '{JOB_TITLE}':                   d.JOB_TITLE,
+    '{EFFECTIVE_DATE}':              d.EFFECTIVE_DATE,
+    '{CONTRACT_END_DATE}':           d.CONTRACT_END_DATE,
+    '{EMPLOYEE_RESIDENTIAL_ADDRESS}': d.EMPLOYEE_RESIDENTIAL_ADDRESS,
+    '{SALARY}':                      d.SALARY,
+    '{ROLES_AND_RESPONSIBILITIES}':  `Roles and Responsibilities\n${bulletText}`,
+  };
+
+  const requests = Object.entries(replacements).map(([find, replace]) => ({
+    replaceAllText: {
+      containsText: { text: find, matchCase: true },
+      replaceText: replace
+    }
+  }));
+
+  // 3. Apply replacements
+  await gDocs('POST',
+    `https://docs.googleapis.com/v1/documents/${newId}:batchUpdate`,
+    { requests }
+  );
+
+  return newId;
+}
+
+// ── API HELPERS ───────────────────────────────────
+async function gDrive(method, url, body) {
+  const res = await fetch(url, {
+    method,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      ...(body ? { 'Content-Type': 'application/json' } : {})
+    },
+    ...(body ? { body: JSON.stringify(body) } : {})
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(e.error?.message || res.statusText);
+  }
+  return res.json();
+}
+
+async function gDocs(method, url, body) {
+  const res = await fetch(url, {
+    method,
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(e.error?.message || res.statusText);
+  }
+  return res.json();
+}
+
+// ── UTILS ─────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) { return String(s).replace(/"/g,'&quot;'); }
+
+function showLoading(msg) {
+  setLoadingText(msg);
+  document.getElementById('loading-overlay').classList.add('show');
+}
+function setLoadingText(msg) { document.getElementById('loading-text').textContent = msg; }
+function hideLoading() { document.getElementById('loading-overlay').classList.remove('show'); }
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `show ${type}`;
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+window.onload = () => addBullet();
+</script>
+</body>
+</html>
