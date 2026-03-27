@@ -9,6 +9,7 @@ import {
   IconHelpCircle,
   IconLogout,
   IconSettings,
+  IconFileText,
 } from '@tabler/icons-react';
 import { deleteCookie } from 'cookies-next';
 import Link from 'next/link';
@@ -114,6 +115,18 @@ export default function Sidebar() {
           >
             <IconCalendar className="w-5 h-5" />
             <Link href="/admin/applicants">Applicants</Link>
+          </div>
+        </div>
+
+        {/* Contract Generator */}
+        <div className="mb-8">
+          <div
+            className={`flex items-center gap-3 p-3 text-gray-400 hover:text-white transition-colors cursor-pointer rounded-lg
+              ${pathname.startsWith('/admin/contract-generator') ? 'bg-[#00a9ab] text-white' : 'text-gray-400 hover:text-white'}
+              `}
+          >
+            <IconFileText className="w-5 h-5" />
+            <Link href="/admin/contract-generator">Contract Generator</Link>
           </div>
         </div>
 
