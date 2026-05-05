@@ -100,7 +100,7 @@ export const projectCategories: ProjectsList[] = [
         },
         about: {
           link: "https://pickrellglobaltechnologies.com/",
-          name: "Pickrell Global Technologies",
+          name: "Built a 3-Engineer Remote Team",
           logo: "/our-work/logos/pickrell.png",
           image: "/our-work/shots/pickrell.png"
         }
