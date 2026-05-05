@@ -6,7 +6,7 @@ import ProjectCard from "../our-work/_components/project-card";
 
 const projects: Project[] = [
   {
-    title: "Pickrell Global Technologies",
+    title: "Built a 3-Engineer Remote Team",
     location: "Pennsylvania, USA",
     details: {
       challenge:
@@ -18,7 +18,7 @@ const projects: Project[] = [
     },
     about: {
       link: "https://pickrellglobaltechnologies.com/",
-      name: "Pickrell Global Technologies",
+      name: "Built a 3-Engineer Remote Team",
       logo: '/our-work/logos/pickrell.png',
       image: '/our-work/shots/pickrell.png',
     },
