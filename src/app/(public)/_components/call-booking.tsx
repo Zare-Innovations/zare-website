@@ -461,7 +461,7 @@ export default function CallBooking() {
           <div className="flex items-start gap-2">
             <IconMapPin size={20} />
             <span className="flex-1 text-[15px]">
-              Meskel Flower, Aster Plaza 3rd Floor, Addis Ababa, Ethiopia
+              Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave, Addis Ababa, Ethiopia
             </span>
           </div>
         </Flex>

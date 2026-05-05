@@ -67,7 +67,7 @@ const organizationJsonLd = {
     },
     {
       '@type': 'PostalAddress',
-      streetAddress: 'Meskel Flower, Aster Plaza 3rd Floor',
+      streetAddress: 'Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave',
       addressLocality: 'Addis Ababa',
       addressCountry: 'ET',
     },
@@ -106,7 +106,7 @@ const localBusinessJsonLd = {
   email: email,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Meskel Flower, Aster Plaza 3rd Floor',
+    streetAddress: 'Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave',
     addressLocality: 'Addis Ababa',
     addressCountry: 'ET',
   },

@@ -76,7 +76,7 @@ export default function ContactUsForm() {
                   </Flex>
                   <p className="text-lg font-semibold">Ethiopia</p>
                   <Flex className="gap-2 text-sm z-10">
-                    Meskel Flower, Aster Plaza 3rd Floor, Addis Ababa, Ethiopia
+                    Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave, Addis Ababa, Ethiopia
                   </Flex>
                 </Flex>
               </Flex>
