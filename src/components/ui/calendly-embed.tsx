@@ -9,7 +9,7 @@ interface Props {
 export default function CalendlyEmbed({ url }: Props) {
 
   return (
-    <div className="w-[350px] h-[410px] rounded-xl overflow-hidden bg-black">
+    <div className="w-[350px] h-[410px] rounded-xl overflow-hidden bg-white/90">
       <InlineWidget
         url={url}
         styles={{
