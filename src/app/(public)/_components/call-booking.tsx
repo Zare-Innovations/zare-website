@@ -2,8 +2,7 @@
 
 import { IconPhone, IconMail, IconMapPin, IconBrandWhatsapp } from "@tabler/icons-react";
 import Link from "next/link";
-import mapBg from "../../../../public/map.png";
-import Image from "next/image";
+import footerBg from "../../../../public/footerBg.jpg";
 
 import React from "react";
 import {
@@ -372,21 +371,18 @@ export default function CallBooking() {
   const [selectedTime, setSelectedTime] = React.useState<ApptTime | null>(null);
 
   return (
-    <div className="relative w-screen overflow-hidden flex flex-col gap-14 sm:gap-16 py-14 bg-black text-white max-sm:px-5 max-md:px-16 md:px-12">
-      <Image
-        src={mapBg.src}
-        alt=""
-        width={1000}
-        height={1000}
-        className="self-center absolute z-0 w-4/5 h-auto opacity-80"
-      />
-
+    <div
+      className="relative w-screen overflow-hidden flex flex-col gap-14 sm:gap-16 py-14 bg-[#0a293b] bg-cover bg-center bg-no-repeat text-slate-100 max-sm:px-5 max-md:px-16 md:px-12"
+      style={{
+        backgroundImage: `linear-gradient(rgba(10, 41, 59, 0.85), rgba(10, 41, 59, 0.92)), url(${footerBg.src})`
+      }}
+    >
       <Flex className="relative z-10 w-full flex-col gap-7 justify-center items-center">
         <Flex className="flex flex-col mx-auto gap-3 sm:gap-5 text-center">
-          <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center uppercase">
+          <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center uppercase text-white">
             Book a call today!
           </p>
-          <p className="text-xs sm:text-sm text-white">
+          <p className="text-xs sm:text-sm text-slate-300">
             Book a FREE discovery call to discuss your project and challenges
             and find the best approach for executing it.{" "}
           </p>
@@ -408,15 +404,15 @@ export default function CallBooking() {
           selectedTime={selectedTime}
           setSelectedTime={setSelectedTime}
         /> */}
-        <CalendlyEmbed url="https://calendly.com/sgc93/30min" />
+        <CalendlyEmbed url="https://calendly.com/emanuel-ypgh/30min" />
       </Flex>
 
       <Flex className="relative z-10 flex-col gap-10 justify-center items-center">
         <Flex className="flex flex-col gap-3 sm:gap-5 text-center">
-          <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center uppercase">
+          <p className="text-2xl sm:text-3xl md:text-5xl font-semibold text-center uppercase text-white">
             Prefer to reach us directly?
           </p>
-          <p className="text-xs sm:text-sm text-white">
+          <p className="text-xs sm:text-sm text-slate-300">
             Feel free to shoot us an email or call at any time
           </p>
         </Flex>
