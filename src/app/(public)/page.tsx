@@ -12,46 +12,58 @@ import ProjectsOverview from "./_components/projects-overview";
 import Jobs from "./_components/jobs";
 import Contact from './_components/contact';
 import {
-  addressUSA,
-  addressEthiopia,
+  cityEthiopia,
+  cityUSA,
+  email,
+  facebook,
+  geoEthiopia,
+  geoUSA,
+  github,
+  instagram,
+  linkedin,
+  logo,
+  ogImage,
   phone,
   phoneEthiopia,
-  email,
-  linkedin,
-  instagram,
-  facebook,
-  github,
+  postalCodeUSA,
+  siteName,
+  siteUrl,
+  stateUSA,
+  streetEthiopia,
+  streetUSA,
 } from '@/constants';
 
+const logoUrl = `${siteUrl}${logo}`;
+
 export const metadata: Metadata = {
-  title: 'Zare Innovations | Revolutionize Your Business',
+  title: `${siteName} | Revolutionize Your Business`,
   description:
     'Zare Innovations is a leading tech company in Ethiopia and the USA offering custom software development, AI solutions, global talent outsourcing, and data intelligence services.',
   openGraph: {
-    title: 'Zare Innovations | Revolutionize Your Business',
+    title: `${siteName} | Revolutionize Your Business`,
     description:
       'Leading tech company in Ethiopia and the USA. Custom software development, AI solutions, global talent outsourcing, and data intelligence services.',
-    url: 'https://zareinnovations.com',
+    url: siteUrl,
     images: [
       {
-        url: '/zare-logo.jpg',
+        url: ogImage.home,
         width: 1200,
         height: 630,
-        alt: 'Zare Innovations',
+        alt: siteName,
       },
     ],
   },
   alternates: {
-    canonical: 'https://zareinnovations.com',
+    canonical: siteUrl,
   },
 };
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Zare Innovations',
-  url: 'https://zareinnovations.com',
-  logo: 'https://zareinnovations.com/zare-logo.jpg',
+  name: siteName,
+  url: siteUrl,
+  logo: logoUrl,
   description:
     'Custom software development, AI solutions, global talent outsourcing, and data intelligence services.',
   email: email,
@@ -59,16 +71,16 @@ const organizationJsonLd = {
   address: [
     {
       '@type': 'PostalAddress',
-      streetAddress: '651 N Broad St, Suite 201',
-      addressLocality: 'Middletown',
-      addressRegion: 'DE',
-      postalCode: '19709',
+      streetAddress: streetUSA,
+      addressLocality: cityUSA,
+      addressRegion: stateUSA,
+      postalCode: postalCodeUSA,
       addressCountry: 'US',
     },
     {
       '@type': 'PostalAddress',
-      streetAddress: 'Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave',
-      addressLocality: 'Addis Ababa',
+      streetAddress: streetEthiopia,
+      addressLocality: cityEthiopia,
       addressCountry: 'ET',
     },
   ],
@@ -95,25 +107,25 @@ const organizationJsonLd = {
 const localBusinessJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  '@id': 'https://zareinnovations.com/#addis-office',
-  name: 'Zare Innovations - Ethiopia',
+  '@id': `${siteUrl}/#addis-office`,
+  name: `${siteName} - Ethiopia`,
   description:
     'Leading software development and technology company in Addis Ababa, Ethiopia. Custom software, AI solutions, talent outsourcing, and data intelligence.',
-  url: 'https://zareinnovations.com',
-  logo: 'https://zareinnovations.com/zare-logo.jpg',
-  image: 'https://zareinnovations.com/zare-logo.jpg',
+  url: siteUrl,
+  logo: logoUrl,
+  image: logoUrl,
   telephone: phoneEthiopia,
   email: email,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave',
-    addressLocality: 'Addis Ababa',
+    streetAddress: streetEthiopia,
+    addressLocality: cityEthiopia,
     addressCountry: 'ET',
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: 9.0105,
-    longitude: 38.7612,
+    latitude: geoEthiopia.latitude,
+    longitude: geoEthiopia.longitude,
   },
   priceRange: '$$',
   openingHours: 'Mo-Fr 09:00-18:00',
@@ -123,27 +135,27 @@ const localBusinessJsonLd = {
 const localBusinessUSAJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  '@id': 'https://zareinnovations.com/#usa-office',
-  name: 'Zare Innovations - USA',
+  '@id': `${siteUrl}/#usa-office`,
+  name: `${siteName} - USA`,
   description:
     'Technology company in Middletown, Delaware offering custom software development, AI solutions, talent outsourcing, and data intelligence services.',
-  url: 'https://zareinnovations.com',
-  logo: 'https://zareinnovations.com/zare-logo.jpg',
-  image: 'https://zareinnovations.com/zare-logo.jpg',
+  url: siteUrl,
+  logo: logoUrl,
+  image: logoUrl,
   telephone: phone,
   email: email,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '5501 Seminary Road, Unit 1710 South',
-    addressLocality: 'Falls Church',
-    addressRegion: 'VA',
-    postalCode: '22041',
+    streetAddress: streetUSA,
+    addressLocality: cityUSA,
+    addressRegion: stateUSA,
+    postalCode: postalCodeUSA,
     addressCountry: 'US',
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: 39.4496,
-    longitude: -75.7163,
+    latitude: geoUSA.latitude,
+    longitude: geoUSA.longitude,
   },
   priceRange: '$$',
   openingHours: 'Mo-Fr 09:00-18:00',
@@ -153,8 +165,8 @@ const localBusinessUSAJsonLd = {
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Zare Innovations',
-  url: 'https://zareinnovations.com',
+  name: siteName,
+  url: siteUrl,
 };
 
 const siteNavigationJsonLd = [
@@ -162,31 +174,31 @@ const siteNavigationJsonLd = [
     '@type': 'SiteNavigationElement',
     name: 'About Us',
     description: 'Learn how Zare Innovations empowers businesses with cutting-edge technology and global expertise.',
-    url: 'https://zareinnovations.com/#aboutUs',
+    url: `${siteUrl}/#aboutUs`,
   },
   {
     '@type': 'SiteNavigationElement',
     name: 'Services',
     description: 'Custom software development, AI solutions, talent outsourcing, and data intelligence services.',
-    url: 'https://zareinnovations.com/#services',
+    url: `${siteUrl}/#services`,
   },
   {
     '@type': 'SiteNavigationElement',
     name: 'Contact Us',
     description: 'Get in touch with Zare Innovations. Offices in the USA and Ethiopia.',
-    url: 'https://zareinnovations.com/#contact-us',
+    url: `${siteUrl}/#contact-us`,
   },
   {
     '@type': 'SiteNavigationElement',
     name: 'Our Work',
     description: 'Explore our portfolio of custom software, AI solutions, talent outsourcing, and data intelligence projects.',
-    url: 'https://zareinnovations.com/our-work',
+    url: `${siteUrl}/our-work`,
   },
   {
     '@type': 'SiteNavigationElement',
     name: 'Careers',
     description: 'Join our global team. Explore open positions in software development, AI, design, and more.',
-    url: 'https://zareinnovations.com/careers',
+    url: `${siteUrl}/careers`,
   },
 ];
 
