@@ -139,6 +139,7 @@ export default function Hero() {
           <Link
             href={consultationLink}
             target="_blank"
+            rel="noopener noreferrer"
             className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs  min-[430px]:text-sm min-[500px]:text-base py-2 sm:py-3 bg-cyan-950 text-white hover:bg-[#10CFD1] transition-all duration-300`}
           >
             Book a consultation
