@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
+import { consultationLink, landingApiUrl } from '@/constants';
 
 export default function SavingModal({
   opened,
@@ -66,7 +67,7 @@ export default function SavingModal({
     setLoading(true);
     try {
       const res = await fetch(
-        'https://landing.zareinnovations.com/api/resource-rate/send-email',
+        `${landingApiUrl}/api/resource-rate/send-email`,
         {
           method: 'POST',
           headers: {
@@ -254,9 +255,10 @@ export default function SavingModal({
               </Text>
 
               <Link
-                href="https://calendly.com/emanuel-ypgh/30min?month=2025-02"
+                href={consultationLink}
                 className="w-full sm:w-auto"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 <Button
                   variant="outline"
