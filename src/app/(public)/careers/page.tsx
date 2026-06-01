@@ -1,52 +1,56 @@
 import type { Metadata } from 'next';
 import Hero from "./_components/hero";
 import CareersList from './_components/careers-list';
+import { ogImage, siteName, siteUrl } from '@/constants';
+
+const pageUrl = `${siteUrl}/careers`;
+const ogImageUrl = ogImage.careers;
 
 export const metadata: Metadata = {
   title: 'Careers',
   description:
     'Join the Zare Innovations team. Explore open positions in software development, AI, design, and more. Build your career with a global technology company.',
   openGraph: {
-    title: 'Careers at Zare Innovations',
+    title: `Careers at ${siteName}`,
     description:
       'Explore open positions and join our global team of innovators.',
-    url: 'https://zareinnovations.com/careers',
+    url: pageUrl,
     images: [
       {
-        url: '/zare-logo.jpg',
+        url: ogImageUrl,
         width: 1200,
         height: 630,
-        alt: 'Zare Innovations',
+        alt: `Careers at ${siteName}`,
       },
     ],
   },
   twitter: {
-    title: 'Careers at Zare Innovations',
+    title: `Careers at ${siteName}`,
     description:
       'Explore open positions and join our global team of innovators.',
-    images: ['/zare-logo.jpg'],
+    images: [ogImageUrl],
   },
   alternates: {
-    canonical: 'https://zareinnovations.com/careers',
+    canonical: pageUrl,
   },
 };
 
 const careersPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Careers at Zare Innovations',
+  name: `Careers at ${siteName}`,
   description:
     'Join the Zare Innovations team. Explore open positions in software development, AI, design, and more.',
-  url: 'https://zareinnovations.com/careers',
+  url: pageUrl,
   isPartOf: {
     '@type': 'WebSite',
-    name: 'Zare Innovations',
-    url: 'https://zareinnovations.com',
+    name: siteName,
+    url: siteUrl,
   },
   about: {
     '@type': 'Organization',
-    name: 'Zare Innovations',
-    url: 'https://zareinnovations.com',
+    name: siteName,
+    url: siteUrl,
   },
 };
 
