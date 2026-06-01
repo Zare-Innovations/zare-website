@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getJob } from "@/lib/jobs";
 import JobDetailContent from "./_components/job-detail-content";
+import { logo, ogImage, siteName, siteUrl } from "@/constants";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
+
+const logoUrl = `${siteUrl}${logo}`;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -22,20 +25,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? job.description.slice(0, 157) + "..."
       : job.description;
 
+  const pageUrl = `${siteUrl}/careers/${id}`;
+
   return {
     title: `${job.title} - ${job.workType}`,
     description: truncatedDescription,
     openGraph: {
       title: `${job.title} - ${job.workType}`,
       description: truncatedDescription,
-      url: `https://zareinnovations.com/careers/${id}`,
+      url: pageUrl,
       type: "website",
       images: [
         {
-          url: "/zare-logo.jpg",
+          url: ogImage.careers,
           width: 1200,
           height: 630,
-          alt: "Zare Innovations",
+          alt: siteName,
         },
       ],
     },
@@ -43,10 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: `${job.title} - ${job.workType}`,
       description: truncatedDescription,
-      images: ["/zare-logo.jpg"],
+      images: [ogImage.careers],
     },
     alternates: {
-      canonical: `https://zareinnovations.com/careers/${id}`,
+      canonical: pageUrl,
     },
   };
 }
@@ -75,9 +80,9 @@ export default async function Careers({ params }: Props) {
         skills: job.skills,
         hiringOrganization: {
           "@type": "Organization",
-          name: "Zare Innovations",
-          sameAs: "https://zareinnovations.com",
-          logo: "https://zareinnovations.com/zare-logo.jpg",
+          name: siteName,
+          sameAs: siteUrl,
+          logo: logoUrl,
         },
       }
     : null;
