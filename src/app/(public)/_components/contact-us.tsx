@@ -11,6 +11,15 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import {
+  addressEthiopia,
+  addressUSA,
+  careersEmail,
+  email,
+  linkedin,
+  phone,
+  phoneEthiopia,
+} from '@/constants';
 
 export default function ContactUsForm() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -49,42 +58,39 @@ export default function ContactUsForm() {
                 <Flex className="gap-6">
                   <Flex className=" gap-2 flex-col">
                     <p className="text-lg font-semibold">USA</p>
-                    <p className="text-sm">+1 703 395 5235</p>
+                    <p className="text-sm">{phone}</p>
                   </Flex>
                   <Flex className="gap-2 flex-col">
                     <p className="text-lg font-semibold">Ethiopia</p>
-                    <p className="text-sm">+251 93 816 9380</p>
+                    <p className="text-sm">{phoneEthiopia}</p>
                   </Flex>
                 </Flex>
               </Flex>
               <Flex className="flex gap-2 flex-col">
                 <Link
-                  href={'mailto:careers@zareinnovations.com'}
+                  href={`mailto:${careersEmail}`}
                   className="flex gap-4 items-center"
                 >
                   <IconMail className="h-6 w-6" />
-                  <span className="underline">info@zareinnovations.com</span>
+                  <span className="underline">{email}</span>
                 </Link>
               </Flex>
               <Flex className="gap-4">
                 <IconMapPinFilled className="w-8 h-8" />
                 <Flex className="flex gap-1 sm:gap-2 flex-col">
                   <p className="text-lg font-semibold">USA</p>
-                  <Flex className="gap-2 text-sm">
-                    651 N Broad St, Suite 201, Middletown, Delaware, 19709,
-                    United States
-                  </Flex>
+                  <Flex className="gap-2 text-sm">{addressUSA}</Flex>
                   <p className="text-lg font-semibold">Ethiopia</p>
-                  <Flex className="gap-2 text-sm z-10">
-                    Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave, Addis Ababa, Ethiopia
-                  </Flex>
+                  <Flex className="gap-2 text-sm z-10">{addressEthiopia}</Flex>
                 </Flex>
               </Flex>
             </Flex>
             <Flex className="flex border-t border-cyan-400/30 pt-3">
               <Link
                 className="rounded-full p-2 bg-[#00A9AB] hover:bg-white hover:text-cyan-600 transition-all duration-300"
-                href="https://www.linkedin.com/company/zare-innovations"
+                href={linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <IconBrandLinkedin />
               </Link>
