@@ -12,6 +12,7 @@ import RootStyleRegistry from './mantine';
 
 import localFont from 'next/font/local';
 import { Providers } from '@/store/provider';
+import { logo, ogImage, siteName, siteUrl } from '@/constants';
 
 const gotham = localFont({
   src: [
@@ -37,10 +38,10 @@ const gotham = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://zareinnovations.com'),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: 'Zare Innovations | Revolutionize Your Business',
-    template: '%s | Zare Innovations',
+    default: `${siteName} | Revolutionize Your Business`,
+    template: `%s | ${siteName}`,
   },
   description:
     'Zare Innovations is a technology company based in Ethiopia and the USA, delivering custom software development, AI solutions, talent outsourcing, and data intelligence services to help businesses scale globally.',
@@ -61,25 +62,25 @@ export const metadata: Metadata = {
     'African tech company',
     'Ethiopian software company',
   ],
-  authors: [{ name: 'Zare Innovations' }],
-  creator: 'Zare Innovations',
-  publisher: 'Zare Innovations',
+  authors: [{ name: siteName }],
+  creator: siteName,
+  publisher: siteName,
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'Zare Innovations',
+    siteName: siteName,
     images: [
       {
-        url: '/zare-logo.jpg',
+        url: ogImage.home,
         width: 1200,
         height: 630,
-        alt: 'Zare Innovations',
+        alt: siteName,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/zare-logo.jpg'],
+    images: [ogImage.home],
   },
   robots: {
     index: true,
@@ -93,11 +94,11 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://zareinnovations.com',
+    canonical: siteUrl,
   },
   icons: {
-    icon: '/zare-logo.jpg',
-    apple: '/zare-logo.jpg',
+    icon: logo,
+    apple: logo,
   },
 };
 
