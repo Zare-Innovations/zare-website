@@ -1,22 +1,23 @@
 import type { MetadataRoute } from "next";
 import { getAllJobs } from "@/lib/jobs";
+import { siteUrl } from "@/constants";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: "https://zareinnovations.com",
+      url: siteUrl,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1.0,
     },
     {
-      url: "https://zareinnovations.com/careers",
+      url: `${siteUrl}/careers`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: "https://zareinnovations.com/our-work",
+      url: `${siteUrl}/our-work`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
@@ -27,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const jobs = await getAllJobs();
     jobPages = jobs.map((job) => ({
-      url: `https://zareinnovations.com/careers/${job.id}`,
+      url: `${siteUrl}/careers/${job.id}`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.7,
