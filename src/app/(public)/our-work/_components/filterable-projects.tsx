@@ -29,7 +29,7 @@ export default function FilterableProjects() {
       </Hero>
       <div className="flex flex-col items-center gap-12 px-5 md:px-16 py-10 md:py-16">
         {filteredResults.map((category, index) => (
-          <ProjectCategory key={index} category={category} />
+          <ProjectCategory key={index} category={category} isFirstCategory={index === 0} />
         ))}
       </div>
     </>
