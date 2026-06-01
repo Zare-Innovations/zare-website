@@ -21,11 +21,23 @@ import {
 import { DatePicker } from "@mantine/dates";
 import { ClockIcon } from "lucide-react";
 import styles from "./call-booking.module.css";
-import CalendlyEmbed from "@/components/ui/calendly-embed";
+import dynamic from "next/dynamic";
+import {
+  addressEthiopia,
+  addressUSA,
+  consultationLink,
+  email,
+  phoneEthiopiaRaw,
+  whatsapp,
+  phoneRaw,
+} from "@/constants";
+
+const CalendlyEmbed = dynamic(
+  () => import("@/components/ui/calendly-embed"),
+  { ssr: false }
+);
 
 const DAYS_IN_ADVANCE = 14;
-const from = new Date();
-const to = new Date(from.getTime() + 1000 * 60 * 60 * 24 * DAYS_IN_ADVANCE);
 
 interface ApptTime {
   time: string;
@@ -227,6 +239,12 @@ const DateTimePicker = ({
   selectedTime: ApptTime | null;
   setSelectedTime: (time: ApptTime | null) => void;
 }) => {
+  const from = React.useMemo(() => new Date(), []);
+  const to = React.useMemo(
+    () => new Date(from.getTime() + 1000 * 60 * 60 * 24 * DAYS_IN_ADVANCE),
+    [from]
+  );
+
   return (
     <Flex
       gap="md"
@@ -404,7 +422,7 @@ export default function CallBooking() {
           selectedTime={selectedTime}
           setSelectedTime={setSelectedTime}
         /> */}
-        <CalendlyEmbed url="https://calendly.com/emanuel-ypgh/30min" />
+        <CalendlyEmbed url={consultationLink} />
       </Flex>
 
       <Flex className="relative z-10 flex-col gap-10 justify-center items-center">
@@ -420,45 +438,40 @@ export default function CallBooking() {
         <Flex className=" flex-col sm:flex-row gap-4 justify-center sm:items-center">
           <Flex className="flex flex-col gap-4">
             <Link
-              href="tel:+251938169380"
+              href={`tel:${phoneEthiopiaRaw}`}
               className="flex items-center gap-2 text-base font-medium"
             >
               <IconPhone size={20} />
-              +251938169380
+              {phoneEthiopiaRaw}
             </Link>
             <Link
-              href="https://wa.me/17033955235"
+              href={whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-base font-medium"
             >
               <IconBrandWhatsapp size={20} />
-              +17033955235
+              {phoneRaw}
             </Link>
           </Flex>
 
           <Link
-            href="mailto:info@zareinnovations.com"
+            href={`mailto:${email}`}
             className="flex items-center gap-2 text-base font-medium"
           >
             <IconMail size={20} />
-            info@zareinnovations.com
+            {email}
           </Link>
         </Flex>
 
         <Flex className="flex flex-col gap-6 mt-4 ">
           <div className="flex items-start gap-2">
             <IconMapPin size={20} />
-            <span className="flex-1 text-[15px]">
-              651 N Broad St, Suite 201, Middletown, Delaware, 19709,
-              United States
-            </span>
+            <span className="flex-1 text-[15px]">{addressUSA}</span>
           </div>
           <div className="flex items-start gap-2">
             <IconMapPin size={20} />
-            <span className="flex-1 text-[15px]">
-              Abyssinia Real Estate Building, 13th floor, Bole Japan, Africa Ave, Addis Ababa, Ethiopia
-            </span>
+            <span className="flex-1 text-[15px]">{addressEthiopia}</span>
           </div>
         </Flex>
       </Flex>
