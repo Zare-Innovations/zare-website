@@ -13,6 +13,7 @@ import {
   type SearchableColumn,
   type SelectedFilter,
 } from "@/app/utility/build-where";
+import { careersEmail } from "@/constants";
 
 export interface JobType {
   id: string;
@@ -200,8 +201,11 @@ const CareersList = () => {
                 No open roles at the moment, but great talent is always welcome.
                 If you're looking for meaningful work with a collaborative team,
                 reach out to{" "}
-                <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">
-                  careers@zareinnovations.com
+                <a
+                  href={`mailto:${careersEmail}`}
+                  className="font-medium hover:underline hover:underline-offset-1 cursor-pointer"
+                >
+                  {careersEmail}
                 </a>
                 , we'd love to connect.
               </span>
