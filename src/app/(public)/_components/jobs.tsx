@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import CareerCard from "../careers/_components/career-card";
 import { Job, useGetJobsQuery } from "@/store/api/job.api";
+import { careersEmail } from "@/constants";
 
 export default function Jobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -71,8 +72,11 @@ export default function Jobs() {
             No open roles at the moment, but great talent is always welcome. If
             you're looking for meaningful work with a collaborative team, reach
             out to{" "}
-            <a className="font-medium hover:underline hover:underline-offset-1 cursor-pointer">
-              careers@zareinnovations.com
+            <a
+              href={`mailto:${careersEmail}`}
+              className="font-medium hover:underline hover:underline-offset-1 cursor-pointer"
+            >
+              {careersEmail}
             </a>
             , we'd love to connect.
           </span>
