@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/projects";
 
-export default function ProjectCard({ project, isWeb}: { project: Project, isWeb?: boolean }) {
+export default function ProjectCard({ project, isWeb, priority }: { project: Project, isWeb?: boolean, priority?: boolean }) {
   return (
     <article className={`w-full ${isWeb ? 'flex flex-col-reverse min-[884px]:flex-row-reverse': 'flex flex-col-reverse min-[884px]:flex-row'} gap-6 sm:gap-8 p-5 sm:p-8 lg:p-10 rounded-lg bg-white shadow-md border border-cyan-950/10`}>
       <div className={`w-full flex flex-col gap-4 ${isWeb ? 'justify-center': 'justify-between'} flex-1 min-w-0`}>
@@ -67,6 +67,7 @@ export default function ProjectCard({ project, isWeb}: { project: Project, isWeb
           alt={`${project.title} screenshot`}
           width={1200}
           height={800}
+          priority={priority}
           className="w-full max-h-[300px] min-[884px]:max-h-[400px] object-cover min-[884px]:object-contain rounded-lg"
         />
       </div>

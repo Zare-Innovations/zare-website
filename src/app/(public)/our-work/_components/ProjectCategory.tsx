@@ -6,7 +6,7 @@ import { Carousel, CarouselSlide } from "@mantine/carousel";
 import projectClasses from "./projects.module.css";
 import type { ProjectsList } from "@/data/projects";
 
-export default function ProjectCategory({ category }: { category: ProjectsList }) {
+export default function ProjectCategory({ category, isFirstCategory }: { category: ProjectsList, isFirstCategory?: boolean }) {
 
   const isWeb = category.category === 'Website development';
 
@@ -42,7 +42,7 @@ export default function ProjectCategory({ category }: { category: ProjectsList }
         >
           {category.projects.map((project, index) => (
             <CarouselSlide key={index} className="h-full py-8">
-              <ProjectCard project={project} isWeb={isWeb} />
+              <ProjectCard project={project} isWeb={isWeb} priority={isFirstCategory && index === 0} />
             </CarouselSlide>
           ))}
         </Carousel>
