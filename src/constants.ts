@@ -35,7 +35,7 @@ export const reddit = "https://www.reddit.com/r/zareinnovations";
 export const github = "https://www.github.com/zareinnovations";
 
 export const ogImage = {
-  home: "/open-graphs/home.jpg",
-  ourWork: "/open-graphs/our-work.jpg",
-  careers: "/open-graphs/careers.jpg",
+  home: "/open-graphs/home.png",
+  ourWork: "/open-graphs/our-works.png",
+  careers: "/open-graphs/careers.png",
 } as const;
