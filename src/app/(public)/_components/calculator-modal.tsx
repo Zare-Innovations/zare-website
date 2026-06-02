@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   Button,
@@ -36,7 +36,12 @@ const RATE_TABLE: Record<string, { marketRate: number; zareRate: number }> = {
   'Back Office Support Specialist': { marketRate: 22, zareRate: 9 },
 };
 
-export default function ZareEstimatorModal() {
+interface ZareEstimatorModalProps {
+  title?: string;
+  children?: React.ReactNode
+}
+
+export default function ZareEstimatorModal({title, children}:ZareEstimatorModalProps) {
   const [open, { toggle, close }] = useDisclosure();
   const [isResultOpen, { open: openResult, close: closeResult }] =
     useDisclosure(false);
@@ -68,6 +73,21 @@ export default function ZareEstimatorModal() {
     employmentType?: string;
     startDate?: string;
   }>({});
+
+  const resetForm = () => {
+    setSelectedRole(null);
+    setPeopleCount('');
+    setCustomHoursPerWeek(0);
+    setEmploymentType(undefined);
+    setStartDate(null);
+    setResult({});
+    setErrors({});
+  };
+
+  const handleClose = () => {
+    close();
+    resetForm();
+  };
 
   const handleCalculate = () => {
     const newErrors: typeof errors = {};
@@ -120,6 +140,7 @@ export default function ZareEstimatorModal() {
     const savingsPercent = (savings / marketCost) * 100;
 
     close();
+    resetForm();
     openResult();
     setResult({
       role,
@@ -133,14 +154,13 @@ export default function ZareEstimatorModal() {
   };
 
   return (
-    <Group className="px-4 py-6 sm:px-8 lg:px-16">
+    <Group className="px-0">
       <button
-        onClick={toggle}
-        className="w-full sm:w-auto text-center font-semibold text-[#0A293B] bg-white hover:bg-cyan-500 hover:text-white px-6 py-3 rounded-md shadow-md transition duration-200"
-      >
-        Compare Rates Instantly
-      </button>
-
+      onClick={toggle}
+      className={`w-max flex items-center gap-3 rounded-md px-2 min-[500px]:px-3 sm:px-6 text-xs min-[430px]:text-sm min-[500px]:text-base py-[7px] sm:py-2.5 border-2 border-cyan-950 hover:border-[#10CFD1] hover:bg-[#10CFD1] hover:text-white transition-all duration-300`}
+    >
+      {children ? children : "Try Zare's ROI Calculator Now"}
+    </button>
 
       <SavingModal
         opened={isResultOpen}
@@ -159,16 +179,18 @@ export default function ZareEstimatorModal() {
         withCloseButton={false}
         styles={{
           content: {
-            backgroundColor: '#ffffff',
+            backgroundColor: "#ffffff"
           },
           body: {
-            padding: '2rem',
-          },
+            padding: "2rem"
+          }
         }}
       >
         <div className="max-w-sm mx-auto bg-white">
           <Stack gap="xl">
-            <Title order={1} size="lg" fw={700} c="#000000">Custom</Title>
+            <Title order={1} size="lg" fw={700} c="#000000">
+              Custom
+            </Title>
 
             <NumberInput
               placeholder="How many hours per week?"
@@ -176,27 +198,31 @@ export default function ZareEstimatorModal() {
               onChange={setCustomHoursPerWeek}
               styles={{
                 input: {
-                  backgroundColor: '#f3f3f3',
-                  border: 'none',
-                  color: '#475569',
-                  fontSize: '16px',
-                  padding: '16px',
-                  borderRadius: '8px',
-                  height: '42px',
-                },
+                  backgroundColor: "#f3f3f3",
+                  border: "none",
+                  color: "#475569",
+                  fontSize: "16px",
+                  padding: "16px",
+                  borderRadius: "8px",
+                  height: "42px"
+                }
               }}
             />
 
-            <Flex direction={{ base: 'column', sm: 'row' }} gap="md" justify="space-between">
+            <Flex
+              direction={{ base: "column", sm: "row" }}
+              gap="md"
+              justify="space-between"
+            >
               <Button
                 radius="md"
                 fullWidth
                 styles={{
                   root: {
-                    backgroundColor: '#f0fdfa',
-                    color: '#0a293b',
-                    fontWeight: 600,
-                  },
+                    backgroundColor: "#f0fdfa",
+                    color: "#0a293b",
+                    fontWeight: 600
+                  }
                 }}
                 onClick={closeHourModal}
               >
@@ -208,10 +234,10 @@ export default function ZareEstimatorModal() {
                 rightSection={<IconArrowRight size={20} />}
                 styles={{
                   root: {
-                    backgroundColor: '#0a293b',
-                    color: '#ffffff',
-                    fontWeight: 600,
-                  },
+                    backgroundColor: "#0a293b",
+                    color: "#ffffff",
+                    fontWeight: 600
+                  }
                 }}
                 onClick={closeHourModal}
               >
@@ -225,21 +251,18 @@ export default function ZareEstimatorModal() {
       {/* Estimator Modal */}
       <Modal
         opened={open}
-        onClose={close}
+        onClose={handleClose}
         size={1000}
         // padding="xl"
         centered
         withCloseButton={true}
         styles={{
           content: {
-            backgroundColor: '#ffffff',
-          },
-
+            backgroundColor: "#ffffff"
+          }
         }}
       >
-
-        <Stack className='px-[2rem] pb-4' >
-
+        <Stack className="px-[2rem] pb-4">
           {/* Progress Indicator */}
           <Flex justify="space-between" align="center" wrap="nowrap">
             <Group gap="md" align="center" className="flex-nowrap">
@@ -255,7 +278,7 @@ export default function ZareEstimatorModal() {
                   size="sm"
                   color="#0a293b"
                   styles={{
-                    root: { backgroundColor: '#f3f3f3' },
+                    root: { backgroundColor: "#f3f3f3" }
                   }}
                 />
               </Box>
@@ -267,15 +290,11 @@ export default function ZareEstimatorModal() {
             </Text>
           </Flex>
 
-
-
           {/* Header */}
           <Stack gap="sm">
             <div className="text-2xl md:text-5xl font-bold text-[#1e293b] leading-tight tracking-tight">
               Zare Savings Estimator
             </div>
-
-
 
             <Text size="lg" c="#6f6c90">
               See how much your team could save in 30 seconds
@@ -286,7 +305,9 @@ export default function ZareEstimatorModal() {
           <Grid gutter="xl">
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Stack gap="sm">
-                <Text fw={600} c="#000000">Select Role</Text>
+                <Text fw={600} c="#000000">
+                  Select Role
+                </Text>
                 <Select
                   placeholder="Select one..."
                   data={roleOptions}
@@ -295,10 +316,10 @@ export default function ZareEstimatorModal() {
                   error={errors.role}
                   styles={{
                     input: {
-                      backgroundColor: '#f8f8f8',
-                      border: '1px solid #f3f3f3',
-                      color: '#6f6c90',
-                    },
+                      backgroundColor: "#f8f8f8",
+                      border: "1px solid #f3f3f3",
+                      color: "#6f6c90"
+                    }
                   }}
                 />
               </Stack>
@@ -306,7 +327,9 @@ export default function ZareEstimatorModal() {
 
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Stack gap="sm">
-                <Text fw={600} c="#000000">How many people?</Text>
+                <Text fw={600} c="#000000">
+                  How many people?
+                </Text>
                 <TextInput
                   placeholder="Enter Number Here"
                   value={peopleCount}
@@ -315,9 +338,9 @@ export default function ZareEstimatorModal() {
                   type="number"
                   styles={{
                     input: {
-                      backgroundColor: '#f8f8f8',
-                      border: '1px solid #f3f3f3',
-                    },
+                      backgroundColor: "#f8f8f8",
+                      border: "1px solid #f3f3f3"
+                    }
                   }}
                 />
               </Stack>
@@ -326,31 +349,33 @@ export default function ZareEstimatorModal() {
 
           {/* Employment Type */}
           <Stack gap="md">
-            <Text fw={600} c="#000000">Employment Type</Text>
+            <Text fw={600} c="#000000">
+              Employment Type
+            </Text>
             <Flex
-              direction={{ base: 'column', sm: 'row' }}
+              direction={{ base: "column", sm: "row" }}
               gap="md"
               className="bg-[#f8f8f8] py-3 px-4 rounded"
             >
               <Checkbox
                 label="Full-time (40 hrs/week)"
-                checked={employmentType === 'fulltime'}
-                onChange={() => setEmploymentType('fulltime')}
+                checked={employmentType === "fulltime"}
+                onChange={() => setEmploymentType("fulltime")}
               />
               <Checkbox
                 label="Part-time (20 hrs/week)"
-                checked={employmentType === 'parttime'}
-                onChange={() => setEmploymentType('parttime')}
+                checked={employmentType === "parttime"}
+                onChange={() => setEmploymentType("parttime")}
               />
               <Checkbox
                 label={
                   customHoursPerWeek
                     ? `${customHoursPerWeek} hrs/week`
-                    : 'Set custom work hours'
+                    : "Set custom work hours"
                 }
-                checked={employmentType === 'custom'}
+                checked={employmentType === "custom"}
                 onChange={() => {
-                  setEmploymentType('custom');
+                  setEmploymentType("custom");
                   openHourModal();
                 }}
               />
@@ -360,9 +385,11 @@ export default function ZareEstimatorModal() {
 
           {/* Start Date */}
           <Grid gutter="xl">
-            <Grid.Col  span={{ base: 12, md: 6 }}>
+            <Grid.Col span={{ base: 12, md: 6 }}>
               <Stack gap="sm">
-                <Text fw={600} c="#000000">Desired Start Date</Text>
+                <Text fw={600} c="#000000">
+                  Desired Start Date
+                </Text>
                 <DatePickerInput
                   placeholder="Select the expected start date"
                   value={startDate}
@@ -376,9 +403,9 @@ export default function ZareEstimatorModal() {
                   }
                   styles={{
                     input: {
-                      backgroundColor: '#f8f8f8',
-                      border: '1px solid #f3f3f3',
-                    },
+                      backgroundColor: "#f8f8f8",
+                      border: "1px solid #f3f3f3"
+                    }
                   }}
                 />
               </Stack>
@@ -386,7 +413,7 @@ export default function ZareEstimatorModal() {
           </Grid>
 
           {/* Submit Button */}
-          <Group justify="end" className='mt-4'>
+          <Group justify="end" className="mt-4">
             <button
               onClick={handleCalculate}
               className="w-full sm:w-auto bg-[#0a293b] text-white font-semibold px-8 py-3 rounded-md hover:opacity-90 transition-opacity text-base"
@@ -397,6 +424,5 @@ export default function ZareEstimatorModal() {
         </Stack>
       </Modal>
     </Group>
-
   );
 }

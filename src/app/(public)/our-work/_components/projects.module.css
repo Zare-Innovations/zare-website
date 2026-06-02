@@ -1,0 +1,67 @@
+.indicator {
+  width: 40px;
+  height: 4px;
+  transition: width 250ms ease;
+  background-color: #0a293b;
+
+  &[data-active] {
+    width: 60px;
+    background-color: #00a9ab;
+  }
+
+  &[data-inactive] {
+    background-color: #0a293b;
+  }
+}
+
+.carouselWrapper {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (min-width: 501px) {
+  .carouselWrapper {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+.controls {
+  scale: 105%;
+}
+
+@media (max-width: 500px) {
+  .controls {
+    top: -40px;
+    justify-content: end;
+    gap: 6px;
+    bottom: unset;
+  }
+
+  .indicators {
+    left: 0;
+    width: 260px;
+  }
+}
+
+@media (min-width: 501px) and (max-width: 900px) {
+  .controls {
+    left: -50px;
+    right: -50px;
+  }
+
+  .indicators {
+    left: -39px;
+  }
+}
+
+@media (min-width: 901px) {
+  .controls {
+    left: -39px;
+    right: -39px;
+  }
+
+  .indicators {
+    left: -39px;
+  }
+}

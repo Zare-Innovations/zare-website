@@ -1,5 +1,5 @@
 'use client';
-
+import { useProfileQuery } from '@/store/api/auth/auth.api';
 import { Avatar } from '@mantine/core';
 import {
   IconCalendar,
@@ -9,10 +9,13 @@ import {
   IconHelpCircle,
   IconLogout,
   IconSettings,
+  IconFileText,
 } from '@tabler/icons-react';
+import { deleteCookie } from 'cookies-next';
 import Link from 'next/link';
 import {
   usePathname,
+  useRouter,
   // useRouter
 } from 'next/navigation';
 import { useState } from 'react';
@@ -20,9 +23,19 @@ import { useState } from 'react';
 export default function Sidebar() {
   const [jobManagementExpanded, setJobManagementExpanded] = useState(true);
   const [settingsExpanded, setSettingsExpanded] = useState(false);
+   const router = useRouter();
+
+   const { data: profile} = useProfileQuery();
 
   // const router = useRouter();
   const pathname = usePathname();
+
+  const logout = () => {
+
+            deleteCookie("access_token");
+        deleteCookie("refresh_token");
+        router.push("/admin/login");
+  }
 
   return (
     <div className="h-screen bg-[#0a293b] text-white flex flex-col text-sm">
@@ -35,7 +48,7 @@ export default function Sidebar() {
               <div className="text-sm text-gray-400 uppercase tracking-wide">
                 ADMIN
               </div>
-              <div className="font-medium text-nowrap">Andrew Smith</div>
+              <div className="font-medium text-nowrap">{profile?.name ||''}</div>
             </div>
           </div>
         </div>
@@ -105,6 +118,18 @@ export default function Sidebar() {
           </div>
         </div>
 
+        {/* Contract Generator */}
+        <div className="mb-8">
+          <div
+            className={`flex items-center gap-3 p-3 text-gray-400 hover:text-white transition-colors cursor-pointer rounded-lg
+              ${pathname.startsWith('/admin/contract-generator') ? 'bg-[#00a9ab] text-white' : 'text-gray-400 hover:text-white'}
+              `}
+          >
+            <IconFileText className="w-5 h-5" />
+            <Link href="/admin/contract-generator">Contract Generator</Link>
+          </div>
+        </div>
+
         {/* Divider */}
         <div className="h-px bg-[#00a9ab] mb-8"></div>
 
@@ -153,7 +178,7 @@ export default function Sidebar() {
         </div>
 
         {/* Logout */}
-        <div className="flex items-center gap-3 p-2 text-gray-400 hover:text-white transition-colors cursor-pointer">
+        <div  onClick={logout} className="flex items-center gap-3 p-2 text-gray-400 hover:text-white transition-colors cursor-pointer">
           <IconLogout className="w-5 h-5" />
           <span>Logout Account</span>
         </div>

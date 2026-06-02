@@ -19,8 +19,6 @@ export default function ForgotPassword() {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log('Email submitted:', email);
-
     router.push('/admin/verify');
   };
 

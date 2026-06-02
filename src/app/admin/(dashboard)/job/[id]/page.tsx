@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Text,
   Group,
@@ -23,87 +22,73 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import { IconCalendar, IconCheck, IconAlertCircle } from '@tabler/icons-react';
-import { useState } from 'react';
-import { z } from 'zod';
+import { useState, useEffect } from 'react';
 import '@mantine/tiptap/styles.css';
 import { SearchablePill } from '../../_components/searchable-pill';
+import {
+  CreateJob,
+  useUpdateJobMutation,
+  useCreateJobMutation,
+  useGetJobQuery,
+} from '@/store/api/job.api';
+import { useParams, useRouter } from 'next/navigation';
+import { jobSchema, JobFormData } from './job.schema';
 
-// Zod validation schema
-const jobSchema = z
-  .object({
-    jobTitle: z
-      .string()
-      .min(2, 'Job title must be at least 2 characters')
-      .max(100, 'Job title must be less than 100 characters')
-      .nonempty('Job title is required'),
+export default function JobForm() {
 
-    yearsOfExperience: z
-      .number()
-      .min(0, 'Years of experience cannot be negative')
-      .max(50, 'Years of experience cannot exceed 50')
-      .int('Years of experience must be a whole number'),
+  const { id } = useParams();
+const jobId = Array.isArray(id) ? id[0] : id;
 
-    location: z
-      .string()
-      .min(2, 'Location must be at least 2 characters')
-      .max(100, 'Location must be less than 100 characters')
-      .nonempty('Location is required'),
 
-    jobType: z.enum(['Remote', 'On-site', 'Hybrid'], {
-      errorMap: () => ({ message: 'Please select a valid job type' }),
-    }),
 
-    workType: z.enum(['Full-Time', 'Part-Time', 'Contract', 'Freelance'], {
-      errorMap: () => ({ message: 'Please select a valid work type' }),
-    }),
+const isEdit = Boolean(jobId && jobId !==  encodeURIComponent('+'));
 
-    skills: z
-      .array(z.string())
-      .min(1, 'At least one skill is required')
-      .max(10, 'Maximum 10 skills allowed'),
-
-    startDate: z
-      .date({
-        required_error: 'Start date is required',
-        invalid_type_error: 'Please enter a valid start date',
-      })
-      .min(new Date(), 'Start date cannot be in the past'),
-
-    endDate: z.date({
-      required_error: 'End date is required',
-      invalid_type_error: 'Please enter a valid end date',
-    }),
-
-    jobDescription: z
-      .string()
-      .min(10, 'Job description must be at least 10 characters')
-      .max(400, 'Job description must be less than 400 characters')
-      .nonempty('Job description is required'),
-  })
-  .refine((data) => data.endDate > data.startDate, {
-    message: 'End date must be after start date',
-    path: ['endDate'],
-  });
-
-type JobFormData = z.infer<typeof jobSchema>;
-
-export default function JobCreationForm() {
+const { data: jobData, isLoading: isJobLoading } = useGetJobQuery(jobId!, {
+  skip: !isEdit, 
+});
+  
   const [descriptionLength, setDescriptionLength] = useState(0);
+  const router = useRouter();
+
+  const [createJob] = useCreateJobMutation();
+  const [updateJob] = useUpdateJobMutation();
+
 
   const form = useForm<JobFormData>({
     validate: zodResolver(jobSchema),
     initialValues: {
-      jobTitle: '',
+      title: '',
       yearsOfExperience: 2,
       location: '',
-      jobType: 'Remote',
+      type: 'Remote',
       workType: 'Full-Time',
       skills: [],
       startDate: new Date(),
-      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-      jobDescription: '',
+      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      description: '',
     },
   });
+
+  // Populate form when jobData is loaded
+// eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
+  if (isEdit && jobData) {
+    form.setValues({
+      ...jobData,
+      skills: jobData.skills?.split(',') || [],
+      startDate: jobData.startDate ? new Date(jobData.startDate) : undefined,
+      endDate: jobData.endDate ? new Date(jobData.endDate) : undefined,
+    });
+
+    if (editor) {
+      editor.commands.setContent(jobData.description || '');
+      setDescriptionLength(jobData.description?.length || 0);
+    }
+  }
+}, [isEdit, jobData]);
+
+
+
 
   const editor = useEditor({
     extensions: [
@@ -115,26 +100,52 @@ export default function JobCreationForm() {
       Highlight,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
-    content: form.values.jobDescription || '',
+    content: form.values.description || '',
     onUpdate: ({ editor }) => {
       const content = editor.getText();
       setDescriptionLength(content.length);
-      form.setFieldValue('jobDescription', content);
+      form.setFieldValue('description', content);
     },
   });
 
-  const handleSubmit = (values: JobFormData) => {
-    console.log('Form submitted:', values);
-    notifications.show({
-      title: 'Success!',
-      message: 'Job posting has been created successfully',
-      color: 'teal',
-      icon: <IconCheck size={16} />,
-    });
+  const handleSubmit = async (values: JobFormData) => {
+    try {
+      const payload = {
+        ...values,
+        skills: values.skills.join(','),
+      } as CreateJob;
+
+      if (isEdit && id) {
+        await updateJob({
+          id: id as string,
+          data: payload,
+        }).unwrap();
+      } else {
+        await createJob(payload).unwrap();
+      }
+
+      notifications.show({
+        title: 'Success!',
+        message: isEdit
+          ? 'Job posting has been updated successfully'
+          : 'Job posting has been created successfully',
+        color: 'teal',
+        icon: <IconCheck size={16} />,
+      });
+
+      router.push('/admin/job');
+    } catch (err) {
+      console.error('Job submission error:', err);
+      notifications.show({
+        title: isEdit ? 'Update Failed' : 'Creation Failed',
+        message: 'Please try again later.',
+        color: 'red',
+      });
+    }
   };
 
   const handleSubmitError = (errors: typeof form.errors) => {
-    console.log('Form errors:', errors);
+    console.error('Form submission errors:', errors);
     notifications.show({
       title: 'Validation Error',
       message: 'Please fix the errors in the form before submitting',
@@ -143,15 +154,21 @@ export default function JobCreationForm() {
     });
   };
 
+  if (isEdit && isJobLoading) {
+    return <Text>Loading job data...</Text>;
+  }
+
   return (
     <Container size="lg" py="xl">
       <div>
         <div className="p-4 rounded-lg bg-white mb-6">
           <Text size="xl" color="dark">
-            Create a Job
+            {isEdit ? 'Edit Job' : 'Create a Job'}
           </Text>
           <Text size="sm" color="gray.6">
-            Fill out the form below to create a new job listing.
+            {isEdit
+              ? 'Update the details below to edit the job listing.'
+              : 'Fill out the form below to create a new job listing.'}
           </Text>
         </div>
 
@@ -164,7 +181,7 @@ export default function JobCreationForm() {
                   placeholder="Enter job title"
                   size="md"
                   withAsterisk
-                  {...form.getInputProps('jobTitle')}
+                  {...form.getInputProps('title')}
                 />
               </Grid.Col>
               <Grid.Col span={6}>
@@ -195,7 +212,7 @@ export default function JobCreationForm() {
                   data={['Remote', 'On-site', 'Hybrid']}
                   size="md"
                   withAsterisk
-                  {...form.getInputProps('jobType')}
+                  {...form.getInputProps('type')}
                 />
               </Grid.Col>
 
@@ -229,7 +246,6 @@ export default function JobCreationForm() {
                   )}
                 </div>
               </Grid.Col>
-
               <Grid.Col span={6}>
                 <DateInput
                   label="Start Date"
@@ -280,9 +296,9 @@ export default function JobCreationForm() {
                     </RTE.Toolbar>
                   </RTE>
                   <Group mt="xs">
-                    {form.errors.jobDescription && (
+                    {form.errors.description && (
                       <Text color="red" size="sm">
-                        {form.errors.jobDescription}
+                        {form.errors.description}
                       </Text>
                     )}
                     <Text
@@ -305,7 +321,7 @@ export default function JobCreationForm() {
                 style={{ backgroundColor: '#1a365d' }}
                 loading={form.submitting}
               >
-                Submit
+                {isEdit ? 'Update Job' : 'Create Job'}
               </Button>
             </Group>
           </form>

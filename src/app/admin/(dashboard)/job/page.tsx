@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Table,
   TextInput,
@@ -13,6 +13,8 @@ import {
   Pagination,
   Anchor,
   rem,
+  Modal,
+  Button,
 } from '@mantine/core';
 import {
   IconSearch,
@@ -22,87 +24,183 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from '@tabler/icons-react';
-import { jobListings } from '@/mock/job-listing';
+import { Job,  useDeleteJobMutation, useGetJobsQuery } from '@/store/api/job.api';
+import { useDebounce } from 'use-debounce';
+import { notifications } from '@mantine/notifications';
+import { useRouter } from 'next/navigation';
 
-interface JobListing {
-  id: string;
-  title: string;
-  experience: string;
-  jobType: string;
-  workType: string;
-  status: string;
-  startDate: string;
-  endDate: string;
-  applications: number;
-}
 
 export default function JobManagement() {
-  const [searchValue, setSearchValue] = useState('');
   const [activePage, setActivePage] = useState(1);
+  const [searchValue, setSearchValue] = useState('');
+  const [debouncedSearch] = useDebounce(searchValue, 2000); // 2 seconds
 
-  const getStatusColor = (status: string) => {
-    return status === 'Active' ? 'teal' : 'red';
+
+
+const where: any[] = [];
+
+
+const searchableKeys: (keyof Job)[] = ['title'];
+
+if (debouncedSearch) {
+  searchableKeys.forEach(key => {
+    where.push([
+      {
+        column: key,
+        value: `%${debouncedSearch}%`,
+        operator: 'ILIKE',
+      },
+    ]);
+  });
+}
+
+
+
+
+const { 
+  data: jobsDataResponse, 
+ 
+  refetch 
+} = useGetJobsQuery({where});
+
+
+  const [deleteJob] = useDeleteJobMutation();
+
+  const [jobListings, setJobListings] = useState<Job[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+
+  const itemsPerPage = 10;
+const totalPages = Math.ceil(jobListings.length / itemsPerPage);
+  const paginatedJobs = jobListings.slice(
+  (activePage - 1) * itemsPerPage,
+  activePage * itemsPerPage
+);
+
+
+const router = useRouter();
+  useEffect(() => {
+    if (jobsDataResponse?.items) {
+      setJobListings(jobsDataResponse.items);
+    }
+  }, [jobsDataResponse]);
+
+  const handleDeleteClick = (jobId: string) => {
+    setSelectedJobId(jobId);
+    setModalOpen(true);
   };
 
-  const rows = jobListings.map((job: JobListing) => (
-    <Table.Tr key={job.id}>
-      <Table.Td>
-        <div>
-          <Text fw={500} size="sm">
-            {job.title}
+ const handleEditClick = (jobId: string) => {
+  router.push(`/admin/job/${jobId}`);
+};
+  const handleConfirmDelete = async () => {
+    if (selectedJobId) {
+      try {
+        await deleteJob({ id: selectedJobId }).unwrap();
+        await refetch(); 
+        setModalOpen(false);
+        setSelectedJobId(null);
+      } catch (error: any) {
+        setModalOpen(false)
+        console.error('Delete job failed:', error);
+        notifications.show({
+          title: 'Delete Failed',
+          message: error?.data?.message || error?.message || 'Cannot delete this job. Please try again.',
+          color: 'red',
+        });
+      }
+    }
+  };
+
+  // const getStatusColor = (status: string) => {
+  //   return status === 'Active' ? 'teal' : 'red';
+  // };
+
+  const rows = paginatedJobs.length > 0
+    ? paginatedJobs.map((job) => (
+      <Table.Tr key={job.id}>
+        <Table.Td>
+          <div>
+            <Text fw={500} size="sm">
+              {job.title}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {/* If job.experience is not present in Job, remove or adjust this line */}
+              {'experience' in job ? (job as any).experience : ''}
+            </Text>
+          </div>
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" c="dimmed">
+            {/* If job.jobType is not present in Job, remove or adjust this line */}
+            {job?.type}
           </Text>
-          <Text size="xs" c="dimmed">
-            {job.experience}
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" c="dimmed">
+            {/* If job.workType is not present in Job, remove or adjust this line */}
+            {'workType' in job ? (job as any).workType : ''}
           </Text>
-        </div>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="dimmed">
-          {job.jobType}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="dimmed">
-          {job.workType}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Badge color={getStatusColor(job.status)} variant="light" size="sm">
-          {job.status}
-        </Badge>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="dimmed">
-          {job.startDate}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="dimmed">
-          {job.endDate}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Anchor size="sm" td="underline">
-          {job.applications} applicants
-        </Anchor>
-      </Table.Td>
-      <Table.Td>
-        <Group gap="xs">
-          {job.status === 'Closed' && (
-            <ActionIcon variant="subtle" color="gray" size="sm">
-              <IconRefresh style={{ width: rem(16), height: rem(16) }} />
+        </Table.Td>
+        <Table.Td>
+          <Badge
+            color={new Date(job.endDate) < new Date() ? 'red' : 'green'}
+            variant="light"
+            size="sm"
+          >
+            {new Date(job.endDate) < new Date() ? 'CLOSED' : 'ACTIVE'}
+          </Badge>
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" c="dimmed">
+            {job.startDate ? new Date(job.startDate).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }) : ''}
+          </Text>
+        </Table.Td>
+
+        <Table.Td>
+          <Text size="sm" c="dimmed">
+            {job.endDate ? new Date(job.endDate).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }) : ''}
+          </Text>
+        </Table.Td>
+
+        <Table.Td>
+          <Anchor size="sm" td="underline">
+            {/* If job.applications is not present in Job, remove or adjust this line */}
+            {'applications' in job ? (job as any).applications : 0} applicants
+          </Anchor>
+        </Table.Td>
+        <Table.Td>
+          <Group gap="xs">
+            {(job as any).status === 'Closed' && (
+              <ActionIcon variant="subtle" color="gray" size="sm">
+                <IconRefresh style={{ width: rem(16), height: rem(16) }} />
+              </ActionIcon>
+            )}
+            <ActionIcon variant="subtle" color="gray" size="sm"
+             onClick={() => handleEditClick(job.id)}>
+              <IconEdit style={{ width: rem(16), height: rem(16) }} />
             </ActionIcon>
-          )}
-          <ActionIcon variant="subtle" color="gray" size="sm">
-            <IconEdit style={{ width: rem(16), height: rem(16) }} />
-          </ActionIcon>
-          <ActionIcon variant="subtle" color="red" size="sm">
-            <IconTrash style={{ width: rem(16), height: rem(16) }} />
-          </ActionIcon>
-        </Group>
-      </Table.Td>
-    </Table.Tr>
-  ));
+            <ActionIcon
+              variant="subtle"
+              color="red"
+              size="sm"
+              onClick={() => handleDeleteClick(job.id)}
+            >
+              <IconTrash style={{ width: rem(16), height: rem(16) }} />
+            </ActionIcon>
+          </Group>
+        </Table.Td>
+      </Table.Tr>
+    ))
+    : null;
 
   return (
     <Container size="xl" py="md">
@@ -111,9 +209,7 @@ export default function JobManagement() {
         <TextInput
           className="w-96"
           placeholder="Search job posts by title, location, or status..."
-          leftSection={
-            <IconSearch style={{ width: rem(16), height: rem(16) }} />
-          }
+          leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} />}
           value={searchValue}
           onChange={(event) => setSearchValue(event.currentTarget.value)}
           mb="lg"
@@ -182,12 +278,14 @@ export default function JobManagement() {
             </Text>
           </Group>
 
-          <Pagination
-            total={3}
-            value={activePage}
-            onChange={setActivePage}
-            size="sm"
-          />
+        
+<Pagination
+  total={totalPages}
+  value={activePage}
+  onChange={setActivePage}
+  size="sm"
+/>
+
 
           <Group>
             <Text size="sm" c="dimmed">
@@ -198,7 +296,26 @@ export default function JobManagement() {
             </ActionIcon>
           </Group>
         </Group>
+
+        <Modal
+          opened={modalOpen}
+          onClose={() => setModalOpen(false)}
+          title="Delete Job"
+          centered
+        >
+          <Text>Are you sure you want to delete this job?</Text>
+          <Group mt="md" justify="flex-end">
+            <Button variant="default" onClick={() => setModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={handleConfirmDelete}>
+              Delete
+            </Button>
+          </Group>
+        </Modal>
       </Paper>
     </Container>
   );
 }
+
+

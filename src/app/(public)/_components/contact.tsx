@@ -16,14 +16,13 @@ export default function Contact() {
         }}
       >
         <Flex className="px-5 flex-col gap-12 my-auto ">
-          <p className="text-4xl md:text-6xl text-center lg:w-[70%] mx-auto font-bold">
-            Revolutionize Your Business with
-            <span className="text-[#00A9AB]"> Zare Innovations.</span>
-          </p>
-          <p className="text-center">
-            Elevate your business with our diverse BPO services tailored to
-            perfection – where quality meets affordability.
-          </p>
+          <p className="text-4xl md:text-5xl text-center lg:w-[60%] mx-auto font-bold tracking-tight">
+  Ready to <span className="text-[#00A9AB]">Partner</span> With Us?
+</p>
+<p className="text-center text-gray-600 max-w-2xl mx-auto">
+  Discover the impact of tailored BPO services. Reach out today and let’s 
+  find the perfect solution for your business growth.
+</p>
           <div className="mx-auto">
             <ContactUsForm />
           </div>
