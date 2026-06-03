@@ -14,14 +14,14 @@ const projects: Project[] = [
       solution:
         "Sourced, vetted, and recruited three full-time remote software developers from Ethiopia, creating a cost-effective and highly skilled global talent pipeline.",
       results:
-        "Successfully integrated three high-performing developers into the client's team, cutting talent overhead costs by over 50% while exceeding all performance expectations.",
+        "Successfully integrated three high-performing developers into the client's team, cutting talent overhead costs by over 50% while exceeding all performance expectations."
     },
     about: {
       link: "https://pickrellglobaltechnologies.com/",
-      name: "Built a 3-Engineer Remote Team",
-      logo: '/our-work/logos/pickrell.png',
-      image: '/our-work/shots/pickrell.png',
-    },
+      name: "Pickrell Global Technologies",
+      logo: "/our-work/logos/pickrell.png",
+      image: "/our-work/shots/pickrell.png"
+    }
   },
   {
     title: "Pharmaceutical Dashboard Design and Development",
@@ -49,7 +49,7 @@ const projects: Project[] = [
       solution:
         "Developed a custom, all-in-one CRM/ERP tool tailored for internal use. The platform facilitates onboarding and employee metrics tracking, financial management and invoicing, lead and client relationship management, project management and resource allocation.",
       results:
-        "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery.",
+        "Significantly enhanced operational efficiency, improved data visibility across all departments, and streamlined core business processes from HR to finance and project delivery."
     },
     location: "Addis Ababa, Ethiopia",
     about: {
