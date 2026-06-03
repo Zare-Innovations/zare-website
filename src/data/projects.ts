@@ -88,7 +88,7 @@ export const projectCategories: ProjectsList[] = [
       "Global talent sourcing and business process outsourcing for technology and customer service needs. We help clients overcome local talent shortages and reduce operational costs by recruiting, vetting, and integrating high-performing remote technical teams or customer support agents, yielding seamless expansion and notable cost-efficiency.",
     projects: [
       {
-        title: "Remote Software Development Team",
+        title: "Built a 3-Engineer Remote Team",
         location: "Pennsylvania, USA",
         details: {
           challenge:
@@ -100,7 +100,7 @@ export const projectCategories: ProjectsList[] = [
         },
         about: {
           link: "https://pickrellglobaltechnologies.com/",
-          name: "Built a 3-Engineer Remote Team",
+          name: "Pickrell Global Technologies",
           logo: "/our-work/logos/pickrell.png",
           image: "/our-work/shots/pickrell.png"
         }
@@ -158,7 +158,8 @@ export const projectCategories: ProjectsList[] = [
           logo: "/our-work/logos/kagol.svg",
           image: "/our-work/shots/kagol.png"
         }
-      }, {
+      },
+      {
         title: "Remote Back Office Support Specialist Placement",
         location: "Washington, D.C",
         details: {
@@ -175,7 +176,7 @@ export const projectCategories: ProjectsList[] = [
           logo: "/our-work/logos/10-13.png",
           image: "/our-work/shots/10-13.png"
         }
-      },
+      }
     ]
   },
   {
