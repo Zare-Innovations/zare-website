@@ -14,7 +14,7 @@ const CareerCard = ({ job }: { job: Job }) => {
         <h3 className=" text-start text-lg font-medium ">{job.title}</h3>
         <IconArrowUpRight className="w-6 h-6" />
       </Link>
-      <p className="text-sm text-[#6C6C6C] leading-relaxed">
+      <p className="text-sm text-[#6C6C6C] leading-relaxed line-clamp-4">
         {job.description}
       </p>
 
