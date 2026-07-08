@@ -2,23 +2,18 @@
 
 import { Card, Flex, Stack } from "@mantine/core";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import CareerCard from "../careers/_components/career-card";
-import { Job, useGetJobsQuery } from "@/store/api/job.api";
+import { useGetJobsQuery } from "@/store/api/job.api";
 import { careersEmail } from "@/constants";
 
-export default function Jobs() {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const isLoading = false;
-  const isError = false;
-  // const { data: jobsDataResponse, isLoading, isError } = useGetJobsQuery({});
+const HOMEPAGE_JOBS_LIMIT = 4;
 
-  // useEffect(() => {
-  //   if (jobsDataResponse?.items) {
-  //     // const items = jobsDataResponse.items;
-  //     // setJobs(items.length > 4 ? items.slice(0, 4) : items);
-  //   }
-  // }, [jobsDataResponse]);
+export default function Jobs() {
+  const { data: jobsDataResponse, isLoading, isError } = useGetJobsQuery({
+    orderBy: [{ column: "createdAt", direction: "DESC" }],
+    take: HOMEPAGE_JOBS_LIMIT,
+  });
+  const jobs = jobsDataResponse?.items ?? [];
 
   return (
     <Stack
