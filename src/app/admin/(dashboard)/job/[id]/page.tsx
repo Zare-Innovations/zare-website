@@ -102,9 +102,8 @@ useEffect(() => {
     ],
     content: form.values.description || '',
     onUpdate: ({ editor }) => {
-      const content = editor.getText();
-      setDescriptionLength(content.length);
-      form.setFieldValue('description', content);
+      setDescriptionLength(editor.getText().length);
+      form.setFieldValue('description', editor.getHTML());
     },
   });
 
