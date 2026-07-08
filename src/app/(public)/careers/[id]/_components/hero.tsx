@@ -14,7 +14,6 @@ export default function Hero({job}:{job: JobType}) {
     >
       <div className="flex flex-col">
         <h1 className="z-10 text-[36px] font-bold uppercase">{job.title}</h1>
-        <p className="z-10 text-base">{job.description}</p>
       </div>
       <div className="flex flex-wrap gap-2.5 text-sm capitalize">
         <span className="bg-cyan-500/5 backdrop-blur-sm text-cyan-500 border border-cyan-500 rounded-full px-3 py-1">
