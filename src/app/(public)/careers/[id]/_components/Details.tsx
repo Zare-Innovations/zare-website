@@ -94,7 +94,7 @@ const Details = ({ job }: { job: JobType | null }) => {
               </div>
               <div className="flex">
                 <dt className=" min-w-[140px]">Salary:</dt>
-                <dd className="ml-2">Based on sompany scale</dd>
+                <dd className="ml-2">Based on company scale</dd>
               </div>
               <div className="flex">
                 <dt className=" min-w-[140px]">Start Date:</dt>
