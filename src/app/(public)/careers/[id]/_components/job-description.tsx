@@ -22,43 +22,42 @@ const HTML_PROSE_CLASSES = [
 ].join(" ");
 
 // Section labels commonly used in job postings — used to detect implicit headers
-// in plain-text descriptions and promote them into <h4> elements.
+// in plain-text descriptions and promote them into <h4> elements. Bare-word
+// entries ("Requirements", "About", "Overview") are intentionally omitted
+// because they collide with normal body text (e.g. "ambiguous requirements").
 const KNOWN_SECTION_HEADERS = [
   "About Zare Innovations",
   "About Zare",
   "About Us",
-  "About",
   "The Role",
   "The Position",
   "Position Overview",
   "Role Overview",
-  "Overview",
   "Key Responsibilities",
-  "Responsibilities",
   "What You Will Do",
   "What you will do",
   "Technical Qualifications",
-  "Qualifications",
-  "Requirements",
   "Required Qualifications",
   "The Ideal Candidate",
   "Ideal Candidate",
   "Who You Are",
   "Why Join Us",
   "Why Join Us?",
-  "Benefits",
   "What We Offer",
-  "Perks",
+  "Perks & Benefits",
 ];
 
 const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// Matches any known header (longest first to prefer specific over generic).
+// A header only counts when it's preceded by a real section boundary — start
+// of the string, sentence-ending punctuation, a newline, or a run of 3+ spaces
+// (the "collapsed newline" artifact common in plain-text job descriptions).
+// This prevents mid-sentence keyword hits like "…ambiguous requirements…".
 const HEADER_REGEX = new RegExp(
-  `(${[...KNOWN_SECTION_HEADERS]
+  `(?<=^|[.!?]\\s+|\\n\\s*|\\s{3,})(${[...KNOWN_SECTION_HEADERS]
     .sort((a, b) => b.length - a.length)
     .map(escapeRegex)
-    .join("|")})\\??`,
+    .join("|")})\\??(?=\\s|$)`,
   "gi"
 );
 
