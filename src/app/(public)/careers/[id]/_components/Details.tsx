@@ -2,6 +2,7 @@
 
 import { Flex } from "@mantine/core";
 import type { JobType } from "@/types/job";
+import JobDescription from "./job-description";
 
 const aboutZare = (
   <p className="z-10 text-[15px] min-[501px]:text-base text-black/80">
@@ -19,25 +20,6 @@ const aboutZare = (
     tasks), and centralizing all the data in one place.
   </p>
 );
-
-const jobDescriptionClasses = [
-  "text-[15px] min-[501px]:text-base text-black/80",
-  "[&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-  "[&_p]:my-3 [&_p]:leading-relaxed",
-  "[&_h1]:text-2xl [&_h1]:font-semibold [&_h1]:mt-6 [&_h1]:mb-2",
-  "[&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-5 [&_h2]:mb-2",
-  "[&_h3]:text-lg [&_h3]:font-medium [&_h3]:mt-4 [&_h3]:mb-1.5",
-  "[&_ul]:list-disc [&_ul]:pl-5 sm:[&_ul]:pl-10 [&_ul]:my-3 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-1",
-  "[&_ol]:list-decimal [&_ol]:pl-5 sm:[&_ol]:pl-10 [&_ol]:my-3 [&_ol]:flex [&_ol]:flex-col [&_ol]:gap-1",
-  "[&_li]:leading-relaxed",
-  "[&_a]:text-cyan-500 [&_a]:underline hover:[&_a]:text-cyan-600",
-  "[&_strong]:font-semibold [&_b]:font-semibold",
-  "[&_em]:italic [&_i]:italic",
-  "[&_mark]:bg-yellow-200 [&_mark]:px-1 [&_mark]:rounded-sm",
-  "[&_u]:underline",
-  "[&_blockquote]:border-l-4 [&_blockquote]:border-cyan-500 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-black/70",
-  "[&_code]:bg-black/5 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[0.9em]",
-].join(" ");
 
 const formatDate = (dateString?: string) => {
   if (!dateString) return "-";
@@ -68,16 +50,7 @@ const Details = ({ job }: { job: JobType | null }) => {
             <h3 className="z-10 text-[26px] min-[501px]:text-[32px] font-medium uppercase">
               The Role
             </h3>
-            {job.description ? (
-              <div
-                className={jobDescriptionClasses}
-                dangerouslySetInnerHTML={{ __html: job.description }}
-              />
-            ) : (
-              <p className="text-[15px] min-[501px]:text-base text-black/60">
-                No description provided.
-              </p>
-            )}
+            <JobDescription content={job.description ?? ""} />
           </div>
           <div className="flex flex-col gap-1.5">
             <h3 className="z-10 text-base font-medium uppercase">
