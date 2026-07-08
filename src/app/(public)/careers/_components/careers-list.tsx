@@ -106,36 +106,27 @@ const CareersList = () => {
     return query;
   }, [primaryColumn, debouncedSearch, selectedFilters]);
 
-  // const {
-  //   data: jobsDataResponse,
-  //   isLoading,
-  //   isFetching,
-  //   error,
-  //   refetch
-  // } = useGetJobsQuery(queryArgs);
+  const {
+    data: jobsDataResponse,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useGetJobsQuery(queryArgs);
 
-  // It should not change when filtering/searching. Use a ref to track mount for clarity.
-  // const mounted = useRef(false);
-  // useEffect(() => {
-  //   if (!mounted.current) {
-  //     if (jobsDataResponse?.items) {
-  //       // setAllJobs(jobsDataResponse.items);
-  //       // mounted.current = true;
-  //     }
-  //   }
-  // }, [jobsDataResponse]);
+  // Capture the first non-empty response to keep filter dropdown options stable
+  // as the user filters/searches (subsequent fetches return a subset).
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current && jobsDataResponse?.items) {
+      setAllJobs(jobsDataResponse.items);
+      mounted.current = true;
+    }
+  }, [jobsDataResponse]);
 
-  // Memoize results
-  const results = allJobs ?? [];
-
-  // Use isFetching for loading indicator, not just isLoading
-  // const showLoading = isFetching;
-  // const showFilter = results.length > 0 || showLoading;
-  const isLoading = false;
-  const showLoading = false;
-  const showFilter = false;
-  const error = false;
-  const refetch = () => {};
+  const results = jobsDataResponse?.items ?? [];
+  const showLoading = isFetching;
+  const showFilter = allJobs.length > 0 || showLoading;
 
   return (
     <Flex className="relative flex flex-col gap-7 md:gap-10 px-5 md:px-16 pt-10 pb-20">
