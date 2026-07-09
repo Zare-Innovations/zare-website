@@ -85,7 +85,7 @@ const renderTextBlock = (
     .map((p) => p.trim())
     .filter(Boolean);
 
-  return paragraphs.flatMap((paragraph, pIdx) => {
+  return paragraphs.flatMap<React.ReactNode>((paragraph, pIdx) => {
     // If the paragraph contains bullet markers, split it into intro + list.
     if (paragraph.includes("•")) {
       const parts = paragraph
