@@ -6,6 +6,7 @@ import { Card, Select } from '@mantine/core';
 import { useDebounce } from 'use-debounce';
 import { ApplicantsTable } from '../_components/applicants-table';
 import { DeleteApplicantModal } from './_components/delete-applicant-modal';
+import { ApplicantDetailModal } from './_components/applicant-detail-modal';
 import {
   useGetAppliedJobsQuery,
   type AppliedJob,
@@ -17,6 +18,9 @@ export default function JobApplicantTracker() {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [debouncedQuery] = useDebounce(query, 300);
   const [applicantToDelete, setApplicantToDelete] = useState<AppliedJob | null>(
+    null,
+  );
+  const [applicantToView, setApplicantToView] = useState<AppliedJob | null>(
     null,
   );
 
@@ -139,9 +143,7 @@ export default function JobApplicantTracker() {
         <ApplicantsTable
           applicants={applicants}
           jobTitleById={jobTitleById}
-          onView={() => {
-            // Wired in the next commit — detail modal.
-          }}
+          onView={setApplicantToView}
           onDelete={setApplicantToDelete}
         />
       )}
@@ -149,6 +151,11 @@ export default function JobApplicantTracker() {
       <DeleteApplicantModal
         applicant={applicantToDelete}
         onClose={() => setApplicantToDelete(null)}
+      />
+      <ApplicantDetailModal
+        applicant={applicantToView}
+        jobTitleById={jobTitleById}
+        onClose={() => setApplicantToView(null)}
       />
     </div>
   );
