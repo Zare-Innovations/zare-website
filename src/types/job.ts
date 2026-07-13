@@ -9,4 +9,6 @@ export interface JobType {
   startDate: string;
   endDate: string;
   description: string;
+  aboutJob?: string;
+  aboutCompany?: string;
 }
