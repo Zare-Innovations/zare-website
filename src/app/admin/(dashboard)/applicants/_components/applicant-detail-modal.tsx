@@ -18,6 +18,7 @@ import {
 } from '@tabler/icons-react';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 import { StatusSelect } from './status-select';
+import { ResumeLink } from './resume-link';
 
 const formatDate = (iso?: string) => {
   if (!iso) return '—';
@@ -119,16 +120,10 @@ export function ApplicantDetailModal({
             {applicant.resume && (
               <Group gap="xs">
                 <IconFileText size={16} color="#64748b" />
-                <Anchor
-                  href={applicant.resume}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  size="sm"
-                  c="#0a293b"
-                  td="underline"
-                >
-                  Open resume
-                </Anchor>
+                <ResumeLink
+                  resume={applicant.resume}
+                  label="Open resume"
+                />
               </Group>
             )}
           </Stack>
