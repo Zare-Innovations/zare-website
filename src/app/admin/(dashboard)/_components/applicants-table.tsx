@@ -1,5 +1,5 @@
 'use client';
-import { Table, Text } from '@mantine/core';
+import { Anchor, Table, Text } from '@mantine/core';
 import { StatusBadge } from './status-badge';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 
@@ -49,6 +49,24 @@ export function ApplicantsTable({
         <Text size="sm" c="#0a293b">
           {formatAppliedOn(applicant.createdAt)}
         </Text>
+      </Table.Td>
+      <Table.Td>
+        {applicant.resume ? (
+          <Anchor
+            href={applicant.resume}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="sm"
+            c="#0a293b"
+            td="underline"
+          >
+            View Resume
+          </Anchor>
+        ) : (
+          <Text size="sm" c="#64748b">
+            —
+          </Text>
+        )}
       </Table.Td>
       <Table.Td style={{ maxWidth: 320 }}>
         <Text
@@ -107,6 +125,7 @@ export function ApplicantsTable({
             <Table.Th>Applicant</Table.Th>
             <Table.Th>Job Applied For</Table.Th>
             <Table.Th>Applied On</Table.Th>
+            <Table.Th>Resume</Table.Th>
             <Table.Th>Cover Letter</Table.Th>
             <Table.Th>Status</Table.Th>
           </Table.Tr>
