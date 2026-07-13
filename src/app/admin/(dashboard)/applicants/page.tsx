@@ -5,13 +5,20 @@ import { IconRefresh, IconSearch } from '@tabler/icons-react';
 import { Card, Select } from '@mantine/core';
 import { useDebounce } from 'use-debounce';
 import { ApplicantsTable } from '../_components/applicants-table';
-import { useGetAppliedJobsQuery } from '@/store/api/applied-jobs.api';
+import { DeleteApplicantModal } from './_components/delete-applicant-modal';
+import {
+  useGetAppliedJobsQuery,
+  type AppliedJob,
+} from '@/store/api/applied-jobs.api';
 import { useGetJobsQuery } from '@/store/api/job.api';
 
 export default function JobApplicantTracker() {
   const [query, setQuery] = useState('');
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [debouncedQuery] = useDebounce(query, 300);
+  const [applicantToDelete, setApplicantToDelete] = useState<AppliedJob | null>(
+    null,
+  );
 
   const {
     data: appliedJobsData,
@@ -132,8 +139,17 @@ export default function JobApplicantTracker() {
         <ApplicantsTable
           applicants={applicants}
           jobTitleById={jobTitleById}
+          onView={() => {
+            // Wired in the next commit — detail modal.
+          }}
+          onDelete={setApplicantToDelete}
         />
       )}
+
+      <DeleteApplicantModal
+        applicant={applicantToDelete}
+        onClose={() => setApplicantToDelete(null)}
+      />
     </div>
   );
 }

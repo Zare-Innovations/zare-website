@@ -2,6 +2,7 @@
 import { Anchor, Table, Text } from '@mantine/core';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 import { StatusSelect } from '../applicants/_components/status-select';
+import { RowActions } from '../applicants/_components/row-actions';
 
 const formatAppliedOn = (iso: string) => {
   try {
@@ -21,9 +22,13 @@ const truncate = (s: string, n = 90) =>
 export function ApplicantsTable({
   applicants,
   jobTitleById,
+  onView,
+  onDelete,
 }: {
   applicants: AppliedJob[];
   jobTitleById: Record<string, string>;
+  onView: (applicant: AppliedJob) => void;
+  onDelete: (applicant: AppliedJob) => void;
 }) {
   const rows = applicants.map((applicant) => (
     <Table.Tr key={applicant.id}>
@@ -81,6 +86,13 @@ export function ApplicantsTable({
       <Table.Td>
         <StatusSelect applicant={applicant} />
       </Table.Td>
+      <Table.Td style={{ width: 40 }}>
+        <RowActions
+          applicant={applicant}
+          onView={onView}
+          onDelete={onDelete}
+        />
+      </Table.Td>
     </Table.Tr>
   ));
 
@@ -128,6 +140,7 @@ export function ApplicantsTable({
             <Table.Th>Resume</Table.Th>
             <Table.Th>Cover Letter</Table.Th>
             <Table.Th>Status</Table.Th>
+            <Table.Th />
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
