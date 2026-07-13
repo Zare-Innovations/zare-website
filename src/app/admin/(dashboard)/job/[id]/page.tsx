@@ -11,18 +11,10 @@ import {
   Container,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { RichTextEditor as RTE, Link } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import Highlight from '@tiptap/extension-highlight';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import Superscript from '@tiptap/extension-superscript';
-import SubScript from '@tiptap/extension-subscript';
 import { IconCalendar, IconCheck, IconAlertCircle } from '@tabler/icons-react';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import '@mantine/tiptap/styles.css';
 import { SearchablePill } from '../../_components/searchable-pill';
 import {
@@ -33,26 +25,22 @@ import {
 } from '@/store/api/job.api';
 import { useParams, useRouter } from 'next/navigation';
 import { jobSchema, JobFormData } from './job.schema';
+import { JobRichTextField } from './_components/job-rich-text-field';
 
 export default function JobForm() {
-
   const { id } = useParams();
-const jobId = Array.isArray(id) ? id[0] : id;
+  const jobId = Array.isArray(id) ? id[0] : id;
 
+  const isEdit = Boolean(jobId && jobId !== encodeURIComponent('+'));
 
+  const { data: jobData, isLoading: isJobLoading } = useGetJobQuery(jobId!, {
+    skip: !isEdit,
+  });
 
-const isEdit = Boolean(jobId && jobId !==  encodeURIComponent('+'));
-
-const { data: jobData, isLoading: isJobLoading } = useGetJobQuery(jobId!, {
-  skip: !isEdit, 
-});
-  
-  const [descriptionLength, setDescriptionLength] = useState(0);
   const router = useRouter();
 
   const [createJob] = useCreateJobMutation();
   const [updateJob] = useUpdateJobMutation();
-
 
   const form = useForm<JobFormData>({
     validate: zodResolver(jobSchema),
@@ -66,53 +54,35 @@ const { data: jobData, isLoading: isJobLoading } = useGetJobQuery(jobId!, {
       startDate: new Date(),
       endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       description: '',
+      aboutJob: '',
+      aboutCompany: '',
     },
   });
 
   // Populate form when jobData is loaded
-// eslint-disable-next-line react-hooks/exhaustive-deps
-useEffect(() => {
-  if (isEdit && jobData) {
-    form.setValues({
-      ...jobData,
-      skills: jobData.skills?.split(',') || [],
-      startDate: jobData.startDate ? new Date(jobData.startDate) : undefined,
-      endDate: jobData.endDate ? new Date(jobData.endDate) : undefined,
-    });
-
-    if (editor) {
-      editor.commands.setContent(jobData.description || '');
-      setDescriptionLength(jobData.description?.length || 0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (isEdit && jobData) {
+      form.setValues({
+        ...jobData,
+        skills: jobData.skills?.split(',') || [],
+        startDate: jobData.startDate ? new Date(jobData.startDate) : undefined,
+        endDate: jobData.endDate ? new Date(jobData.endDate) : undefined,
+        aboutJob: jobData.aboutJob ?? '',
+        aboutCompany: jobData.aboutCompany ?? '',
+      });
     }
-  }
-}, [isEdit, jobData]);
-
-
-
-
-  const editor = useEditor({
-    immediatelyRender: false,
-    extensions: [
-      StarterKit,
-      Underline,
-      Link,
-      Superscript,
-      SubScript,
-      Highlight,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-    ],
-    content: form.values.description || '',
-    onUpdate: ({ editor }) => {
-      setDescriptionLength(editor.getText().length);
-      form.setFieldValue('description', editor.getHTML());
-    },
-  });
+  }, [isEdit, jobData]);
 
   const handleSubmit = async (values: JobFormData) => {
     try {
       const payload = {
         ...values,
         skills: values.skills.join(','),
+        aboutJob: values.aboutJob?.trim() ? values.aboutJob : undefined,
+        aboutCompany: values.aboutCompany?.trim()
+          ? values.aboutCompany
+          : undefined,
       } as CreateJob;
 
       if (isEdit && id) {
@@ -268,48 +238,31 @@ useEffect(() => {
               </Grid.Col>
 
               <Grid.Col span={12}>
-                <div>
-                  <Text size="sm" mb="xs">
-                    <span className="font-medium">Job Description</span>
-                    <span style={{ color: 'red' }}>* </span>
-                  </Text>
-                  <RTE editor={editor}>
-                    <RTE.Content />
+                <JobRichTextField
+                  label="Job Description"
+                  required
+                  initialContent={jobData?.description ?? ''}
+                  onChange={(html) => form.setFieldValue('description', html)}
+                  error={form.errors.description as string | undefined}
+                />
+              </Grid.Col>
 
-                    <RTE.Toolbar>
-                      <RTE.ControlsGroup>
-                        <RTE.Bold />
-                        <RTE.Italic />
-                        <RTE.Underline />
-                        <RTE.Strikethrough />
-                      </RTE.ControlsGroup>
+              <Grid.Col span={12}>
+                <JobRichTextField
+                  label="About the Job"
+                  initialContent={jobData?.aboutJob ?? ''}
+                  onChange={(html) => form.setFieldValue('aboutJob', html)}
+                  error={form.errors.aboutJob as string | undefined}
+                />
+              </Grid.Col>
 
-                      <RTE.ControlsGroup>
-                        <RTE.BulletList />
-                        <RTE.OrderedList />
-                      </RTE.ControlsGroup>
-
-                      <RTE.ControlsGroup>
-                        <RTE.Link />
-                        <RTE.Unlink />
-                      </RTE.ControlsGroup>
-                    </RTE.Toolbar>
-                  </RTE>
-                  <Group mt="xs">
-                    {form.errors.description && (
-                      <Text color="red" size="sm">
-                        {form.errors.description}
-                      </Text>
-                    )}
-                    <Text
-                      size="xs"
-                      color={descriptionLength > 400 ? 'red' : 'gray.6'}
-                      ml="auto"
-                    >
-                      {descriptionLength} / 400
-                    </Text>
-                  </Group>
-                </div>
+              <Grid.Col span={12}>
+                <JobRichTextField
+                  label="About the Company"
+                  initialContent={jobData?.aboutCompany ?? ''}
+                  onChange={(html) => form.setFieldValue('aboutCompany', html)}
+                  error={form.errors.aboutCompany as string | undefined}
+                />
               </Grid.Col>
             </Grid>
 
