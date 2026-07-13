@@ -1,7 +1,7 @@
 'use client';
 import { Anchor, Table, Text } from '@mantine/core';
-import { StatusBadge } from './status-badge';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
+import { StatusSelect } from '../applicants/_components/status-select';
 
 const formatAppliedOn = (iso: string) => {
   try {
@@ -79,7 +79,7 @@ export function ApplicantsTable({
         </Text>
       </Table.Td>
       <Table.Td>
-        <StatusBadge status={applicant.status} />
+        <StatusSelect applicant={applicant} />
       </Table.Td>
     </Table.Tr>
   ));
