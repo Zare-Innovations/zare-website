@@ -19,13 +19,6 @@ function validateEmail(email: string) {
   return emailRegex.test(email);
 }
 
-function validateUserFile(file: File | null) {
-  if (!file) return false;
-  const mimeOk =
-    file.type === "application/pdf" || file.type.startsWith("image/");
-  return mimeOk && file.size <= 50 * 1024 * 1024; // 50MB
-}
-
 export async function submitJobApply(formData: FormData): Promise<{
   success: boolean;
   errors?: JobApplyFieldErrors;
@@ -37,7 +30,7 @@ export async function submitJobApply(formData: FormData): Promise<{
   const phoneNumber = formData.get("phoneNumber") as string;
   const message = formData.get("message") as string;
   const jobId = formData.get("jobId") as string;
-  const userFile = formData.get("userFile") as File | null;
+  const resume = (formData.get("resume") as string | null) ?? "";
 
   const errors: JobApplyFieldErrors = {};
 
@@ -48,11 +41,6 @@ export async function submitJobApply(formData: FormData): Promise<{
   if (!validateRequire(message)) errors.message = "Cover Letter is Required";
   if (!validateRequire(email)) errors.email = "Email is Required";
   else if (!validateEmail(email)) errors.email = "Invalid email address";
-  if (!userFile) {
-    errors.userFile = "Resume or image file is required";
-  } else if (!validateUserFile(userFile)) {
-    errors.userFile = "Please upload a PDF or image file (max 50MB)";
-  }
 
   if (Object.keys(errors).length > 0) {
     return { success: false, errors, message: "Validation failed" };
@@ -67,19 +55,21 @@ export async function submitJobApply(formData: FormData): Promise<{
     };
   }
 
-  const body = new FormData();
-  body.append("jobId", jobId);
-  body.append("fullName", `${firstName.trim()} ${lastName.trim()}`);
-  body.append("email", email.trim());
-  body.append("phone", phoneNumber.trim());
-  body.append("coverLetter", message);
-  body.append("status", "Pending");
-  if (userFile) body.append("resume", userFile);
+  const payload: Record<string, string> = {
+    jobId,
+    fullName: `${firstName.trim()} ${lastName.trim()}`,
+    email: email.trim(),
+    phone: phoneNumber.trim(),
+    coverLetter: message,
+    status: "Pending",
+  };
+  if (resume.trim()) payload.resume = resume.trim();
 
   try {
     const res = await fetch(`${apiUrl}/api/applied-jobs`, {
       method: "POST",
-      body,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
       cache: "no-store",
     });
 
