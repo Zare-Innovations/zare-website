@@ -10,9 +10,11 @@ export interface CreateJob {
   type: 'Remote'| 'On-site'| 'Hybrid';
   workType: string;
   skills: string;
-  startDate: string | Date;  
-  endDate: string | Date;  
+  startDate: string | Date;
+  endDate: string | Date;
   description: string;
+  aboutJob?: string;
+  aboutCompany?: string;
 }
 
 export interface Job {
@@ -22,11 +24,13 @@ export interface Job {
   location: string;
   type: 'Remote' | 'On-site' | 'Hybrid';
   workType: 'Full-Time' | 'Part-Time' | 'Contract' | 'Freelance';
-  skills: string; 
-  startDate: string; 
-  endDate: string;   
+  skills: string;
+  startDate: string;
+  endDate: string;
   description: string;
-  createdAt: string; 
+  aboutJob?: string;
+  aboutCompany?: string;
+  createdAt: string;
   updatedAt: string;
 }
 
