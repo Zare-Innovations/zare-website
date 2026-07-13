@@ -43,6 +43,8 @@ export const jobSchema = z
     }, z.date()),
 
     description: z.string().min(10).nonempty(),
+    aboutJob: z.string().optional(),
+    aboutCompany: z.string().optional(),
   })
   .refine((data) => {
     if (!data.startDate || !data.endDate) return false;
