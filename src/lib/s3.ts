@@ -48,9 +48,17 @@ export interface UploadedFile {
  * 3. Return the key the backend assigned + the public/canonical URL
  */
 export async function uploadFileViaS3(file: File): Promise<UploadedFile> {
+  // Backend expects a `title` field (the crash on the previous attempt was
+  // `Cannot read properties of undefined (reading 'title')`). We send several
+  // common aliases in one body so the same call works whether the DTO reads
+  // `title`, `fileName`, `name`, or `contentType`.
   const requestBody = {
-    contentType: file.type || 'application/octet-stream',
+    title: file.name,
+    name: file.name,
     fileName: file.name,
+    contentType: file.type || 'application/octet-stream',
+    mimeType: file.type || 'application/octet-stream',
+    size: file.size,
   };
   console.log('[S3] upload → POST /api/s3/presigned-url/upload', {
     request: requestBody,
