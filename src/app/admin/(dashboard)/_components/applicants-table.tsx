@@ -1,59 +1,64 @@
 'use client';
-import { Table, Text, Anchor } from '@mantine/core';
+import { Table, Text } from '@mantine/core';
 import { StatusBadge } from './status-badge';
+import type { AppliedJob } from '@/store/api/applied-jobs.api';
 
-interface Applicant {
-  name: string;
-  email: string;
-  job: string;
-  experience: string;
-  education: string;
-  appliedOn: string;
-  status: string;
-}
+const formatAppliedOn = (iso: string) => {
+  try {
+    return new Date(iso).toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+};
 
-export function ApplicantsTable({ applicants }: { applicants: Applicant[] }) {
-  const rows = applicants.map((applicant, index) => (
-    <Table.Tr key={index}>
+const truncate = (s: string, n = 90) =>
+  s.length > n ? s.slice(0, n).trimEnd() + '…' : s;
+
+export function ApplicantsTable({
+  applicants,
+  jobTitleById,
+}: {
+  applicants: AppliedJob[];
+  jobTitleById: Record<string, string>;
+}) {
+  const rows = applicants.map((applicant) => (
+    <Table.Tr key={applicant.id}>
       <Table.Td>
-        <div>
-          <Text size="sm" fw={500} c="#101828">
-            {applicant.name}
+        <Text size="sm" fw={500} c="#101828">
+          {applicant.fullName}
+        </Text>
+        <Text size="xs" c="#64748b" mt={2}>
+          {applicant.email}
+        </Text>
+        {applicant.phone && (
+          <Text size="xs" c="#64748b">
+            {applicant.phone}
           </Text>
-          <Text size="xs" c="#64748b" mt={2}>
-            {applicant.email}
-          </Text>
-        </div>
+        )}
       </Table.Td>
       <Table.Td>
         <Text size="sm" c="#0a293b">
-          {applicant.job}
+          {jobTitleById[applicant.jobId] ?? applicant.jobId}
         </Text>
       </Table.Td>
       <Table.Td>
         <Text size="sm" c="#0a293b">
-          {applicant.experience}
+          {formatAppliedOn(applicant.createdAt)}
         </Text>
       </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {applicant.education}
+      <Table.Td style={{ maxWidth: 320 }}>
+        <Text
+          size="sm"
+          c="#0a293b"
+          title={applicant.coverLetter}
+          style={{ whiteSpace: 'pre-wrap' }}
+        >
+          {truncate(applicant.coverLetter)}
         </Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {applicant.appliedOn}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Anchor href="#" size="sm" c="#0a293b" td="underline">
-          View Resume
-        </Anchor>
-      </Table.Td>
-      <Table.Td>
-        <Anchor href="#" size="sm" c="#0a293b" td="underline">
-          View Cover Letter
-        </Anchor>
       </Table.Td>
       <Table.Td>
         <StatusBadge status={applicant.status} />
@@ -99,13 +104,10 @@ export function ApplicantsTable({ applicants }: { applicants: Applicant[] }) {
       >
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Applicant Name</Table.Th>
-            <Table.Th>Posted Job</Table.Th>
-            <Table.Th>Experience</Table.Th>
-            <Table.Th>Education</Table.Th>
+            <Table.Th>Applicant</Table.Th>
+            <Table.Th>Job Applied For</Table.Th>
             <Table.Th>Applied On</Table.Th>
-            <Table.Th>Resume</Table.Th>
-            <Table.Th>Cover Story</Table.Th>
+            <Table.Th>Cover Letter</Table.Th>
             <Table.Th>Status</Table.Th>
           </Table.Tr>
         </Table.Thead>
