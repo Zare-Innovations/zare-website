@@ -8,6 +8,7 @@ import Image from "next/image";
 import { notifications } from "@mantine/notifications";
 import { useParams } from "next/navigation";
 import { submitJobApply } from "@/actions/job-apply";
+import { uploadFileViaS3 } from "@/lib/s3";
 
 export function FileDropZone({
   onDropFile,
@@ -172,7 +173,26 @@ export default function ApplyForm() {
 
     setLoading(true);
     setFormErrors({});
-    // Compose FormData object for server action
+
+    // Upload the resume to S3 first (client-side, so we can PUT the actual
+    // file bytes). If the upload fails we still submit the application so
+    // the applicant isn't blocked — just without a resume attached.
+    let resumeKey: string | null = null;
+    if (formData.userFile) {
+      try {
+        const uploaded = await uploadFileViaS3(formData.userFile);
+        resumeKey = uploaded.key;
+      } catch (err) {
+        console.warn("Resume upload failed, continuing without it", err);
+        notifications.show({
+          color: "yellow",
+          title: "Resume upload failed",
+          message:
+            "We couldn't upload your resume. Submitting your application without it — please email it separately.",
+        });
+      }
+    }
+
     const submitData = new FormData();
     submitData.append("jobId", jobId);
     submitData.append("firstName", formData.firstName);
@@ -180,7 +200,7 @@ export default function ApplyForm() {
     submitData.append("email", formData.email);
     submitData.append("phoneNumber", formData.phoneNumber);
     submitData.append("message", formData.message);
-    submitData.append("userFile", formData.userFile!);
+    if (resumeKey) submitData.append("resume", resumeKey);
 
     const result = await submitJobApply(submitData);
 
