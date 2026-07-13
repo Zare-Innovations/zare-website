@@ -6,6 +6,7 @@ import { IconUpload, IconX } from "@tabler/icons-react";
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import Image from "next/image";
 import { notifications } from "@mantine/notifications";
+import { useParams } from "next/navigation";
 import { submitJobApply } from "@/actions/job-apply";
 
 export function FileDropZone({
@@ -85,6 +86,9 @@ export function FileDropZone({
 }
 
 export default function ApplyForm() {
+  const params = useParams<{ id: string }>();
+  const jobId = params?.id ?? "";
+
   // Local form state
   const [formData, setFormData] = useState<{
     firstName: string;
@@ -170,13 +174,13 @@ export default function ApplyForm() {
     setFormErrors({});
     // Compose FormData object for server action
     const submitData = new FormData();
+    submitData.append("jobId", jobId);
     submitData.append("firstName", formData.firstName);
     submitData.append("lastName", formData.lastName);
+    submitData.append("email", formData.email);
     submitData.append("phoneNumber", formData.phoneNumber);
     submitData.append("message", formData.message);
     submitData.append("userFile", formData.userFile!);
-
-    submitData.append("email", formData.email);
 
     const result = await submitJobApply(submitData);
 
