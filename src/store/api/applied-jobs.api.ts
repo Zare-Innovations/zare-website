@@ -3,77 +3,86 @@ import { encodeCollectionQuery } from '@/app/utility/query-builder';
 import { baseQuery } from '@/store/base-query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-export interface CreateJob {
-  title: string;
-  yearsOfExperience: number;
-  location: string;
-  type: 'Remote'| 'On-site'| 'Hybrid';
-  workType: string;
-  skills: string;
-  startDate: string | Date;  
-  endDate: string | Date;  
-  description: string;
-}
+export type AppliedJobStatus =
+  | 'Pending'
+  | 'Shortlisted'
+  | 'Rejected'
+  | 'Hired'
+  | string;
 
-export interface Job {
+export interface AppliedJob {
   id: string;
-  title: string;
-  yearsOfExperience: number;
-  location: string;
-  type: 'Remote' | 'On-site' | 'Hybrid';
-  workType: 'Full-Time' | 'Part-Time' | 'Contract' | 'Freelance';
-  skills: string; 
-  startDate: string; 
-  endDate: string;   
-  description: string;
-  createdAt: string; 
+  jobId: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  coverLetter: string;
+  status: AppliedJobStatus;
+  createdAt: string;
   updatedAt: string;
 }
 
-export interface JobListResponse {
-  total: number;
-  items: Job[];
+export interface CreateAppliedJob {
+  jobId: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  coverLetter: string;
+  status: AppliedJobStatus;
 }
 
-const baseURL = '/job';
+export interface AppliedJobListResponse {
+  total: number;
+  items: AppliedJob[];
+}
 
-export const jobApi = createApi({
-  reducerPath: 'jobApi',
+const baseURL = '/applied-jobs';
+
+export const appliedJobsApi = createApi({
+  reducerPath: 'appliedJobsApi',
   baseQuery: baseQuery,
   refetchOnFocus: true,
+  tagTypes: ['AppliedJob'],
   endpoints: (builder) => ({
-    createJob: builder.mutation<any, CreateJob>({
-      query: (data) => ({
-        url: `${baseURL}`,
-        method: 'POST',
-        body: data,
-      }),
-    }),
-    getJobs: builder.query<JobListResponse, CollectionQuery>({
+    getAppliedJobs: builder.query<AppliedJobListResponse, CollectionQuery | undefined>({
       query: (collectionQuery) => {
         let q = '';
         if (collectionQuery) {
-          const query = encodeCollectionQuery(collectionQuery);
-          q = `?q=${query}`;
+          const encoded = encodeCollectionQuery(collectionQuery);
+          q = `?q=${encoded}`;
         }
-        return {
-          url: `${baseURL}${q}`,
-          method: 'GET',
-        };
+        return { url: `${baseURL}/all${q}`, method: 'GET' };
       },
+      providesTags: ['AppliedJob'],
     }),
 
-    
-    getJob: builder.query<Job, string>({
-      query: (id) => ({
+    getAppliedJob: builder.query<AppliedJob, string>({
+      query: (id) => ({ url: `${baseURL}/${id}`, method: 'GET' }),
+      providesTags: ['AppliedJob'],
+    }),
+
+    updateAppliedJob: builder.mutation<
+      AppliedJob,
+      { id: string; data: Partial<CreateAppliedJob> }
+    >({
+      query: ({ id, data }) => ({
         url: `${baseURL}/${id}`,
-        method: 'GET',
+        method: 'PUT',
+        body: { ...data, id },
       }),
+      invalidatesTags: ['AppliedJob'],
+    }),
+
+    deleteAppliedJob: builder.mutation<AppliedJob, { id: string }>({
+      query: ({ id }) => ({ url: `${baseURL}/${id}`, method: 'DELETE' }),
+      invalidatesTags: ['AppliedJob'],
     }),
   }),
 });
 
 export const {
-  useGetJobsQuery,
-  useGetJobQuery
-} = jobApi;
+  useGetAppliedJobsQuery,
+  useGetAppliedJobQuery,
+  useUpdateAppliedJobMutation,
+  useDeleteAppliedJobMutation,
+} = appliedJobsApi;
