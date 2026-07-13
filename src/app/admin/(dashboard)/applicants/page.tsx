@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { IconRefresh, IconSearch } from '@tabler/icons-react';
-import { Card } from '@mantine/core';
+import { Card, Select } from '@mantine/core';
 import { useDebounce } from 'use-debounce';
 import { ApplicantsTable } from '../_components/applicants-table';
 import { useGetAppliedJobsQuery } from '@/store/api/applied-jobs.api';
@@ -10,6 +10,7 @@ import { useGetJobsQuery } from '@/store/api/job.api';
 
 export default function JobApplicantTracker() {
   const [query, setQuery] = useState('');
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [debouncedQuery] = useDebounce(query, 300);
 
   const {
@@ -32,8 +33,20 @@ export default function JobApplicantTracker() {
     return map;
   }, [jobsData]);
 
+  const jobOptions = useMemo(
+    () =>
+      (jobsData?.items ?? []).map((j) => ({
+        value: j.id,
+        label: j.title,
+      })),
+    [jobsData]
+  );
+
   const applicants = useMemo(() => {
-    const all = appliedJobsData?.items ?? [];
+    let all = appliedJobsData?.items ?? [];
+    if (selectedJobId) {
+      all = all.filter((a) => a.jobId === selectedJobId);
+    }
     const needle = debouncedQuery.trim().toLowerCase();
     if (!needle) return all;
     return all.filter((a) => {
@@ -44,15 +57,16 @@ export default function JobApplicantTracker() {
         title.toLowerCase().includes(needle)
       );
     });
-  }, [appliedJobsData, debouncedQuery, jobTitleById]);
+  }, [appliedJobsData, debouncedQuery, jobTitleById, selectedJobId]);
 
   const showEmpty =
     !isLoading && !isFetching && !isError && applicants.length === 0;
+  const totalCount = appliedJobsData?.items.length ?? 0;
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <div className="relative">
+      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1 min-w-0">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b] h-4 w-4" />
           <input
             type="text"
@@ -62,7 +76,32 @@ export default function JobApplicantTracker() {
             className="w-full pl-10 pr-4 py-2 border border-[#e7eaee] rounded-md bg-[#ffffff] text-[#0a293b] placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#eaecf0]"
           />
         </div>
+        <Select
+          placeholder="Filter by job"
+          data={jobOptions}
+          value={selectedJobId}
+          onChange={setSelectedJobId}
+          clearable
+          searchable
+          nothingFoundMessage="No jobs"
+          className="min-w-[240px]"
+          styles={{
+            input: {
+              backgroundColor: '#ffffff',
+              borderColor: '#e7eaee',
+              color: '#0a293b',
+              padding: '10px 12px',
+            },
+          }}
+        />
       </div>
+
+      {totalCount > 0 && (
+        <div className="mb-3 text-xs text-[#64748b]">
+          Showing {applicants.length} of {totalCount} application
+          {totalCount === 1 ? '' : 's'}
+        </div>
+      )}
 
       {isLoading || isFetching ? (
         <div className="rounded-md bg-white border border-[#e7eaee] p-6 flex flex-col gap-3">
@@ -85,8 +124,8 @@ export default function JobApplicantTracker() {
         </Card>
       ) : showEmpty ? (
         <div className="text-[#64748b] p-8 text-center bg-white rounded-md border border-[#e7eaee]">
-          {debouncedQuery.trim()
-            ? 'No applicants match your search.'
+          {debouncedQuery.trim() || selectedJobId
+            ? 'No applicants match your filters.'
             : 'No applications yet.'}
         </div>
       ) : (

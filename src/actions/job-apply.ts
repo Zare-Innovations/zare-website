@@ -67,24 +67,19 @@ export async function submitJobApply(formData: FormData): Promise<{
     };
   }
 
-  // TODO: upload userFile to S3 via /api/s3/presigned-url/upload and attach
-  // the returned key/URL to the payload once the backend adds a `resume`
-  // field to CreateAppliedJobsDto. Today the DTO has no attachment field,
-  // so the file is silently dropped and only the metadata is sent.
-  const payload = {
-    jobId,
-    fullName: `${firstName.trim()} ${lastName.trim()}`,
-    email: email.trim(),
-    phone: phoneNumber.trim(),
-    coverLetter: message,
-    status: "Pending",
-  };
+  const body = new FormData();
+  body.append("jobId", jobId);
+  body.append("fullName", `${firstName.trim()} ${lastName.trim()}`);
+  body.append("email", email.trim());
+  body.append("phone", phoneNumber.trim());
+  body.append("coverLetter", message);
+  body.append("status", "Pending");
+  if (userFile) body.append("resume", userFile);
 
   try {
     const res = await fetch(`${apiUrl}/api/applied-jobs`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body,
       cache: "no-store",
     });
 
