@@ -1,8 +1,9 @@
 'use client';
-import { Anchor, Table, Text } from '@mantine/core';
+import { Table, Text } from '@mantine/core';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 import { StatusSelect } from '../applicants/_components/status-select';
 import { RowActions } from '../applicants/_components/row-actions';
+import { ResumeLink } from '../applicants/_components/resume-link';
 
 const formatAppliedOn = (iso: string) => {
   try {
@@ -56,22 +57,7 @@ export function ApplicantsTable({
         </Text>
       </Table.Td>
       <Table.Td>
-        {applicant.resume ? (
-          <Anchor
-            href={applicant.resume}
-            target="_blank"
-            rel="noopener noreferrer"
-            size="sm"
-            c="#0a293b"
-            td="underline"
-          >
-            View Resume
-          </Anchor>
-        ) : (
-          <Text size="sm" c="#64748b">
-            —
-          </Text>
-        )}
+        <ResumeLink resume={applicant.resume} />
       </Table.Td>
       <Table.Td style={{ maxWidth: 320 }}>
         <Text
