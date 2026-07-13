@@ -48,24 +48,45 @@ export interface UploadedFile {
  * 3. Return the key the backend assigned + the public/canonical URL
  */
 export async function uploadFileViaS3(file: File): Promise<UploadedFile> {
+  const requestBody = {
+    contentType: file.type || 'application/octet-stream',
+    fileName: file.name,
+  };
+  console.log('[S3] upload → POST /api/s3/presigned-url/upload', {
+    request: requestBody,
+    file: { name: file.name, type: file.type, size: file.size },
+  });
+
   const presignRes = await fetch(`${API_BASE}/api/s3/presigned-url/upload`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contentType: file.type || 'application/octet-stream',
-      fileName: file.name,
-    }),
+    body: JSON.stringify(requestBody),
+  });
+
+  const rawText = await presignRes.text().catch(() => '');
+  console.log('[S3] upload response', {
+    status: presignRes.status,
+    ok: presignRes.ok,
+    contentType: presignRes.headers.get('content-type'),
+    body: rawText,
   });
 
   if (!presignRes.ok) {
-    const text = await presignRes.text().catch(() => '');
-    console.error('presigned-url/upload failed', presignRes.status, text);
+    console.error('presigned-url/upload failed', presignRes.status, rawText);
     throw new Error('Failed to get an upload URL');
   }
 
-  const presignData = await presignRes.json().catch(() => null);
+  let presignData: unknown = null;
+  try {
+    presignData = rawText ? JSON.parse(rawText) : null;
+  } catch {
+    presignData = rawText;
+  }
+  console.log('[S3] parsed presign data', presignData);
+
   const uploadUrl = pickUrl(presignData);
   const key = pickKey(presignData, file.name);
+  console.log('[S3] resolved', { uploadUrl, key });
 
   const uploadRes = await fetch(uploadUrl, {
     method: 'PUT',
