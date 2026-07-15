@@ -27,7 +27,10 @@ function htmlToPlainText(html: string | undefined | null): string {
 }
 
 const CareerCard = ({ job }: { job: Job }) => {
-  const previewText = htmlToPlainText(job.description);
+  // Prefer the "About the Job" summary for the card teaser; fall back to
+  // the full description when it's not set.
+  const previewText =
+    htmlToPlainText(job.aboutJob) || htmlToPlainText(job.description);
   return (
     <Card className="flex flex-col gap-4 p-3 sm:p-5 lg:p-7">
       <Link
