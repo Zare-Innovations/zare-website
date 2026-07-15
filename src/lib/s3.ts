@@ -48,10 +48,13 @@ export interface UploadedFile {
  * 3. Return the key the backend assigned + the public/canonical URL
  */
 export async function uploadFileViaS3(file: File): Promise<UploadedFile> {
-  // The backend's `documents` table needs `title` and `fileInfo` (NOT NULL,
-  // no DEFAULT). It also allows optional `itemId` and `type` — passing
-  // `type: 'resume'` categorises the upload so admins can filter later.
-  const requestBody = {
+  // The backend `documents` table needs at least `title` and `fileInfo` (NOT
+  // NULL). It reads them from a nested container in the request body — we
+  // don't know which key (`file`, `item`, `data`, `metadata`, `body`) so we
+  // mirror the payload into all of them until the actual DTO is documented.
+  // TODO: once the backend confirms the container name, trim this to just
+  // the real one.
+  const inner = {
     title: file.name,
     type: 'resume',
     fileInfo: {
@@ -60,6 +63,14 @@ export async function uploadFileViaS3(file: File): Promise<UploadedFile> {
       mimeType: file.type || 'application/octet-stream',
       size: file.size,
     },
+  };
+  const requestBody = {
+    ...inner,
+    file: inner,
+    item: inner,
+    data: inner,
+    metadata: inner,
+    body: inner,
   };
   console.log('[S3] upload → POST /api/s3/presigned-url/upload', {
     request: requestBody,
