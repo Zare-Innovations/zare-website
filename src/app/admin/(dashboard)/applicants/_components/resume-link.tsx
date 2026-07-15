@@ -3,11 +3,11 @@
 import { Anchor, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
-import { resolveDownloadUrl } from '@/lib/s3';
+import { downloadFileAsObjectUrl } from '@/lib/s3';
 
 /**
  * Opens the resume in a new tab. `resume` may be a full URL (used as-is) or
- * an S3 key/id (resolved via the presigned-URL download endpoint on click).
+ * a document id (resolved via the backend download endpoint on click).
  */
 export function ResumeLink({
   resume,
@@ -33,7 +33,9 @@ export function ResumeLink({
     if (isLoading) return;
     setIsLoading(true);
     try {
-      const url = await resolveDownloadUrl(resume);
+      const url = /^https?:\/\//i.test(resume)
+        ? resume
+        : await downloadFileAsObjectUrl(resume);
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (err) {
       console.error('Failed to open resume', err);
