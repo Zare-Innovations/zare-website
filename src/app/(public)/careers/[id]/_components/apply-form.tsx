@@ -67,7 +67,7 @@ export function FileDropZone({
             <span className="text-cyan-500">Browse</span>
           </Text>
           <Text size="sm" c="dimmed" inline mt={7}>
-            PDF/image - Maximum size: 50MB
+            Optional · PDF/image · Maximum size: 50MB
           </Text>
           {file && (
             <Text size="sm" c="cyan.7" className="mt-2">
@@ -160,8 +160,6 @@ export default function ApplyForm() {
     if (!formData.lastName.trim()) errors.lastName = "Name is Required";
     if (!formData.phoneNumber.trim()) errors.phoneNumber = "Phone is Required";
     if (!formData.message.trim()) errors.message = "Message is Required";
-    if (!formData.userFile)
-      errors.userFile = "Resume or image file is required";
     if (!formData.email.trim()) errors.email = "Email is Required";
     else if (!validateEmail(formData.email))
       errors.email = "Invalid email address";
