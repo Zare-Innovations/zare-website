@@ -1,24 +1,36 @@
 'use client';
-import { Table, Text } from '@mantine/core';
+import { Avatar, Table, Text } from '@mantine/core';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 import { StatusSelect } from '../applicants/_components/status-select';
 import { RowActions } from '../applicants/_components/row-actions';
-import { ResumeLink } from '../applicants/_components/resume-link';
 
-const formatAppliedOn = (iso: string) => {
+function initialsOf(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function formatRelative(iso: string) {
   try {
-    return new Date(iso).toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+    const then = new Date(iso).getTime();
+    const now = Date.now();
+    const diffSec = Math.round((now - then) / 1000);
+    if (diffSec < 60) return 'just now';
+    const diffMin = Math.round(diffSec / 60);
+    if (diffMin < 60) return `${diffMin} min ago`;
+    const diffH = Math.round(diffMin / 60);
+    if (diffH < 24) return `${diffH} hr ago`;
+    const diffD = Math.round(diffH / 24);
+    if (diffD < 30) return `${diffD} day${diffD === 1 ? '' : 's'} ago`;
+    const diffMo = Math.round(diffD / 30);
+    if (diffMo < 12) return `${diffMo} mo ago`;
+    const diffY = Math.round(diffMo / 12);
+    return `${diffY} yr ago`;
   } catch {
-    return iso;
+    return '';
   }
-};
-
-const truncate = (s: string, n = 90) =>
-  s.length > n ? s.slice(0, n).trimEnd() + '…' : s;
+}
 
 export function ApplicantsTable({
   applicants,
@@ -32,47 +44,54 @@ export function ApplicantsTable({
   onDelete: (applicant: AppliedJob) => void;
 }) {
   const rows = applicants.map((applicant) => (
-    <Table.Tr key={applicant.id}>
+    <Table.Tr
+      key={applicant.id}
+      onClick={() => onView(applicant)}
+      style={{ cursor: 'pointer' }}
+    >
       <Table.Td>
-        <Text size="sm" fw={500} c="#101828">
-          {applicant.fullName}
-        </Text>
-        <Text size="xs" c="#64748b" mt={2}>
-          {applicant.email}
-        </Text>
-        {applicant.phone && (
-          <Text size="xs" c="#64748b">
-            {applicant.phone}
-          </Text>
-        )}
+        <div className="flex items-center gap-3">
+          <Avatar
+            size={36}
+            radius="xl"
+            styles={{
+              placeholder: {
+                backgroundColor: '#0a293b',
+                color: 'white',
+                fontWeight: 600,
+                fontSize: 12,
+              },
+            }}
+          >
+            {initialsOf(applicant.fullName)}
+          </Avatar>
+          <div className="min-w-0">
+            <Text size="sm" fw={600} c="#0a293b" className="truncate">
+              {applicant.fullName}
+            </Text>
+            <Text size="xs" c="#64748b" className="truncate">
+              {applicant.email}
+            </Text>
+          </div>
+        </div>
       </Table.Td>
       <Table.Td>
-        <Text size="sm" c="#0a293b">
+        <Text size="sm" c="#0a293b" className="truncate">
           {jobTitleById[applicant.jobId] ?? applicant.jobId}
         </Text>
       </Table.Td>
       <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {formatAppliedOn(applicant.createdAt)}
+        <Text size="sm" c="#64748b">
+          {formatRelative(applicant.createdAt)}
         </Text>
       </Table.Td>
-      <Table.Td>
-        <ResumeLink resume={applicant.resume} />
-      </Table.Td>
-      <Table.Td style={{ maxWidth: 320 }}>
-        <Text
-          size="sm"
-          c="#0a293b"
-          title={applicant.coverLetter}
-          style={{ whiteSpace: 'pre-wrap' }}
-        >
-          {truncate(applicant.coverLetter)}
-        </Text>
-      </Table.Td>
-      <Table.Td>
+      <Table.Td onClick={(e) => e.stopPropagation()}>
         <StatusSelect applicant={applicant} />
       </Table.Td>
-      <Table.Td style={{ width: 40 }}>
+      <Table.Td
+        style={{ width: 40 }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <RowActions
           applicant={applicant}
           onView={onView}
@@ -98,20 +117,23 @@ export function ApplicantsTable({
             borderCollapse: 'collapse',
           },
           th: {
-            backgroundColor: '#ffffff',
+            backgroundColor: '#f9fafb',
             color: '#64748b',
-            fontWeight: 500,
-            fontSize: '14px',
+            fontWeight: 600,
+            fontSize: '11px',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
             borderBottom: '1px solid #e7eaee',
-            padding: '12px 16px',
+            padding: '10px 16px',
             textAlign: 'left',
           },
           td: {
             borderBottom: '1px solid #e7eaee',
-            padding: '16px',
-            verticalAlign: 'top',
+            padding: '14px 16px',
+            verticalAlign: 'middle',
           },
           tr: {
+            transition: 'background-color 0.15s',
             '&:hover': {
               backgroundColor: '#f7f8f9 !important',
             },
@@ -121,10 +143,8 @@ export function ApplicantsTable({
         <Table.Thead>
           <Table.Tr>
             <Table.Th>Applicant</Table.Th>
-            <Table.Th>Job Applied For</Table.Th>
-            <Table.Th>Applied On</Table.Th>
-            <Table.Th>Resume</Table.Th>
-            <Table.Th>Cover Letter</Table.Th>
+            <Table.Th>Job</Table.Th>
+            <Table.Th>Applied</Table.Th>
             <Table.Th>Status</Table.Th>
             <Table.Th />
           </Table.Tr>

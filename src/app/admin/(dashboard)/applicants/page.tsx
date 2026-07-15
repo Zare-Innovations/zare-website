@@ -148,14 +148,18 @@ export default function JobApplicantTracker() {
         />
       )}
 
+      <ApplicantDetailModal
+        applicant={applicantToView}
+        jobTitle={
+          applicantToView ? jobTitleById[applicantToView.jobId] : undefined
+        }
+        onClose={() => setApplicantToView(null)}
+        onDelete={setApplicantToDelete}
+      />
+
       <DeleteApplicantModal
         applicant={applicantToDelete}
         onClose={() => setApplicantToDelete(null)}
-      />
-      <ApplicantDetailModal
-        applicant={applicantToView}
-        jobTitleById={jobTitleById}
-        onClose={() => setApplicantToView(null)}
       />
     </div>
   );
