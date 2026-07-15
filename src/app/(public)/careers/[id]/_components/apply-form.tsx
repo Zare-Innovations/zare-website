@@ -174,14 +174,18 @@ export default function ApplyForm() {
     setLoading(true);
     setFormErrors({});
 
-    // Upload the resume to S3 first (client-side, so we can PUT the actual
-    // file bytes). If the upload fails we still submit the application so
-    // the applicant isn't blocked — just without a resume attached.
+    // Upload the resume through the backend first — it uploads to S3
+    // internally and returns a Document row. We store the returned document
+    // id as the applied-job's `resume` field so the admin can download it
+    // later via /api/s3/presigned-url/download/{id}. If the upload fails we
+    // still submit the application so the applicant isn't blocked.
     let resumeKey: string | null = null;
     if (formData.userFile) {
       try {
-        const uploaded = await uploadFileViaS3(formData.userFile);
-        resumeKey = uploaded.key;
+        const uploaded = await uploadFileViaS3(formData.userFile, {
+          type: "resume",
+        });
+        resumeKey = uploaded.id;
       } catch (err) {
         console.warn("Resume upload failed, continuing without it", err);
         notifications.show({
