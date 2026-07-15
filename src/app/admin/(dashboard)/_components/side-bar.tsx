@@ -166,7 +166,7 @@ export default function Sidebar({
               className={`w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
                 ${
                   isActive('/admin/job') ||
-                  isActive('/admin/pending-approvals') ||
+                  isActive('/admin/applicants') ||
                   isActive('/admin/expired-jobs')
                     ? 'text-white'
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -199,6 +199,13 @@ export default function Sidebar({
                   active={pathname === NEW_JOB_ROUTE}
                 />
                 <NavLeaf
+                  href="/admin/applicants"
+                  label="Applicants"
+                  icon={<IconUsers size={16} />}
+                  indent
+                  active={isActive('/admin/applicants')}
+                />
+                <NavLeaf
                   href="/admin/expired-jobs"
                   label="Expired & Closed Jobs"
                   icon={<IconArchive size={16} />}
@@ -210,12 +217,6 @@ export default function Sidebar({
           </div>
 
           <div className="mt-1 space-y-1">
-            <NavLeaf
-              href="/admin/applicants"
-              label="Applicants"
-              icon={<IconUsers size={18} />}
-              active={isActive('/admin/applicants')}
-            />
             <NavLeaf
               href="/admin/candidates"
               label="Candidates"
