@@ -77,7 +77,7 @@ export function CandidateFormModal({
   onClose,
 }: {
   candidate: Candidate | null;
-  mode: 'create' | 'edit';
+  mode: 'create' | 'edit' | null;
   onClose: () => void;
 }) {
   const [createCandidate, { isLoading: isCreating }] =
@@ -90,7 +90,7 @@ export function CandidateFormModal({
     validate: zodResolver(candidateSchema),
   });
 
-  const opened = mode === 'create' || candidate !== null;
+  const opened = mode !== null;
 
   useEffect(() => {
     if (!opened) return;
@@ -115,6 +115,7 @@ export function CandidateFormModal({
   }, [opened, candidate?.id, mode]);
 
   const handleSubmit = async (raw: CandidateFormValues) => {
+    if (mode === null) return;
     // Zod strips empties to undefined; keep the payload minimal.
     const parsed = candidateSchema.safeParse(raw);
     if (!parsed.success) return;

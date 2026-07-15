@@ -499,7 +499,7 @@ export default function CandidatesPage() {
 
       <CandidateFormModal
         candidate={formTarget}
-        mode={formMode ?? 'create'}
+        mode={formMode}
         onClose={() => {
           setFormTarget(null);
           setFormMode(null);
