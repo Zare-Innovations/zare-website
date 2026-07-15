@@ -12,6 +12,12 @@ import {
   type AppliedJob,
 } from '@/store/api/applied-jobs.api';
 import { useGetJobsQuery } from '@/store/api/job.api';
+import {
+  APPLIED_JOB_STATUS_OPTIONS,
+  getStatusStyles,
+} from '../_components/status-badge';
+
+type StatusFilter = 'all' | (typeof APPLIED_JOB_STATUS_OPTIONS)[number];
 
 export default function JobApplicantTracker() {
   const [query, setQuery] = useState('');
@@ -23,6 +29,7 @@ export default function JobApplicantTracker() {
   const [applicantToView, setApplicantToView] = useState<AppliedJob | null>(
     null,
   );
+  const [selectedStatus, setSelectedStatus] = useState<StatusFilter>('all');
 
   const {
     data: appliedJobsData,
@@ -58,6 +65,9 @@ export default function JobApplicantTracker() {
     if (selectedJobId) {
       all = all.filter((a) => a.jobId === selectedJobId);
     }
+    if (selectedStatus !== 'all') {
+      all = all.filter((a) => a.status === selectedStatus);
+    }
     const needle = debouncedQuery.trim().toLowerCase();
     if (!needle) return all;
     return all.filter((a) => {
@@ -68,6 +78,37 @@ export default function JobApplicantTracker() {
         title.toLowerCase().includes(needle)
       );
     });
+  }, [
+    appliedJobsData,
+    debouncedQuery,
+    jobTitleById,
+    selectedJobId,
+    selectedStatus,
+  ]);
+
+  // Counts respect the OTHER filters (job + search) but ignore the status
+  // filter — so each tab shows how many applicants of that status would
+  // appear under the currently selected job/search.
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: 0 };
+    APPLIED_JOB_STATUS_OPTIONS.forEach((s) => {
+      counts[s] = 0;
+    });
+    const needle = debouncedQuery.trim().toLowerCase();
+    (appliedJobsData?.items ?? []).forEach((a) => {
+      if (selectedJobId && a.jobId !== selectedJobId) return;
+      if (needle) {
+        const title = jobTitleById[a.jobId] ?? '';
+        const matches =
+          a.fullName.toLowerCase().includes(needle) ||
+          a.email.toLowerCase().includes(needle) ||
+          title.toLowerCase().includes(needle);
+        if (!matches) return;
+      }
+      counts.all += 1;
+      counts[a.status] = (counts[a.status] ?? 0) + 1;
+    });
+    return counts;
   }, [appliedJobsData, debouncedQuery, jobTitleById, selectedJobId]);
 
   const showEmpty =
@@ -107,6 +148,49 @@ export default function JobApplicantTracker() {
         />
       </div>
 
+      {/* Status pipeline tabs */}
+      {totalCount > 0 && (
+        <div className="mb-4 flex flex-wrap gap-2 rounded-lg border border-[#e7eaee] bg-white p-2">
+          {(['all', ...APPLIED_JOB_STATUS_OPTIONS] as StatusFilter[]).map(
+            (s) => {
+              const active = selectedStatus === s;
+              const label = s === 'all' ? 'All' : s;
+              const count = statusCounts[s] ?? 0;
+              const swatch =
+                s === 'all' ? '' : getStatusStyles(s).split(' ')[0]; // just the bg-* class
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSelectedStatus(s)}
+                  className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                    active
+                      ? 'bg-[#0a293b] text-white shadow-sm'
+                      : 'text-[#64748b] hover:text-[#0a293b] hover:bg-[#f7f8f9]'
+                  }`}
+                >
+                  {s !== 'all' && (
+                    <span
+                      className={`h-2 w-2 rounded-full ${swatch || 'bg-gray-300'}`}
+                    />
+                  )}
+                  <span>{label}</span>
+                  <span
+                    className={`inline-flex min-w-[22px] justify-center rounded-full px-1.5 text-[11px] font-semibold ${
+                      active
+                        ? 'bg-white/15 text-white'
+                        : 'bg-[#f1f5f9] text-[#64748b]'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            },
+          )}
+        </div>
+      )}
+
       {totalCount > 0 && (
         <div className="mb-3 text-xs text-[#64748b]">
           Showing {applicants.length} of {totalCount} application
@@ -135,7 +219,9 @@ export default function JobApplicantTracker() {
         </Card>
       ) : showEmpty ? (
         <div className="text-[#64748b] p-8 text-center bg-white rounded-md border border-[#e7eaee]">
-          {debouncedQuery.trim() || selectedJobId
+          {debouncedQuery.trim() ||
+          selectedJobId ||
+          selectedStatus !== 'all'
             ? 'No applicants match your filters.'
             : 'No applications yet.'}
         </div>
