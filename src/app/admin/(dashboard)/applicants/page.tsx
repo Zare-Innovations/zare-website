@@ -114,7 +114,7 @@ export default function JobApplicantTracker() {
         </div>
       )}
 
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <div className="rounded-md bg-white border border-[#e7eaee] p-6 flex flex-col gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="h-10 bg-[#f1f5f9] animate-pulse rounded-sm" />
@@ -140,12 +140,19 @@ export default function JobApplicantTracker() {
             : 'No applications yet.'}
         </div>
       ) : (
-        <ApplicantsTable
-          applicants={applicants}
-          jobTitleById={jobTitleById}
-          onView={setApplicantToView}
-          onDelete={setApplicantToDelete}
-        />
+        <div className="relative">
+          {isFetching && (
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 overflow-hidden rounded-t-md">
+              <div className="h-full w-full animate-pulse bg-[#00a9ab]/70" />
+            </div>
+          )}
+          <ApplicantsTable
+            applicants={applicants}
+            jobTitleById={jobTitleById}
+            onView={setApplicantToView}
+            onDelete={setApplicantToDelete}
+          />
+        </div>
       )}
 
       <ApplicantDetailModal

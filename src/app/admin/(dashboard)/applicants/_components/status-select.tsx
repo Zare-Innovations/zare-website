@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, Loader } from '@mantine/core';
+import { Menu } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown } from '@tabler/icons-react';
 import {
@@ -13,7 +13,7 @@ import {
 } from '../../_components/status-badge';
 
 export function StatusSelect({ applicant }: { applicant: AppliedJob }) {
-  const [updateAppliedJob, { isLoading }] = useUpdateAppliedJobMutation();
+  const [updateAppliedJob] = useUpdateAppliedJobMutation();
 
   const handleChange = async (nextStatus: string) => {
     if (nextStatus === applicant.status) return;
@@ -46,17 +46,16 @@ export function StatusSelect({ applicant }: { applicant: AppliedJob }) {
   };
 
   return (
-    <Menu position="bottom-start" withArrow shadow="md" disabled={isLoading}>
+    <Menu position="bottom-start" withArrow shadow="md">
       <Menu.Target>
         <button
           type="button"
           className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-sm font-medium ${getStatusStyles(
             applicant.status,
-          )} disabled:opacity-60`}
-          disabled={isLoading}
+          )}`}
         >
           <span>{applicant.status}</span>
-          {isLoading ? <Loader size={12} /> : <IconChevronDown size={14} />}
+          <IconChevronDown size={14} />
         </button>
       </Menu.Target>
       <Menu.Dropdown>
