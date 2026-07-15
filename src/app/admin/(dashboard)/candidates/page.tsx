@@ -4,8 +4,6 @@ import { useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   ActionIcon,
-  Anchor,
-  Avatar,
   Badge,
   Button,
   Card,
@@ -49,13 +47,6 @@ const PAGE_SIZE_OPTIONS = [
   { value: '25', label: '25 / page' },
   { value: '50', label: '50 / page' },
 ];
-
-function initialsOf(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 function formatDate(iso?: string) {
   if (!iso) return '—';
@@ -352,34 +343,18 @@ export default function CandidatesPage() {
                       style={{ cursor: 'pointer' }}
                     >
                       <Table.Td>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            size={36}
-                            radius="xl"
-                            styles={{
-                              placeholder: {
-                                backgroundColor: '#0a293b',
-                                color: 'white',
-                                fontWeight: 600,
-                                fontSize: 12,
-                              },
-                            }}
+                        <div className="min-w-0">
+                          <Text
+                            size="sm"
+                            fw={600}
+                            c="#0a293b"
+                            className="truncate"
                           >
-                            {initialsOf(c.fullName)}
-                          </Avatar>
-                          <div className="min-w-0">
-                            <Text
-                              size="sm"
-                              fw={600}
-                              c="#0a293b"
-                              className="truncate"
-                            >
-                              {c.fullName}
-                            </Text>
-                            <Text size="xs" c="#64748b" className="truncate">
-                              {c.email}
-                            </Text>
-                          </div>
+                            {c.fullName}
+                          </Text>
+                          <Text size="xs" c="#64748b" className="truncate">
+                            {c.email}
+                          </Text>
                         </div>
                       </Table.Td>
                       <Table.Td>

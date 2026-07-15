@@ -1,15 +1,8 @@
 'use client';
-import { Avatar, Table, Text } from '@mantine/core';
+import { Table, Text } from '@mantine/core';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 import { StatusSelect } from '../applicants/_components/status-select';
 import { RowActions } from '../applicants/_components/row-actions';
-
-function initialsOf(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 function formatRelative(iso: string) {
   try {
@@ -50,29 +43,13 @@ export function ApplicantsTable({
       style={{ cursor: 'pointer' }}
     >
       <Table.Td>
-        <div className="flex items-center gap-3">
-          <Avatar
-            size={36}
-            radius="xl"
-            styles={{
-              placeholder: {
-                backgroundColor: '#0a293b',
-                color: 'white',
-                fontWeight: 600,
-                fontSize: 12,
-              },
-            }}
-          >
-            {initialsOf(applicant.fullName)}
-          </Avatar>
-          <div className="min-w-0">
-            <Text size="sm" fw={600} c="#0a293b" className="truncate">
-              {applicant.fullName}
-            </Text>
-            <Text size="xs" c="#64748b" className="truncate">
-              {applicant.email}
-            </Text>
-          </div>
+        <div className="min-w-0">
+          <Text size="sm" fw={600} c="#0a293b" className="truncate">
+            {applicant.fullName}
+          </Text>
+          <Text size="xs" c="#64748b" className="truncate">
+            {applicant.email}
+          </Text>
         </div>
       </Table.Td>
       <Table.Td>
