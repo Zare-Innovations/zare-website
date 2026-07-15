@@ -3,6 +3,7 @@ import { useProfileQuery } from '@/store/api/auth/auth.api';
 import { siteUrl } from '@/constants';
 import { Avatar, Tooltip } from '@mantine/core';
 import {
+  IconAddressBook,
   IconArchive,
   IconArrowUpRight,
   IconBriefcase,
@@ -214,6 +215,12 @@ export default function Sidebar({
               label="Applicants"
               icon={<IconUsers size={18} />}
               active={isActive('/admin/applicants')}
+            />
+            <NavLeaf
+              href="/admin/candidates"
+              label="Candidates"
+              icon={<IconAddressBook size={18} />}
+              active={isActive('/admin/candidates')}
             />
             <NavLeaf
               href="/admin/users"
