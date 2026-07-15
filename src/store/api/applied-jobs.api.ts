@@ -72,12 +72,67 @@ export const appliedJobsApi = createApi({
         method: 'PUT',
         body: { ...data, id },
       }),
-      invalidatesTags: ['AppliedJob'],
+      // Optimistic update — patch the cached list immediately so the UI
+      // reflects the change without waiting for the round-trip, and skip the
+      // `invalidatesTags` refetch (which was replacing the whole table with
+      // a loading skeleton on every status change). If the server rejects,
+      // we roll back and surface the error to the caller.
+      onQueryStarted: async ({ id, data }, { dispatch, queryFulfilled }) => {
+        const patch = dispatch(
+          appliedJobsApi.util.updateQueryData(
+            'getAppliedJobs',
+            undefined,
+            (draft) => {
+              const item = draft.items.find((i) => i.id === id);
+              if (item) Object.assign(item, data);
+            },
+          ),
+        );
+        try {
+          const { data: updated } = await queryFulfilled;
+          // Reconcile with the authoritative server payload (in case the
+          // backend enriched the response with derived fields).
+          if (updated) {
+            dispatch(
+              appliedJobsApi.util.updateQueryData(
+                'getAppliedJobs',
+                undefined,
+                (draft) => {
+                  const item = draft.items.find((i) => i.id === id);
+                  if (item) Object.assign(item, updated);
+                },
+              ),
+            );
+          }
+        } catch {
+          patch.undo();
+        }
+      },
     }),
 
     deleteAppliedJob: builder.mutation<AppliedJob, { id: string }>({
       query: ({ id }) => ({ url: `${baseURL}/${id}`, method: 'DELETE' }),
-      invalidatesTags: ['AppliedJob'],
+      // Optimistic removal — take the row out of the list right away and
+      // put it back if the server rejects the delete.
+      onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
+        const patch = dispatch(
+          appliedJobsApi.util.updateQueryData(
+            'getAppliedJobs',
+            undefined,
+            (draft) => {
+              draft.items = draft.items.filter((i) => i.id !== id);
+              if (typeof draft.total === 'number') {
+                draft.total = Math.max(0, draft.total - 1);
+              }
+            },
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
     }),
   }),
 });
