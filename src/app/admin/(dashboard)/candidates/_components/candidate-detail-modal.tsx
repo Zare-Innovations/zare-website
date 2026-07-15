@@ -2,7 +2,6 @@
 
 import {
   Anchor,
-  Avatar,
   Button,
   CopyButton,
   Divider,
@@ -30,13 +29,6 @@ import { useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import type { Candidate } from '@/store/api/candidates.api';
 import { downloadFileAsObjectUrl } from '@/lib/s3';
-
-function initialsOf(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 function formatDate(iso?: string) {
   if (!iso) return '—';
@@ -147,31 +139,15 @@ export function CandidateDetailModal({
           {/* Header */}
           <div className="relative overflow-hidden rounded-t-md bg-gradient-to-br from-[#0a293b] to-[#0d4257] p-6 text-white">
             <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-[#00a9ab]/25 blur-3xl" />
-            <div className="relative flex items-center gap-4">
-              <Avatar
-                size={64}
-                radius="xl"
-                styles={{
-                  placeholder: {
-                    backgroundColor: '#00a9ab',
-                    color: 'white',
-                    fontWeight: 700,
-                    fontSize: 22,
-                  },
-                }}
-              >
-                {initialsOf(candidate.fullName)}
-              </Avatar>
-              <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-semibold uppercase tracking-widest text-white/70">
-                  Candidate
-                </div>
-                <h2 className="text-xl font-semibold text-white truncate">
-                  {candidate.fullName}
-                </h2>
-                <div className="mt-1 text-sm text-white/80 truncate">
-                  {candidate.email}
-                </div>
+            <div className="relative">
+              <div className="text-[11px] font-semibold uppercase tracking-widest text-white/70">
+                Candidate
+              </div>
+              <h2 className="text-xl font-semibold text-white truncate pr-8">
+                {candidate.fullName}
+              </h2>
+              <div className="mt-1 text-sm text-white/80 truncate">
+                {candidate.email}
               </div>
               <button
                 onClick={onClose}
