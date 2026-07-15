@@ -54,13 +54,18 @@ export function Shell({ children }: { children: ReactNode }) {
             hiddenFrom="sm"
             color="#0a293b"
           />
-          <Burger
-            opened={desktopOpened}
-            onClick={toggleDesktop}
-            size="sm"
-            visibleFrom="sm"
-            color="#0a293b"
-          />
+          {/* Desktop toggle only shown when sidebar is collapsed — when open,
+              the sidebar itself provides an in-panel collapse chevron so the
+              control sits visually attached to the panel it controls. */}
+          {!desktopOpened && (
+            <Burger
+              opened={desktopOpened}
+              onClick={toggleDesktop}
+              size="sm"
+              visibleFrom="sm"
+              color="#0a293b"
+            />
+          )}
           <div className="flex flex-col leading-tight">
             <Text size="xs" c="#64748b" className="uppercase tracking-widest">
               Admin
@@ -74,7 +79,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <AppShell.Navbar className="border-r-0">
         <ScrollArea className="bg-[#0a293b] h-full" scrollbarSize={6}>
-          <Sidebar />
+          <Sidebar onCollapse={toggleDesktop} />
         </ScrollArea>
       </AppShell.Navbar>
 
