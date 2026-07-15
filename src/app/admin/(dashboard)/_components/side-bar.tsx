@@ -2,6 +2,7 @@
 import { useProfileQuery } from '@/store/api/auth/auth.api';
 import { siteUrl } from '@/constants';
 import { Avatar, Tooltip } from '@mantine/core';
+import Image from 'next/image';
 import {
   IconAddressBook,
   IconArchive,
@@ -267,8 +268,14 @@ export default function Sidebar({
           rel="noopener noreferrer"
           className="group flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#00a9ab] to-[#0d7c8b] p-3 text-white transition hover:from-[#0dc0c3] hover:to-[#0d7c8b]"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15 backdrop-blur-sm">
-            <span className="text-sm font-bold">Z</span>
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-white p-1">
+            <Image
+              src="/zare-logo.svg"
+              alt="Zare Innovations"
+              width={28}
+              height={28}
+              className="h-full w-full object-contain"
+            />
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold leading-tight">
