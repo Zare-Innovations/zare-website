@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  ActionIcon,
   Badge,
   Button,
   Card,
@@ -17,20 +16,17 @@ import {
   Table,
   Text,
   TextInput,
-  Tooltip,
   rem,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
   IconBriefcase,
-  IconEdit,
-  IconEye,
   IconPlus,
   IconRefresh,
   IconSearch,
-  IconTrash,
   IconUsers,
 } from '@tabler/icons-react';
+import { JobRowActions } from './job-row-actions';
 import { useDebounce } from 'use-debounce';
 import {
   useDeleteJobMutation,
@@ -251,11 +247,6 @@ export function JobsTable({
                   </Table.Th>
                   <Table.Th>
                     <Text fw={600} size="xs" c="#64748b" tt="uppercase">
-                      Work Type
-                    </Text>
-                  </Table.Th>
-                  <Table.Th>
-                    <Text fw={600} size="xs" c="#64748b" tt="uppercase">
                       Status
                     </Text>
                   </Table.Th>
@@ -282,7 +273,7 @@ export function JobsTable({
                 {showSkeleton ? (
                   Array.from({ length: pageSize }).map((_, i) => (
                     <Table.Tr key={`skeleton-${i}`}>
-                      {Array.from({ length: 9 }).map((_, j) => (
+                      {Array.from({ length: 8 }).map((_, j) => (
                         <Table.Td key={j}>
                           <div className="h-4 w-full animate-pulse rounded bg-[#f1f5f9]" />
                         </Table.Td>
@@ -291,7 +282,7 @@ export function JobsTable({
                   ))
                 ) : isError ? (
                   <Table.Tr>
-                    <Table.Td colSpan={9}>
+                    <Table.Td colSpan={8}>
                       <Card className="mx-auto my-6 max-w-md text-center border border-red-100 bg-red-50/40">
                         <Text c="red.7" fw={500} mb="sm">
                           Failed to load jobs.
@@ -309,7 +300,7 @@ export function JobsTable({
                   </Table.Tr>
                 ) : items.length === 0 ? (
                   <Table.Tr>
-                    <Table.Td colSpan={9}>
+                    <Table.Td colSpan={8}>
                       <div className="mx-auto my-12 flex max-w-md flex-col items-center gap-3 text-center">
                         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f1f5f9] text-[#64748b]">
                           {empty.icon ?? <IconBriefcase size={28} />}
@@ -351,30 +342,29 @@ export function JobsTable({
                           </Text>
                         </Table.Td>
                         <Table.Td>
-                          <Badge
-                            variant="light"
-                            color="cyan"
-                            size="sm"
-                            radius="sm"
-                          >
-                            {job.type}
-                          </Badge>
-                        </Table.Td>
-                        <Table.Td>
-                          {job.workType ? (
+                          <div className="inline-flex items-center gap-1.5">
                             <Badge
                               variant="light"
-                              color="grape"
+                              color="cyan"
                               size="sm"
                               radius="sm"
                             >
-                              {job.workType}
+                              {job.type}
                             </Badge>
-                          ) : (
-                            <Text size="sm" c="#94a3b8">
-                              —
-                            </Text>
-                          )}
+                            {job.workType && (
+                              <>
+                                <span className="text-[#cbd5e1]">·</span>
+                                <Badge
+                                  variant="light"
+                                  color="grape"
+                                  size="sm"
+                                  radius="sm"
+                                >
+                                  {job.workType}
+                                </Badge>
+                              </>
+                            )}
+                          </div>
                         </Table.Td>
                         <Table.Td>
                           <Badge
@@ -405,49 +395,15 @@ export function JobsTable({
                             {formatDate(job.endDate)}
                           </Text>
                         </Table.Td>
-                        <Table.Td>
-                          <Group gap="xs" wrap="nowrap" justify="flex-end">
-                            <Tooltip label="View public page">
-                              <ActionIcon
-                                component={Link}
-                                href={`/careers/${job.id}`}
-                                target="_blank"
-                                variant="subtle"
-                                color="gray"
-                                size="md"
-                                aria-label="View public page"
-                              >
-                                <IconEye size={16} />
-                              </ActionIcon>
-                            </Tooltip>
-                            <Tooltip label="Edit">
-                              <ActionIcon
-                                onClick={() =>
-                                  router.push(`/admin/job/${job.id}`)
-                                }
-                                variant="subtle"
-                                color="gray"
-                                size="md"
-                                aria-label="Edit"
-                              >
-                                <IconEdit size={16} />
-                              </ActionIcon>
-                            </Tooltip>
-                            <Tooltip label="Delete">
-                              <ActionIcon
-                                onClick={() => {
-                                  setSelectedJob(job);
-                                  setModalOpen(true);
-                                }}
-                                variant="subtle"
-                                color="red"
-                                size="md"
-                                aria-label="Delete"
-                              >
-                                <IconTrash size={16} />
-                              </ActionIcon>
-                            </Tooltip>
-                          </Group>
+                        <Table.Td style={{ width: 40 }}>
+                          <JobRowActions
+                            job={job}
+                            onEdit={(j) => router.push(`/admin/job/${j.id}`)}
+                            onDelete={(j) => {
+                              setSelectedJob(j);
+                              setModalOpen(true);
+                            }}
+                          />
                         </Table.Td>
                       </Table.Tr>
                     );
