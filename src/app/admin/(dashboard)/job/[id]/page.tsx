@@ -31,7 +31,7 @@ export default function JobForm() {
   const { id } = useParams();
   const jobId = Array.isArray(id) ? id[0] : id;
 
-  const isEdit = Boolean(jobId && jobId !== encodeURIComponent('+'));
+  const isEdit = Boolean(jobId && jobId !== 'new' && jobId !== encodeURIComponent('+'));
 
   const { data: jobData, isLoading: isJobLoading } = useGetJobQuery(jobId!, {
     skip: !isEdit,
