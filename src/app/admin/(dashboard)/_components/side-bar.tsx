@@ -8,8 +8,8 @@ import {
   IconBriefcase,
   IconChartBar,
   IconChevronDown,
+  IconChevronLeft,
   IconChevronRight,
-  IconClockHour4,
   IconFileText,
   IconHelpCircle,
   IconLogout,
@@ -52,7 +52,7 @@ function NavLeaf({
   external,
 }: LeafLink & { active: boolean; indent?: boolean }) {
   const commonClass = `group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
-    ${indent ? 'ml-4 pl-4 border-l border-white/10' : ''}
+    ${indent ? 'ml-6' : ''}
     ${
       active
         ? 'bg-[#00a9ab] text-white font-medium shadow-[0_1px_0_rgba(255,255,255,0.05)]'
@@ -81,7 +81,11 @@ function NavLeaf({
   );
 }
 
-export default function Sidebar() {
+export default function Sidebar({
+  onCollapse,
+}: {
+  onCollapse?: () => void;
+} = {}) {
   const [jobsOpen, setJobsOpen] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -105,8 +109,8 @@ export default function Sidebar() {
   return (
     <aside className="h-screen bg-[#0a293b] text-white flex flex-col text-sm">
       {/* Profile */}
-      <div className="px-5 pt-6 pb-5">
-        <div className="flex items-center gap-3">
+      <div className="px-5 pt-6 pb-5 flex items-start gap-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <Avatar
             radius="xl"
             size={40}
@@ -126,12 +130,23 @@ export default function Sidebar() {
               Admin
             </div>
             <Tooltip label={profile?.email ?? ''} disabled={!profile?.email}>
-              <div className="font-medium truncate max-w-[160px]">
+              <div className="font-medium truncate max-w-[140px]">
                 {displayName}
               </div>
             </Tooltip>
           </div>
         </div>
+        {onCollapse && (
+          <Tooltip label="Collapse sidebar" position="right">
+            <button
+              onClick={onCollapse}
+              className="hidden sm:flex items-center justify-center h-8 w-8 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+              aria-label="Collapse sidebar"
+            >
+              <IconChevronLeft size={16} />
+            </button>
+          </Tooltip>
+        )}
       </div>
 
       <div className="h-px bg-white/10 mx-5" />
@@ -181,13 +196,6 @@ export default function Sidebar() {
                   icon={<IconPlus size={16} />}
                   indent
                   active={pathname === NEW_JOB_ROUTE}
-                />
-                <NavLeaf
-                  href="/admin/pending-approvals"
-                  label="Pending Approvals"
-                  icon={<IconClockHour4 size={16} />}
-                  indent
-                  active={isActive('/admin/pending-approvals')}
                 />
                 <NavLeaf
                   href="/admin/expired-jobs"
