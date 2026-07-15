@@ -1,43 +1,37 @@
-// File: src/proxy.ts
+// Next.js 16 picks this file up as middleware (formerly `middleware.ts`).
+// Kept minimal: gate `/admin/*` on the presence of an `access_token` cookie
+// and bounce to /admin/login otherwise. Any token refresh happens
+// client-side via RTK Query's baseQuery — this middleware does not proxy or
+// call the backend directly.
+
 import { NextRequest, NextResponse } from 'next/server';
 
+const PUBLIC_ADMIN_ROUTES = new Set([
+  '/admin/login',
+  '/admin/forgot-password',
+]);
+
+const PUBLIC_FILE = /\.(.*)$/;
+
 export function proxy(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
-    // 1. Allow public files
-    const PUBLIC_FILE = /\.(.*)$/;
-    if (PUBLIC_FILE.test(pathname)) {
-        return NextResponse.next();
-    }
-
-    // 2. Protect /admin routes
-    const isAdminRoute = pathname.startsWith('/admin');
-    const isAuthPage = pathname === '/admin/login' || pathname === '/admin/forgot-password';
-
-    if (isAdminRoute && !isAuthPage) {
-        const token = request.cookies.get('access_token');
-        const refreshToken = request.cookies.get('refresh_token');
-
-        if (!token) {
-            if (refreshToken) {
-                // Redirect to refresh endpoint
-                const refreshUrl = new URL('/api/accounts/refresh-token', request.url);
-                return NextResponse.redirect(refreshUrl);
-            } else {
-                // No tokens, go to login
-                const loginUrl = new URL('/admin/login', request.url);
-                return NextResponse.redirect(loginUrl);
-            }
-        }
-    }
-
+  if (PUBLIC_FILE.test(pathname)) {
     return NextResponse.next();
+  }
+
+  const isAdminRoute = pathname.startsWith('/admin');
+  if (!isAdminRoute) return NextResponse.next();
+
+  if (PUBLIC_ADMIN_ROUTES.has(pathname)) return NextResponse.next();
+
+  const accessToken = request.cookies.get('access_token');
+  if (accessToken) return NextResponse.next();
+
+  const loginUrl = new URL('/admin/login', request.url);
+  return NextResponse.redirect(loginUrl);
 }
 
-// THE MATCHER GOES HERE, NOT IN NEXT.CONFIG.TS
 export const config = {
-    matcher: [
-        '/admin/:path*',
-        '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-    ],
+  matcher: ['/admin/:path*'],
 };
