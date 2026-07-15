@@ -48,27 +48,18 @@ export interface UploadedFile {
  * 3. Return the key the backend assigned + the public/canonical URL
  */
 export async function uploadFileViaS3(file: File): Promise<UploadedFile> {
-  // The backend crashes with `Cannot read properties of undefined (reading
-  // 'title')` regardless of whether `title` is at the top level. That means
-  // the backend destructures from a NESTED container (something like
-  // `body.file.title` or `body.item.title`). Until the exact DTO is
-  // documented, we mirror the same fields into every likely container so
-  // whichever one the backend accesses, `.title` is defined.
-  const inner = {
-    title: file.name,
-    name: file.name,
-    fileName: file.name,
-    contentType: file.type || 'application/octet-stream',
-    mimeType: file.type || 'application/octet-stream',
-    size: file.size,
-  };
+  // The backend's `documents` table needs `title` and `fileInfo` (NOT NULL,
+  // no DEFAULT). It also allows optional `itemId` and `type` — passing
+  // `type: 'resume'` categorises the upload so admins can filter later.
   const requestBody = {
-    ...inner,
-    file: inner,
-    item: inner,
-    data: inner,
-    metadata: inner,
-    body: inner,
+    title: file.name,
+    type: 'resume',
+    fileInfo: {
+      name: file.name,
+      contentType: file.type || 'application/octet-stream',
+      mimeType: file.type || 'application/octet-stream',
+      size: file.size,
+    },
   };
   console.log('[S3] upload → POST /api/s3/presigned-url/upload', {
     request: requestBody,
