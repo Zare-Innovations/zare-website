@@ -2,7 +2,6 @@
 
 import {
   Anchor,
-  Avatar,
   Button,
   CopyButton,
   Divider,
@@ -27,13 +26,6 @@ import { notifications } from '@mantine/notifications';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 import { downloadFileAsObjectUrl } from '@/lib/s3';
 import { StatusSelect } from './status-select';
-
-function initialsOf(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
 
 function formatFull(iso: string) {
   try {
@@ -162,31 +154,15 @@ export function ApplicantDetailModal({
           {/* Header */}
           <div className="relative overflow-hidden rounded-t-md bg-gradient-to-br from-[#0a293b] to-[#0d4257] p-6 text-white">
             <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-[#00a9ab]/25 blur-3xl" />
-            <div className="relative flex items-center gap-4">
-              <Avatar
-                size={64}
-                radius="xl"
-                styles={{
-                  placeholder: {
-                    backgroundColor: '#00a9ab',
-                    color: 'white',
-                    fontWeight: 700,
-                    fontSize: 22,
-                  },
-                }}
-              >
-                {initialsOf(applicant.fullName)}
-              </Avatar>
-              <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-semibold uppercase tracking-widest text-white/70">
-                  Applicant
-                </div>
-                <h2 className="text-xl font-semibold text-white truncate">
-                  {applicant.fullName}
-                </h2>
-                <div className="mt-2">
-                  <StatusSelect applicant={applicant} />
-                </div>
+            <div className="relative">
+              <div className="text-[11px] font-semibold uppercase tracking-widest text-white/70">
+                Applicant
+              </div>
+              <h2 className="text-xl font-semibold text-white truncate pr-8">
+                {applicant.fullName}
+              </h2>
+              <div className="mt-3">
+                <StatusSelect applicant={applicant} />
               </div>
               <button
                 onClick={onClose}
