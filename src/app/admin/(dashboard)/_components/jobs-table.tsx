@@ -230,7 +230,7 @@ export function JobsTable({
             </div>
           )}
 
-          <Table.ScrollContainer minWidth={800}>
+          <Table.ScrollContainer minWidth={960}>
             <Table verticalSpacing="md" horizontalSpacing="md" highlightOnHover>
               <Table.Thead className="bg-[#f9fafb]">
                 <Table.Tr>
@@ -241,7 +241,17 @@ export function JobsTable({
                   </Table.Th>
                   <Table.Th>
                     <Text fw={600} size="xs" c="#64748b" tt="uppercase">
+                      Location
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text fw={600} size="xs" c="#64748b" tt="uppercase">
                       Type
+                    </Text>
+                  </Table.Th>
+                  <Table.Th>
+                    <Text fw={600} size="xs" c="#64748b" tt="uppercase">
+                      Work Type
                     </Text>
                   </Table.Th>
                   <Table.Th>
@@ -272,7 +282,7 @@ export function JobsTable({
                 {showSkeleton ? (
                   Array.from({ length: pageSize }).map((_, i) => (
                     <Table.Tr key={`skeleton-${i}`}>
-                      {Array.from({ length: 7 }).map((_, j) => (
+                      {Array.from({ length: 9 }).map((_, j) => (
                         <Table.Td key={j}>
                           <div className="h-4 w-full animate-pulse rounded bg-[#f1f5f9]" />
                         </Table.Td>
@@ -281,7 +291,7 @@ export function JobsTable({
                   ))
                 ) : isError ? (
                   <Table.Tr>
-                    <Table.Td colSpan={7}>
+                    <Table.Td colSpan={9}>
                       <Card className="mx-auto my-6 max-w-md text-center border border-red-100 bg-red-50/40">
                         <Text c="red.7" fw={500} mb="sm">
                           Failed to load jobs.
@@ -299,7 +309,7 @@ export function JobsTable({
                   </Table.Tr>
                 ) : items.length === 0 ? (
                   <Table.Tr>
-                    <Table.Td colSpan={7}>
+                    <Table.Td colSpan={9}>
                       <div className="mx-auto my-12 flex max-w-md flex-col items-center gap-3 text-center">
                         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f1f5f9] text-[#64748b]">
                           {empty.icon ?? <IconBriefcase size={28} />}
@@ -331,31 +341,40 @@ export function JobsTable({
                     return (
                       <Table.Tr key={job.id}>
                         <Table.Td>
-                          <div>
-                            <Text fw={600} size="sm" c="#0a293b">
-                              {job.title}
-                            </Text>
-                            <Text size="xs" c="#64748b" mt={2}>
-                              {job.location}
-                            </Text>
-                          </div>
+                          <Text fw={600} size="sm" c="#0a293b">
+                            {job.title}
+                          </Text>
                         </Table.Td>
                         <Table.Td>
-                          <div className="flex flex-col gap-1">
+                          <Text size="sm" c="#0a293b">
+                            {job.location || '—'}
+                          </Text>
+                        </Table.Td>
+                        <Table.Td>
+                          <Badge
+                            variant="light"
+                            color="cyan"
+                            size="sm"
+                            radius="sm"
+                          >
+                            {job.type}
+                          </Badge>
+                        </Table.Td>
+                        <Table.Td>
+                          {job.workType ? (
                             <Badge
                               variant="light"
-                              color="cyan"
+                              color="grape"
                               size="sm"
                               radius="sm"
                             >
-                              {job.type}
+                              {job.workType}
                             </Badge>
-                            {job.workType && (
-                              <Text size="xs" c="#64748b">
-                                {job.workType}
-                              </Text>
-                            )}
-                          </div>
+                          ) : (
+                            <Text size="sm" c="#94a3b8">
+                              —
+                            </Text>
+                          )}
                         </Table.Td>
                         <Table.Td>
                           <Badge
