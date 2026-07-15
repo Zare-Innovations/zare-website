@@ -4,6 +4,7 @@ import { authApi } from './api/auth/auth.api';
 import { jobApi } from './api/job.api';
 import { appliedJobsApi } from './api/applied-jobs.api';
 import { usersApi } from './api/users.api';
+import { candidatesApi } from './api/candidates.api';
 import { resetPasswordReducer } from './api/auth/resetPasswordSlice';
 
 
@@ -17,6 +18,7 @@ export const store = configureStore({
     [jobApi.reducerPath]: jobApi.reducer,
     [appliedJobsApi.reducerPath]: appliedJobsApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
+    [candidatesApi.reducerPath]: candidatesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -25,6 +27,7 @@ export const store = configureStore({
       jobApi.middleware,
       appliedJobsApi.middleware,
       usersApi.middleware,
+      candidatesApi.middleware,
     ),
   devTools: process.env.NODE_ENV !== 'production',
 });
