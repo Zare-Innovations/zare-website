@@ -14,6 +14,7 @@ const PAGE_TITLES: Array<{ prefix: string; title: string }> = [
   { prefix: '/admin/job', title: 'Job Management' },
   { prefix: '/admin/applicants', title: 'Applicants' },
   { prefix: '/admin/users', title: 'Users' },
+  { prefix: '/admin/candidates', title: 'Candidates' },
   { prefix: '/admin/contract-generator', title: 'Contract Generator' },
   { prefix: '/admin/pending-approvals', title: 'Pending Approvals' },
   { prefix: '/admin/expired-jobs', title: 'Expired & Closed Jobs' },
