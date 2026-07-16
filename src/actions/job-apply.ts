@@ -23,6 +23,7 @@ export async function submitJobApply(formData: FormData): Promise<{
   success: boolean;
   errors?: JobApplyFieldErrors;
   message?: string;
+  createdId?: string;
 }> {
   const firstName = formData.get("firstName") as string;
   const lastName = formData.get("lastName") as string;
@@ -66,6 +67,7 @@ export async function submitJobApply(formData: FormData): Promise<{
   if (resume.trim()) payload.resume = resume.trim();
 
   try {
+    console.log("[applied-jobs] POST payload", payload);
     const res = await fetch(`${apiUrl}/api/applied-jobs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -73,17 +75,44 @@ export async function submitJobApply(formData: FormData): Promise<{
       cache: "no-store",
     });
 
+    const rawText = await res.text().catch(() => "");
+    console.log("[applied-jobs] POST response", {
+      status: res.status,
+      ok: res.ok,
+      body: rawText,
+    });
+
     if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.error("submitJobApply failed", res.status, text);
+      console.error("submitJobApply failed", res.status, rawText);
       return {
         success: false,
         message: "We couldn't submit your application. Please try again.",
       };
     }
 
+    let data: unknown = null;
+    try {
+      data = rawText ? JSON.parse(rawText) : null;
+    } catch {
+      data = rawText;
+    }
+
+    let createdId: string | undefined;
+    if (data && typeof data === "object") {
+      const rec = data as Record<string, unknown>;
+      for (const k of ["id", "appliedJobId", "applicationId"]) {
+        const v = rec[k];
+        if (typeof v === "string" && v.length > 0) {
+          createdId = v;
+          break;
+        }
+      }
+    }
+    console.log("[applied-jobs] parsed response, id =", createdId);
+
     return {
       success: true,
+      createdId,
       message:
         "Thank you for applying! We have received your application and will get back to you shortly.",
     };

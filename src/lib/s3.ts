@@ -36,24 +36,37 @@ export async function uploadFileViaS3(
   body.append('type', opts.type);
   if (opts.key) body.append('key', opts.key);
 
+  console.log('[S3] upload → POST /api/s3/upload', {
+    file: { name: file.name, type: file.type, size: file.size },
+    itemId: opts.itemId,
+    type: opts.type,
+    key: opts.key,
+  });
+
   const res = await fetch(`${API_BASE}/api/s3/upload`, {
     method: 'POST',
     body,
   });
 
+  const rawText = await res.text().catch(() => '');
+  console.log('[S3] upload response', {
+    status: res.status,
+    ok: res.ok,
+    body: rawText,
+  });
+
   if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    console.error('s3/upload failed', res.status, text);
+    console.error('s3/upload failed', res.status, rawText);
     throw new Error('Failed to upload file');
   }
 
-  const rawText = await res.text().catch(() => '');
   let data: unknown = null;
   try {
     data = rawText ? JSON.parse(rawText) : null;
   } catch {
     data = rawText;
   }
+  console.log('[S3] parsed upload data', data);
 
   if (!data || typeof data !== 'object') {
     throw new Error('Upload response did not include a document id');
