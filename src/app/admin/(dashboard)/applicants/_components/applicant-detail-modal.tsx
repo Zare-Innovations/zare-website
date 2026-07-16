@@ -21,10 +21,14 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
-import { downloadFileAsObjectUrl } from '@/lib/s3';
+import {
+  downloadFileAsObjectUrl,
+  listResumesForApplicant,
+  type DocumentRecord,
+} from '@/lib/s3';
 import { StatusSelect } from './status-select';
 
 function formatFull(iso: string) {
@@ -118,14 +122,46 @@ export function ApplicantDetailModal({
   onDelete: (a: AppliedJob) => void;
 }) {
   const [resumeLoading, setResumeLoading] = useState(false);
+  const [resumeDoc, setResumeDoc] = useState<DocumentRecord | null>(null);
+  const [resumeLookupState, setResumeLookupState] = useState<
+    'idle' | 'loading' | 'done'
+  >('idle');
+
+  // When the modal opens for an applicant, ask the S3 documents endpoint for
+  // any resume attached to this applied-job. The backend links documents by
+  // (type, key, itemId); the apply form uploads with type=resume and no
+  // explicit key, so the backend defaults key to "resume".
+  useEffect(() => {
+    let cancelled = false;
+    if (!applicant) {
+      setResumeDoc(null);
+      setResumeLookupState('idle');
+      return;
+    }
+    setResumeLookupState('loading');
+    setResumeDoc(null);
+    listResumesForApplicant(applicant.id)
+      .then((docs) => {
+        if (cancelled) return;
+        setResumeDoc(docs[0] ?? null);
+        setResumeLookupState('done');
+      })
+      .catch((err) => {
+        console.error('resume lookup failed', err);
+        if (cancelled) return;
+        setResumeDoc(null);
+        setResumeLookupState('done');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [applicant?.id]);
 
   const handleResumeOpen = async () => {
-    if (!applicant?.resume) return;
+    if (!resumeDoc) return;
     setResumeLoading(true);
     try {
-      const url = /^https?:\/\//i.test(applicant.resume)
-        ? applicant.resume
-        : await downloadFileAsObjectUrl(applicant.resume);
+      const url = await downloadFileAsObjectUrl(resumeDoc.id);
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (err) {
       console.error('Failed to open resume', err);
@@ -280,13 +316,15 @@ export function ApplicantDetailModal({
                     Resume
                   </div>
                   <div className="text-xs text-[#64748b]">
-                    {applicant.resume
-                      ? 'Attached to this application'
-                      : 'Not provided'}
+                    {resumeLookupState === 'loading'
+                      ? 'Looking for attached resume…'
+                      : resumeDoc
+                        ? resumeDoc.title ?? 'Attached to this application'
+                        : 'Not provided'}
                   </div>
                 </div>
               </div>
-              {applicant.resume && (
+              {resumeDoc && (
                 <Button
                   variant="light"
                   color="dark"

@@ -17,7 +17,6 @@ export interface AppliedJob {
   email: string;
   phone: string;
   coverLetter: string;
-  resume?: string;
   status: AppliedJobStatus;
   createdAt: string;
   updatedAt: string;
@@ -29,7 +28,6 @@ export interface CreateAppliedJob {
   email: string;
   phone: string;
   coverLetter: string;
-  resume?: string;
   status: AppliedJobStatus;
 }
 
