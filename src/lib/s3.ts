@@ -1,18 +1,20 @@
-// Utilities for the backend's file storage endpoints.
+// Utilities for the backend's S3 file endpoints.
 //
-// The backend's `POST /api/s3/presigned-url/upload` actually accepts a
-// multipart FormData (title + description + file) and uploads to S3
-// internally — no follow-up PUT to a presigned URL is needed. This matches
-// the pattern used in the 251-Dashboard project the backend dev pointed us
-// to. The endpoint returns a Document row we store by its `id`; downloads
-// stream the file back as a Blob via `GET /api/s3/presigned-url/download/{id}`.
+// Backend contract (per landing.zareinnovations.com/docs, S3 tag):
+//   POST /api/s3/upload             multipart form: file, itemId, type, (key?)
+//   GET  /api/s3/download/{id}      streams the file (or JSON envelope with url)
+//   GET  /api/s3/documents/{type}/{key}/{itemId}   lists docs for an entity
+//
+// The upload endpoint uploads to S3 server-side and returns a Document row we
+// key on `id`. Downloads stream the raw bytes; we wrap them in an object URL
+// for browser open/preview.
 
 import { landingApiUrl } from '@/constants';
 
 const API_BASE = landingApiUrl;
 
 export interface UploadedFile {
-  /** Document id — pass this to `resolveDownloadUrl` or store as the resume reference. */
+  /** Document id — pass to `downloadFileAsObjectUrl` or store as the resume reference. */
   id: string;
   /** Backend-assigned S3 key (present if the response includes it). */
   key?: string;
@@ -21,50 +23,37 @@ export interface UploadedFile {
 }
 
 /**
- * Upload a file through the backend. The backend uploads to S3 internally
- * and returns a Document row.
+ * Upload a file to the backend's S3 store. All three of `file`, `itemId`, and
+ * `type` are required by the backend; `key` is optional grouping metadata.
  */
 export async function uploadFileViaS3(
   file: File,
-  opts?: { type?: string; itemId?: string; description?: string },
+  opts: { type: string; itemId: string; key?: string },
 ): Promise<UploadedFile> {
   const body = new FormData();
-  body.append('title', file.name);
-  body.append('description', opts?.description ?? file.name);
   body.append('file', file);
-  if (opts?.type) body.append('type', opts.type);
-  if (opts?.itemId) body.append('itemId', opts.itemId);
+  body.append('itemId', opts.itemId);
+  body.append('type', opts.type);
+  if (opts.key) body.append('key', opts.key);
 
-  console.log('[S3] upload → POST /api/s3/presigned-url/upload', {
-    title: file.name,
-    file: { name: file.name, type: file.type, size: file.size },
-    ...(opts ?? {}),
-  });
-
-  const res = await fetch(`${API_BASE}/api/s3/presigned-url/upload`, {
+  const res = await fetch(`${API_BASE}/api/s3/upload`, {
     method: 'POST',
     body,
   });
 
-  const rawText = await res.text().catch(() => '');
-  console.log('[S3] upload response', {
-    status: res.status,
-    ok: res.ok,
-    body: rawText,
-  });
-
   if (!res.ok) {
-    console.error('presigned-url/upload failed', res.status, rawText);
+    const text = await res.text().catch(() => '');
+    console.error('s3/upload failed', res.status, text);
     throw new Error('Failed to upload file');
   }
 
+  const rawText = await res.text().catch(() => '');
   let data: unknown = null;
   try {
     data = rawText ? JSON.parse(rawText) : null;
   } catch {
     data = rawText;
   }
-  console.log('[S3] parsed upload data', data);
 
   if (!data || typeof data !== 'object') {
     throw new Error('Upload response did not include a document id');
@@ -88,13 +77,13 @@ export async function downloadFileAsObjectUrl(
   documentId: string,
 ): Promise<string> {
   const res = await fetch(
-    `${API_BASE}/api/s3/presigned-url/download/${encodeURIComponent(documentId)}`,
+    `${API_BASE}/api/s3/download/${encodeURIComponent(documentId)}`,
     { method: 'GET' },
   );
 
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    console.error('presigned-url/download failed', res.status, text);
+    console.error('s3/download failed', res.status, text);
     throw new Error('Failed to download file');
   }
 
@@ -113,6 +102,27 @@ export async function downloadFileAsObjectUrl(
 
   const blob = await res.blob();
   return URL.createObjectURL(blob);
+}
+
+/**
+ * List documents attached to a given entity (type + key + itemId tuple).
+ * Useful for admin UIs that browse an item's attached files.
+ */
+export async function listDocumentsFor(
+  type: string,
+  key: string,
+  itemId: string,
+): Promise<unknown> {
+  const res = await fetch(
+    `${API_BASE}/api/s3/documents/${encodeURIComponent(type)}/${encodeURIComponent(key)}/${encodeURIComponent(itemId)}`,
+    { method: 'GET' },
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    console.error('s3/documents failed', res.status, text);
+    throw new Error('Failed to list documents');
+  }
+  return res.json().catch(() => null);
 }
 
 function pickString(
