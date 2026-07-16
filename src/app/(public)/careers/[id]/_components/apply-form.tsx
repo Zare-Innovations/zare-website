@@ -6,7 +6,9 @@ import { IconUpload, IconX } from "@tabler/icons-react";
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import Image from "next/image";
 import { notifications } from "@mantine/notifications";
+import { useParams } from "next/navigation";
 import { submitJobApply } from "@/actions/job-apply";
+import { uploadFileViaS3 } from "@/lib/s3";
 
 export function FileDropZone({
   onDropFile,
@@ -65,7 +67,7 @@ export function FileDropZone({
             <span className="text-cyan-500">Browse</span>
           </Text>
           <Text size="sm" c="dimmed" inline mt={7}>
-            PDF/image - Maximum size: 50MB
+            Optional · PDF/image · Maximum size: 50MB
           </Text>
           {file && (
             <Text size="sm" c="cyan.7" className="mt-2">
@@ -85,6 +87,9 @@ export function FileDropZone({
 }
 
 export default function ApplyForm() {
+  const params = useParams<{ id: string }>();
+  const jobId = params?.id ?? "";
+
   // Local form state
   const [formData, setFormData] = useState<{
     firstName: string;
@@ -155,8 +160,6 @@ export default function ApplyForm() {
     if (!formData.lastName.trim()) errors.lastName = "Name is Required";
     if (!formData.phoneNumber.trim()) errors.phoneNumber = "Phone is Required";
     if (!formData.message.trim()) errors.message = "Message is Required";
-    if (!formData.userFile)
-      errors.userFile = "Resume or image file is required";
     if (!formData.email.trim()) errors.email = "Email is Required";
     else if (!validateEmail(formData.email))
       errors.email = "Invalid email address";
@@ -168,15 +171,38 @@ export default function ApplyForm() {
 
     setLoading(true);
     setFormErrors({});
-    // Compose FormData object for server action
+
+    // Upload the resume through the backend first — it uploads to S3
+    // internally and returns a Document row. We store the returned document
+    // id as the applied-job's `resume` field so the admin can download it
+    // later via /api/s3/presigned-url/download/{id}. If the upload fails we
+    // still submit the application so the applicant isn't blocked.
+    let resumeKey: string | null = null;
+    if (formData.userFile) {
+      try {
+        const uploaded = await uploadFileViaS3(formData.userFile, {
+          type: "resume",
+        });
+        resumeKey = uploaded.id;
+      } catch (err) {
+        console.warn("Resume upload failed, continuing without it", err);
+        notifications.show({
+          color: "yellow",
+          title: "Resume upload failed",
+          message:
+            "We couldn't upload your resume. Submitting your application without it — please email it separately.",
+        });
+      }
+    }
+
     const submitData = new FormData();
+    submitData.append("jobId", jobId);
     submitData.append("firstName", formData.firstName);
     submitData.append("lastName", formData.lastName);
+    submitData.append("email", formData.email);
     submitData.append("phoneNumber", formData.phoneNumber);
     submitData.append("message", formData.message);
-    submitData.append("userFile", formData.userFile!);
-
-    submitData.append("email", formData.email);
+    if (resumeKey) submitData.append("resume", resumeKey);
 
     const result = await submitJobApply(submitData);
 

@@ -1,62 +1,79 @@
 'use client';
-import { Table, Text, Anchor } from '@mantine/core';
-import { StatusBadge } from './status-badge';
+import { Table, Text } from '@mantine/core';
+import type { AppliedJob } from '@/store/api/applied-jobs.api';
+import { StatusSelect } from '../applicants/_components/status-select';
+import { RowActions } from '../applicants/_components/row-actions';
 
-interface Applicant {
-  name: string;
-  email: string;
-  job: string;
-  experience: string;
-  education: string;
-  appliedOn: string;
-  status: string;
+function formatRelative(iso: string) {
+  try {
+    const then = new Date(iso).getTime();
+    const now = Date.now();
+    const diffSec = Math.round((now - then) / 1000);
+    if (diffSec < 60) return 'just now';
+    const diffMin = Math.round(diffSec / 60);
+    if (diffMin < 60) return `${diffMin} min ago`;
+    const diffH = Math.round(diffMin / 60);
+    if (diffH < 24) return `${diffH} hr ago`;
+    const diffD = Math.round(diffH / 24);
+    if (diffD < 30) return `${diffD} day${diffD === 1 ? '' : 's'} ago`;
+    const diffMo = Math.round(diffD / 30);
+    if (diffMo < 12) return `${diffMo} mo ago`;
+    const diffY = Math.round(diffMo / 12);
+    return `${diffY} yr ago`;
+  } catch {
+    return '';
+  }
 }
 
-export function ApplicantsTable({ applicants }: { applicants: Applicant[] }) {
-  const rows = applicants.map((applicant, index) => (
-    <Table.Tr key={index}>
+export function ApplicantsTable({
+  applicants,
+  jobTitleById,
+  onView,
+  onDelete,
+}: {
+  applicants: AppliedJob[];
+  jobTitleById: Record<string, string>;
+  onView: (applicant: AppliedJob) => void;
+  onDelete: (applicant: AppliedJob) => void;
+}) {
+  const rows = applicants.map((applicant) => (
+    <Table.Tr
+      key={applicant.id}
+      onClick={() => onView(applicant)}
+      style={{ cursor: 'pointer' }}
+    >
       <Table.Td>
-        <div>
-          <Text size="sm" fw={500} c="#101828">
-            {applicant.name}
+        <div className="min-w-0">
+          <Text size="sm" fw={600} c="#0a293b" className="truncate">
+            {applicant.fullName}
           </Text>
-          <Text size="xs" c="#64748b" mt={2}>
+          <Text size="xs" c="#64748b" className="truncate">
             {applicant.email}
           </Text>
         </div>
       </Table.Td>
       <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {applicant.job}
+        <Text size="sm" c="#0a293b" className="truncate">
+          {jobTitleById[applicant.jobId] ?? applicant.jobId}
         </Text>
       </Table.Td>
       <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {applicant.experience}
+        <Text size="sm" c="#64748b">
+          {formatRelative(applicant.createdAt)}
         </Text>
       </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {applicant.education}
-        </Text>
+      <Table.Td onClick={(e) => e.stopPropagation()}>
+        <StatusSelect applicant={applicant} />
       </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {applicant.appliedOn}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Anchor href="#" size="sm" c="#0a293b" td="underline">
-          View Resume
-        </Anchor>
-      </Table.Td>
-      <Table.Td>
-        <Anchor href="#" size="sm" c="#0a293b" td="underline">
-          View Cover Letter
-        </Anchor>
-      </Table.Td>
-      <Table.Td>
-        <StatusBadge status={applicant.status} />
+      <Table.Td
+        style={{ width: 40 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <RowActions
+          applicant={applicant}
+          onView={onView}
+          onDelete={onDelete}
+        />
       </Table.Td>
     </Table.Tr>
   ));
@@ -77,20 +94,23 @@ export function ApplicantsTable({ applicants }: { applicants: Applicant[] }) {
             borderCollapse: 'collapse',
           },
           th: {
-            backgroundColor: '#ffffff',
+            backgroundColor: '#f9fafb',
             color: '#64748b',
-            fontWeight: 500,
-            fontSize: '14px',
+            fontWeight: 600,
+            fontSize: '11px',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
             borderBottom: '1px solid #e7eaee',
-            padding: '12px 16px',
+            padding: '10px 16px',
             textAlign: 'left',
           },
           td: {
             borderBottom: '1px solid #e7eaee',
-            padding: '16px',
-            verticalAlign: 'top',
+            padding: '14px 16px',
+            verticalAlign: 'middle',
           },
           tr: {
+            transition: 'background-color 0.15s',
             '&:hover': {
               backgroundColor: '#f7f8f9 !important',
             },
@@ -99,14 +119,11 @@ export function ApplicantsTable({ applicants }: { applicants: Applicant[] }) {
       >
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Applicant Name</Table.Th>
-            <Table.Th>Posted Job</Table.Th>
-            <Table.Th>Experience</Table.Th>
-            <Table.Th>Education</Table.Th>
-            <Table.Th>Applied On</Table.Th>
-            <Table.Th>Resume</Table.Th>
-            <Table.Th>Cover Story</Table.Th>
+            <Table.Th>Applicant</Table.Th>
+            <Table.Th>Job</Table.Th>
+            <Table.Th>Applied</Table.Th>
             <Table.Th>Status</Table.Th>
+            <Table.Th />
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>

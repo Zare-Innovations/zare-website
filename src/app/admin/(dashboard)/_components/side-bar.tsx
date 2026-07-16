@@ -1,188 +1,302 @@
 'use client';
 import { useProfileQuery } from '@/store/api/auth/auth.api';
-import { Avatar } from '@mantine/core';
+import { siteUrl } from '@/constants';
+import { Avatar, Tooltip } from '@mantine/core';
+import Image from 'next/image';
 import {
-  IconCalendar,
+  IconAddressBook,
+  IconArchive,
+  IconArrowUpRight,
+  IconBriefcase,
   IconChartBar,
   IconChevronDown,
-  IconChevronUp,
+  IconChevronLeft,
+  IconChevronRight,
+  IconFileText,
   IconHelpCircle,
   IconLogout,
+  IconPlus,
   IconSettings,
-  IconFileText,
+  IconUserCircle,
+  IconUsers,
 } from '@tabler/icons-react';
 import { deleteCookie } from 'cookies-next';
 import Link from 'next/link';
-import {
-  usePathname,
-  useRouter,
-  // useRouter
-} from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
-export default function Sidebar() {
-  const [jobManagementExpanded, setJobManagementExpanded] = useState(true);
-  const [settingsExpanded, setSettingsExpanded] = useState(false);
-   const router = useRouter();
+const NEW_JOB_ROUTE = '/admin/job/new';
 
-   const { data: profile} = useProfileQuery();
+function initialsFromName(name?: string): string {
+  if (!name) return 'AD';
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter((p) => p.toLowerCase() !== 'null');
+  if (parts.length === 0) return 'AD';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
-  // const router = useRouter();
+type LeafLink = {
+  href: string;
+  label: string;
+  icon?: React.ReactNode;
+  external?: boolean;
+};
+
+function NavLeaf({
+  href,
+  label,
+  icon,
+  active,
+  indent,
+  external,
+}: LeafLink & { active: boolean; indent?: boolean }) {
+  const commonClass = `group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
+    ${indent ? 'ml-6' : ''}
+    ${
+      active
+        ? 'bg-[#00a9ab] text-white font-medium shadow-[0_1px_0_rgba(255,255,255,0.05)]'
+        : 'text-slate-300 hover:text-white hover:bg-white/5'
+    }`;
+
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={commonClass}
+      >
+        {icon}
+        <span className="flex-1">{label}</span>
+        <IconArrowUpRight size={14} className="opacity-60" />
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={commonClass}>
+      {icon}
+      <span>{label}</span>
+    </Link>
+  );
+}
+
+export default function Sidebar({
+  onCollapse,
+}: {
+  onCollapse?: () => void;
+} = {}) {
+  const [jobsOpen, setJobsOpen] = useState(true);
+  const router = useRouter();
   const pathname = usePathname();
 
-  const logout = () => {
+  const { data: profile } = useProfileQuery();
+  const displayName = useMemo(() => {
+    if (!profile?.name) return 'Admin';
+    return profile.name.replace(/^null\s+/i, '').trim() || 'Admin';
+  }, [profile?.name]);
+  const initials = useMemo(() => initialsFromName(profile?.name), [profile?.name]);
 
-            deleteCookie("access_token");
-        deleteCookie("refresh_token");
-        router.push("/admin/login");
-  }
+  const logout = () => {
+    deleteCookie('access_token');
+    deleteCookie('refresh_token');
+    router.push('/admin/login');
+  };
+
+  const isActive = (href: string, exact = false) =>
+    exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <div className="h-screen bg-[#0a293b] text-white flex flex-col text-sm">
-      {/* Admin Section */}
-      <div className="px-6 py-6 ">
-        <div className="flex items-center gap-3">
-          <Avatar>AS</Avatar>
-          <div className="flex justify-between">
-            <div>
-              <div className="text-sm text-gray-400 uppercase tracking-wide">
-                ADMIN
+    <aside className="h-screen bg-[#0a293b] text-white flex flex-col text-sm">
+      {/* Profile */}
+      <div className="px-5 pt-6 pb-5 flex items-start gap-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <Avatar
+            radius="xl"
+            size={40}
+            styles={{
+              placeholder: {
+                backgroundColor: '#00a9ab',
+                color: 'white',
+                fontWeight: 600,
+                fontSize: 14,
+              },
+            }}
+          >
+            {initials}
+          </Avatar>
+          <div className="min-w-0">
+            <div className="text-[10px] font-semibold uppercase tracking-widest text-[#00a9ab]">
+              Admin
+            </div>
+            <Tooltip label={profile?.email ?? ''} disabled={!profile?.email}>
+              <div className="font-medium truncate max-w-[140px]">
+                {displayName}
               </div>
-              <div className="font-medium text-nowrap">{profile?.name ||''}</div>
-            </div>
+            </Tooltip>
           </div>
         </div>
+        {onCollapse && (
+          <Tooltip label="Collapse sidebar" position="right">
+            <button
+              onClick={onCollapse}
+              className="hidden sm:flex items-center justify-center h-8 w-8 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
+              aria-label="Collapse sidebar"
+            >
+              <IconChevronLeft size={16} />
+            </button>
+          </Tooltip>
+        )}
       </div>
 
-      {/* Divider */}
-      <div className="h-px bg-[#00a9ab] mx-6 mb-8"></div>
+      <div className="h-px bg-white/10 mx-5" />
 
-      {/* Main Navigation */}
-      <div className="flex-1 px-6">
-        <div className="text-sm text-gray-400 uppercase tracking-wide mb-4">
-          MAIN
-        </div>
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto px-3 py-6 space-y-6">
+        <div>
+          <div className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            Main
+          </div>
 
-        {/* Job Management */}
-        <div className="mb-6">
-          <button
-            onClick={() => setJobManagementExpanded(!jobManagementExpanded)}
-            className={`w-full flex items-center justify-between p-3 rounded-lg  hover:bg-[#00a9ab]/90 transition-colors
-              ${pathname.startsWith('/admin/job') ? 'bg-[#00a9ab] text-white' : 'text-gray-400 hover:text-white'}
-              `}
-          >
-            <div className="flex items-center gap-3">
-              <IconChartBar className="w-5 h-5" />
-              <span className="font-medium">Job Management</span>
-            </div>
-            {jobManagementExpanded ? (
-              <IconChevronUp className="w-4 h-4" />
-            ) : (
-              <IconChevronDown className="w-4 h-4" />
+          {/* Job Management group */}
+          <div>
+            <button
+              onClick={() => setJobsOpen((v) => !v)}
+              className={`w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors
+                ${
+                  isActive('/admin/job') ||
+                  isActive('/admin/applicants') ||
+                  isActive('/admin/expired-jobs')
+                    ? 'text-white'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                }`}
+              aria-expanded={jobsOpen}
+            >
+              <IconChartBar size={18} />
+              <span className="flex-1 text-left font-medium">Job Management</span>
+              {jobsOpen ? (
+                <IconChevronDown size={14} />
+              ) : (
+                <IconChevronRight size={14} />
+              )}
+            </button>
+
+            {jobsOpen && (
+              <div className="mt-1 space-y-1">
+                <NavLeaf
+                  href="/admin/job"
+                  label="All Job Posts"
+                  icon={<IconBriefcase size={16} />}
+                  indent
+                  active={isActive('/admin/job', true)}
+                />
+                <NavLeaf
+                  href={NEW_JOB_ROUTE}
+                  label="Create New Job Post"
+                  icon={<IconPlus size={16} />}
+                  indent
+                  active={pathname === NEW_JOB_ROUTE}
+                />
+                <NavLeaf
+                  href="/admin/applicants"
+                  label="Applicants"
+                  icon={<IconUsers size={16} />}
+                  indent
+                  active={isActive('/admin/applicants')}
+                />
+                <NavLeaf
+                  href="/admin/expired-jobs"
+                  label="Expired & Closed Jobs"
+                  icon={<IconArchive size={16} />}
+                  indent
+                  active={isActive('/admin/expired-jobs')}
+                />
+              </div>
             )}
-          </button>
+          </div>
 
-          {jobManagementExpanded && (
-            <div className="mt-2 ml-4 border-l-2 border-[#00a9ab] pl-4 space-y-2">
-              <Link
-                href={'/admin/job'}
-                className={`block ${pathname == '/admin/job' ? 'bg-[#00a9ab] px-4 font-medium text-white' : 'text-gray-400'}  py-2 rounded-lg cursor-pointer`}
-              >
-                All Job Posts
-              </Link>
-              <Link
-                href={'/admin/job/+'}
-                className={` block  ${
-                  pathname.startsWith('/admin/job/')
-                    ? 'bg-[#00a9ab] px-4 font-medium text-white'
-                    : 'text-gray-400'
-                } py-2 rounded-lg  cursor-pointer`}
-              >
-                Create New Job Post
-              </Link>
-              <div className="text-gray-400 py-2">Pending Approvals</div>
-              <div className="text-gray-400 py-2">Expired & Closed Jobs</div>
+          <div className="mt-1 space-y-1">
+            <NavLeaf
+              href="/admin/candidates"
+              label="Candidates"
+              icon={<IconAddressBook size={18} />}
+              active={isActive('/admin/candidates')}
+            />
+            <NavLeaf
+              href="/admin/users"
+              label="Users"
+              icon={<IconUserCircle size={18} />}
+              active={isActive('/admin/users')}
+            />
+            <NavLeaf
+              href="/admin/contract-generator"
+              label="Contract Generator"
+              icon={<IconFileText size={18} />}
+              active={isActive('/admin/contract-generator')}
+            />
+          </div>
+        </div>
+
+        <div>
+          <div className="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            System
+          </div>
+          <div className="space-y-1">
+            <NavLeaf
+              href="/admin/settings"
+              label="Settings"
+              icon={<IconSettings size={18} />}
+              active={isActive('/admin/settings')}
+            />
+            <NavLeaf
+              href="/admin/help"
+              label="Help & Support"
+              icon={<IconHelpCircle size={18} />}
+              active={isActive('/admin/help')}
+            />
+          </div>
+        </div>
+      </nav>
+
+      {/* Footer */}
+      <div className="px-5 py-5 space-y-3 border-t border-white/10">
+        <a
+          href={siteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#00a9ab] to-[#0d7c8b] p-3 text-white transition hover:from-[#0dc0c3] hover:to-[#0d7c8b]"
+        >
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#0A293C] p-1">
+            <Image
+              src="/zare-logo.jpg"
+              alt="Zare Innovations"
+              width={28}
+              height={28}
+              className="h-full w-full object-contain"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold leading-tight">
+              Zare Innovations
             </div>
-          )}
-        </div>
-
-        {/* Applicants */}
-        <div className="mb-8">
-          <div
-            className={`flex items-center gap-3 p-3 text-gray-400 hover:text-white transition-colors cursor-pointer  rounded-lg
-              ${pathname.startsWith('/admin/applicants') ? 'bg-[#00a9ab] text-white' : 'text-gray-400 hover:text-white'}
-              `}
-          >
-            <IconCalendar className="w-5 h-5" />
-            <Link href="/admin/applicants">Applicants</Link>
+            <div className="text-[11px] opacity-90">Visit the public site</div>
           </div>
-        </div>
+          <IconArrowUpRight
+            size={16}
+            className="opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          />
+        </a>
 
-        {/* Contract Generator */}
-        <div className="mb-8">
-          <div
-            className={`flex items-center gap-3 p-3 text-gray-400 hover:text-white transition-colors cursor-pointer rounded-lg
-              ${pathname.startsWith('/admin/contract-generator') ? 'bg-[#00a9ab] text-white' : 'text-gray-400 hover:text-white'}
-              `}
-          >
-            <IconFileText className="w-5 h-5" />
-            <Link href="/admin/contract-generator">Contract Generator</Link>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-[#00a9ab] mb-8"></div>
-
-        {/* Settings Section */}
-        <div className="mb-8">
-          <div className="text-sm text-gray-400 uppercase tracking-wide mb-4">
-            SETTINGS
-          </div>
-          <button
-            onClick={() => setSettingsExpanded(!settingsExpanded)}
-            className="w-full flex items-center justify-between p-3 text-gray-400 hover:text-white transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <IconSettings className="w-5 h-5" />
-              <span>Settings</span>
-            </div>
-            {settingsExpanded ? (
-              <IconChevronUp className="w-4 h-4" />
-            ) : (
-              <IconChevronDown className="w-4 h-4" />
-            )}
-          </button>
-        </div>
+        <button
+          onClick={logout}
+          className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-red-500/10 transition-colors"
+        >
+          <IconLogout size={18} />
+          <span>Log out</span>
+        </button>
       </div>
-
-      {/* Bottom Section */}
-      <div className="p-6 space-y-4">
-        {/* Zare Innovations Card */}
-        <div className="bg-[#00a9ab] rounded-lg p-4">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 bg-white rounded flex items-center justify-center">
-              <div className="w-6 h-6 bg-black transform rotate-12"></div>
-            </div>
-            <div>
-              <div className="font-bold text-lg">Zare</div>
-              <div className="text-sm opacity-90">Innovations</div>
-            </div>
-          </div>
-          <div className="text-sm font-medium">Go To Zare&apos;s Site</div>
-        </div>
-
-        {/* Help */}
-        <div className="flex items-center gap-3 p-2 text-gray-400 hover:text-white transition-colors cursor-pointer">
-          <IconHelpCircle className="w-5 h-5" />
-          <span>Help</span>
-        </div>
-
-        {/* Logout */}
-        <div  onClick={logout} className="flex items-center gap-3 p-2 text-gray-400 hover:text-white transition-colors cursor-pointer">
-          <IconLogout className="w-5 h-5" />
-          <span>Logout Account</span>
-        </div>
-      </div>
-    </div>
+    </aside>
   );
 }
