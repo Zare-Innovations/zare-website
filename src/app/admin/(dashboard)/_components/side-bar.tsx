@@ -268,7 +268,7 @@ export default function Sidebar({
           rel="noopener noreferrer"
           className="group flex items-center gap-3 rounded-xl bg-gradient-to-r from-[#00a9ab] to-[#0d7c8b] p-3 text-white transition hover:from-[#0dc0c3] hover:to-[#0d7c8b]"
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-white p-1">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#0A293C] p-1">
             <Image
               src="/zare-logo.jpg"
               alt="Zare Innovations"
