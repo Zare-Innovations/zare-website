@@ -36,38 +36,18 @@ export async function uploadFileViaS3(
   body.append('type', opts.type);
   if (opts.key) body.append('key', opts.key);
 
-  console.log('[S3] upload → POST /api/s3/upload', {
-    file: { name: file.name, type: file.type, size: file.size },
-    itemId: opts.itemId,
-    type: opts.type,
-    key: opts.key,
-  });
-
   const res = await fetch(`${API_BASE}/api/s3/upload`, {
     method: 'POST',
     body,
   });
 
-  const rawText = await res.text().catch(() => '');
-  console.log('[S3] upload response', {
-    status: res.status,
-    ok: res.ok,
-    body: rawText,
-  });
-
   if (!res.ok) {
-    console.error('s3/upload failed', res.status, rawText);
+    const text = await res.text().catch(() => '');
+    console.error('s3/upload failed', res.status, text);
     throw new Error('Failed to upload file');
   }
 
-  let data: unknown = null;
-  try {
-    data = rawText ? JSON.parse(rawText) : null;
-  } catch {
-    data = rawText;
-  }
-  console.log('[S3] parsed upload data', data);
-
+  const data = await res.json().catch(() => null);
   if (!data || typeof data !== 'object') {
     throw new Error('Upload response did not include a document id');
   }
@@ -117,15 +97,26 @@ export async function downloadFileAsObjectUrl(
   return URL.createObjectURL(blob);
 }
 
+export interface DocumentRecord {
+  id: string;
+  url?: string;
+  itemId?: string;
+  type?: string;
+  key?: string;
+  title?: string;
+}
+
 /**
- * List documents attached to a given entity (type + key + itemId tuple).
- * Useful for admin UIs that browse an item's attached files.
+ * List documents attached to a given (type, key, itemId) tuple.
+ * Backend defaults `key` to the same value as `type` when the upload didn't
+ * pass an explicit key — so a resume uploaded with just `type=resume` is
+ * discoverable via `type=resume, key=resume`.
  */
 export async function listDocumentsFor(
   type: string,
   key: string,
   itemId: string,
-): Promise<unknown> {
+): Promise<DocumentRecord[]> {
   const res = await fetch(
     `${API_BASE}/api/s3/documents/${encodeURIComponent(type)}/${encodeURIComponent(key)}/${encodeURIComponent(itemId)}`,
     { method: 'GET' },
@@ -135,7 +126,25 @@ export async function listDocumentsFor(
     console.error('s3/documents failed', res.status, text);
     throw new Error('Failed to list documents');
   }
-  return res.json().catch(() => null);
+  const data = await res.json().catch(() => null);
+  if (Array.isArray(data)) return data as DocumentRecord[];
+  // Some endpoints return `{ items: [...] }` or a single doc — normalise.
+  if (data && typeof data === 'object') {
+    const rec = data as Record<string, unknown>;
+    if (Array.isArray(rec.items)) return rec.items as DocumentRecord[];
+    if (typeof rec.id === 'string') return [data as DocumentRecord];
+  }
+  return [];
+}
+
+/**
+ * Convenience: fetch the resume documents attached to an applied-job.
+ * Uses the (type=resume, key=resume) tuple used by the public apply form.
+ */
+export function listResumesForApplicant(
+  applicantId: string,
+): Promise<DocumentRecord[]> {
+  return listDocumentsFor('resume', 'resume', applicantId);
 }
 
 function pickString(

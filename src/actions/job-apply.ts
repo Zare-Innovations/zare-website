@@ -31,7 +31,6 @@ export async function submitJobApply(formData: FormData): Promise<{
   const phoneNumber = formData.get("phoneNumber") as string;
   const message = formData.get("message") as string;
   const jobId = formData.get("jobId") as string;
-  const resume = (formData.get("resume") as string | null) ?? "";
 
   const errors: JobApplyFieldErrors = {};
 
@@ -56,7 +55,11 @@ export async function submitJobApply(formData: FormData): Promise<{
     };
   }
 
-  const payload: Record<string, string> = {
+  // Backend's CreateAppliedJobsDto does NOT accept a `resume` field — the
+  // resume is attached as a separate S3 document keyed on this applied-job's
+  // id. So we submit the applied-job first, then the client uploads the
+  // resume with itemId = the returned appliedJob id.
+  const payload = {
     jobId,
     fullName: `${firstName.trim()} ${lastName.trim()}`,
     email: email.trim(),
@@ -64,10 +67,8 @@ export async function submitJobApply(formData: FormData): Promise<{
     coverLetter: message,
     status: "Pending",
   };
-  if (resume.trim()) payload.resume = resume.trim();
 
   try {
-    console.log("[applied-jobs] POST payload", payload);
     const res = await fetch(`${apiUrl}/api/applied-jobs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -75,28 +76,16 @@ export async function submitJobApply(formData: FormData): Promise<{
       cache: "no-store",
     });
 
-    const rawText = await res.text().catch(() => "");
-    console.log("[applied-jobs] POST response", {
-      status: res.status,
-      ok: res.ok,
-      body: rawText,
-    });
-
     if (!res.ok) {
-      console.error("submitJobApply failed", res.status, rawText);
+      const text = await res.text().catch(() => "");
+      console.error("submitJobApply failed", res.status, text);
       return {
         success: false,
         message: "We couldn't submit your application. Please try again.",
       };
     }
 
-    let data: unknown = null;
-    try {
-      data = rawText ? JSON.parse(rawText) : null;
-    } catch {
-      data = rawText;
-    }
-
+    const data = await res.json().catch(() => null);
     let createdId: string | undefined;
     if (data && typeof data === "object") {
       const rec = data as Record<string, unknown>;
@@ -108,7 +97,6 @@ export async function submitJobApply(formData: FormData): Promise<{
         }
       }
     }
-    console.log("[applied-jobs] parsed response, id =", createdId);
 
     return {
       success: true,

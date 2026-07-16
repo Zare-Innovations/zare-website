@@ -172,31 +172,6 @@ export default function ApplyForm() {
     setLoading(true);
     setFormErrors({});
 
-    // Upload the resume through the backend first — it uploads to S3
-    // internally and returns a Document row. We store the returned document
-    // id as the applied-job's `resume` field so the admin can download it
-    // later via /api/s3/download/{id}. If the upload fails we still submit
-    // the application so the applicant isn't blocked. `itemId` associates
-    // the document with this job posting.
-    let resumeKey: string | null = null;
-    if (formData.userFile) {
-      try {
-        const uploaded = await uploadFileViaS3(formData.userFile, {
-          type: "resume",
-          itemId: jobId,
-        });
-        resumeKey = uploaded.id;
-      } catch (err) {
-        console.warn("Resume upload failed, continuing without it", err);
-        notifications.show({
-          color: "yellow",
-          title: "Resume upload failed",
-          message:
-            "We couldn't upload your resume. Submitting your application without it — please email it separately.",
-        });
-      }
-    }
-
     const submitData = new FormData();
     submitData.append("jobId", jobId);
     submitData.append("firstName", formData.firstName);
@@ -204,34 +179,57 @@ export default function ApplyForm() {
     submitData.append("email", formData.email);
     submitData.append("phoneNumber", formData.phoneNumber);
     submitData.append("message", formData.message);
-    if (resumeKey) submitData.append("resume", resumeKey);
 
+    // 1. Submit the applied-job first (backend's DTO does not accept a
+    //    resume field; it comes back with the new applied-job id).
     const result = await submitJobApply(submitData);
 
-    if (result.success) {
-      notifications.show({
-        title: "Success",
-        message:
-          result.message ??
-          "Thank you for applying! We have received your application and will get back to you shortly.",
-        color: "teal"
-      });
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        message: "",
-        userFile: null
-      });
-    } else {
+    if (!result.success) {
       if (result.errors) setFormErrors(result.errors);
       notifications.show({
         color: "red",
         title: "Error",
         message: result.message ?? "Something went wrong. Please try again."
       });
+      setLoading(false);
+      return;
     }
+
+    // 2. If the applicant attached a resume, upload it now with itemId set
+    //    to the newly-created applied-job's id — so the admin can list it via
+    //    GET /api/s3/documents/resume/resume/{appliedJobId}.
+    if (formData.userFile && result.createdId) {
+      try {
+        await uploadFileViaS3(formData.userFile, {
+          type: "resume",
+          itemId: result.createdId,
+        });
+      } catch (err) {
+        console.warn("Resume upload failed after application submit", err);
+        notifications.show({
+          color: "yellow",
+          title: "Resume upload failed",
+          message:
+            "Your application was submitted but the resume didn't upload. Please email it separately.",
+        });
+      }
+    }
+
+    notifications.show({
+      title: "Success",
+      message:
+        result.message ??
+        "Thank you for applying! We have received your application and will get back to you shortly.",
+      color: "teal"
+    });
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      message: "",
+      userFile: null
+    });
     setLoading(false);
   };
 
