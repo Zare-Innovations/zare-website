@@ -239,11 +239,10 @@ export default function JobForm() {
 
               <Grid.Col span={12}>
                 <JobRichTextField
-                  label="Job Description"
-                  required
-                  initialContent={jobData?.description ?? ''}
-                  onChange={(html) => form.setFieldValue('description', html)}
-                  error={form.errors.description as string | undefined}
+                  label="About the Company"
+                  initialContent={jobData?.aboutCompany ?? ''}
+                  onChange={(html) => form.setFieldValue('aboutCompany', html)}
+                  error={form.errors.aboutCompany as string | undefined}
                 />
               </Grid.Col>
 
@@ -258,10 +257,11 @@ export default function JobForm() {
 
               <Grid.Col span={12}>
                 <JobRichTextField
-                  label="About the Company"
-                  initialContent={jobData?.aboutCompany ?? ''}
-                  onChange={(html) => form.setFieldValue('aboutCompany', html)}
-                  error={form.errors.aboutCompany as string | undefined}
+                  label="Job Description"
+                  required
+                  initialContent={jobData?.description ?? ''}
+                  onChange={(html) => form.setFieldValue('description', html)}
+                  error={form.errors.description as string | undefined}
                 />
               </Grid.Col>
             </Grid>
