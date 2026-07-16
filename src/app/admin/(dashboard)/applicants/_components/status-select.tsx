@@ -26,7 +26,6 @@ export function StatusSelect({ applicant }: { applicant: AppliedJob }) {
           email: applicant.email,
           phone: applicant.phone,
           coverLetter: applicant.coverLetter,
-          resume: applicant.resume,
           status: nextStatus,
         },
       }).unwrap();
