@@ -3,6 +3,7 @@ import { Table, Text } from '@mantine/core';
 import type { AppliedJob } from '@/store/api/applied-jobs.api';
 import { StatusSelect } from '../applicants/_components/status-select';
 import { RowActions } from '../applicants/_components/row-actions';
+import { ResumeCell } from '../applicants/_components/resume-cell';
 
 function formatRelative(iso: string) {
   try {
@@ -56,6 +57,9 @@ export function ApplicantsTable({
         <Text size="sm" c="#0a293b" className="truncate">
           {jobTitleById[applicant.jobId] ?? applicant.jobId}
         </Text>
+      </Table.Td>
+      <Table.Td onClick={(e) => e.stopPropagation()}>
+        <ResumeCell applicantId={applicant.id} />
       </Table.Td>
       <Table.Td>
         <Text size="sm" c="#64748b">
@@ -121,6 +125,7 @@ export function ApplicantsTable({
           <Table.Tr>
             <Table.Th>Applicant</Table.Th>
             <Table.Th>Job</Table.Th>
+            <Table.Th>Resume</Table.Th>
             <Table.Th>Applied</Table.Th>
             <Table.Th>Status</Table.Th>
             <Table.Th />
