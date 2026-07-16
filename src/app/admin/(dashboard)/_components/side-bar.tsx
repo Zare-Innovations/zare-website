@@ -270,7 +270,7 @@ export default function Sidebar({
         >
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-white p-1">
             <Image
-              src="/zare-logo.svg"
+              src="/zare-logo.jpg"
               alt="Zare Innovations"
               width={28}
               height={28}
