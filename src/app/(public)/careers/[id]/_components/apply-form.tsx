@@ -175,13 +175,15 @@ export default function ApplyForm() {
     // Upload the resume through the backend first — it uploads to S3
     // internally and returns a Document row. We store the returned document
     // id as the applied-job's `resume` field so the admin can download it
-    // later via /api/s3/presigned-url/download/{id}. If the upload fails we
-    // still submit the application so the applicant isn't blocked.
+    // later via /api/s3/download/{id}. If the upload fails we still submit
+    // the application so the applicant isn't blocked. `itemId` associates
+    // the document with this job posting.
     let resumeKey: string | null = null;
     if (formData.userFile) {
       try {
         const uploaded = await uploadFileViaS3(formData.userFile, {
           type: "resume",
+          itemId: jobId,
         });
         resumeKey = uploaded.id;
       } catch (err) {
