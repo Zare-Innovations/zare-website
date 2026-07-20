@@ -1,113 +1,114 @@
-import { useState } from 'react';
-import {
-  PillsInput,
-  Pill,
-  Combobox,
-  CheckIcon,
-  Group,
-  useCombobox,
-} from '@mantine/core';
+'use client';
 
-const groceries = [
+import { TagsInput } from '@mantine/core';
+
+/**
+ * Common tech skills shown as autocomplete suggestions in the job form.
+ * These are only hints — the admin can type anything and press Enter (or
+ * comma) to add it as a pill.
+ */
+const DEFAULT_SKILL_SUGGESTIONS = [
+  // Languages
   'JavaScript',
   'TypeScript',
   'Python',
   'Java',
+  'Kotlin',
+  'Swift',
+  'Go',
+  'Rust',
+  'C',
   'C++',
-  'React',
-  'Vue',
-  'Angular',
-  'Node.js',
+  'C#',
   'PHP',
+  'Ruby',
+  'Scala',
+  'Dart',
+  'SQL',
+  // Frontend
+  'React',
+  'Next.js',
+  'Vue',
+  'Nuxt',
+  'Angular',
+  'Svelte',
+  'SolidJS',
+  'React Native',
+  'Flutter',
+  'HTML',
+  'CSS',
+  'Tailwind CSS',
+  'SASS',
+  'Redux',
+  'Zustand',
+  // Backend / runtimes
+  'Node.js',
+  'NestJS',
+  'Express',
+  'Django',
+  'FastAPI',
+  'Flask',
+  'Spring Boot',
+  'Laravel',
+  'Ruby on Rails',
+  '.NET',
+  'GraphQL',
+  'REST APIs',
+  // Data / infra
+  'PostgreSQL',
+  'MySQL',
+  'MongoDB',
+  'Redis',
+  'Elasticsearch',
+  'Docker',
+  'Kubernetes',
+  'AWS',
+  'GCP',
+  'Azure',
+  'Terraform',
+  'CI/CD',
+  'Linux',
+  // Design / product
+  'Figma',
+  'UI/UX Design',
+  'Product Management',
+  'Agile',
+  'Scrum',
+  'JIRA',
 ];
 
+/**
+ * Free-form tag input for job skills. Admins can type anything and press
+ * Enter or comma to add it as a pill; a curated list of common tech skills
+ * is offered as autocomplete suggestions.
+ */
 export function SearchablePill({
   value,
   setValue,
+  suggestions = DEFAULT_SKILL_SUGGESTIONS,
 }: {
   value: string[];
   setValue: (val: string[]) => void;
+  suggestions?: string[];
 }) {
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-    onDropdownOpen: () => combobox.updateSelectedOptionIndex('active'),
-  });
-
-  const [search, setSearch] = useState('');
-
-  const handleValueSelect = (val: string) => {
-    const current = value;
-    setValue(
-      current.includes(val)
-        ? current.filter((v) => v !== val)
-        : [...current, val]
-    );
-  };
-
-  const handleValueRemove = (val: string) => {
-    const current = value;
-    setValue(current.filter((v) => v !== val));
-  };
-
-  const values = value.map((item) => (
-    <Pill key={item} withRemoveButton onRemove={() => handleValueRemove(item)}>
-      {item}
-    </Pill>
-  ));
-
-  const options = groceries
-    .filter((item) => item.toLowerCase().includes(search.trim().toLowerCase()))
-    .map((item) => (
-      <Combobox.Option value={item} key={item} active={value.includes(item)}>
-        <Group gap="sm">
-          {value.includes(item) ? <CheckIcon size={12} /> : null}
-          <span>{item}</span>
-        </Group>
-      </Combobox.Option>
-    ));
-
   return (
-    <Combobox store={combobox} onOptionSubmit={handleValueSelect}>
-      <Combobox.DropdownTarget>
-        <PillsInput onClick={() => combobox.openDropdown()}>
-          <Pill.Group>
-            {values}
-
-            <Combobox.EventsTarget>
-              <PillsInput.Field
-                onFocus={() => combobox.openDropdown()}
-                onBlur={() => combobox.closeDropdown()}
-                value={search}
-                placeholder="Search values"
-                onChange={(event) => {
-                  combobox.updateSelectedOptionIndex();
-                  setSearch(event.currentTarget.value);
-                }}
-                onKeyDown={(event) => {
-                  if (
-                    event.key === 'Backspace' &&
-                    search.length === 0 &&
-                    value.length > 0
-                  ) {
-                    event.preventDefault();
-                    handleValueRemove(value[value.length - 1]);
-                  }
-                }}
-              />
-            </Combobox.EventsTarget>
-          </Pill.Group>
-        </PillsInput>
-      </Combobox.DropdownTarget>
-
-      <Combobox.Dropdown>
-        <Combobox.Options>
-          {options.length > 0 ? (
-            options
-          ) : (
-            <Combobox.Empty>Nothing found...</Combobox.Empty>
-          )}
-        </Combobox.Options>
-      </Combobox.Dropdown>
-    </Combobox>
+    <TagsInput
+      data={suggestions}
+      value={value}
+      onChange={setValue}
+      placeholder={
+        value.length === 0 ? 'Type a skill and press Enter…' : undefined
+      }
+      splitChars={[',', 'Enter']}
+      clearable
+      acceptValueOnBlur
+      size="md"
+      styles={{
+        input: {
+          backgroundColor: '#ffffff',
+          borderColor: '#e7eaee',
+        },
+      }}
+    />
   );
 }
