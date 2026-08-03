@@ -1,6 +1,6 @@
 'use client';
 import { Job, useGetJobsQuery } from "@/store/api/job.api";
-import JobCard from "./jobCard";
+import JobCard from "./job-card";
 import { useEffect, useState } from "react";
 
 export function Jobs() {

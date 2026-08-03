@@ -1,4 +1,4 @@
-import type { Where } from "../core-fe/models/query";
+import type { Where } from "@/lib/query/types";
 
 export type SearchableColumn =
   | string

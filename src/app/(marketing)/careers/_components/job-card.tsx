@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import JobsApplyModal from "./JobsApplyModal";
+import JobsApplyModal from "./jobs-apply-modal";
 import { Job } from "@/store/api/job.api";
 
 const formatDate = (dateStr: string) => {

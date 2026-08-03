@@ -8,7 +8,7 @@ import '@mantine/carousel/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 
-import RootStyleRegistry from './mantine';
+import RootStyleRegistry from '@/providers/mantine';
 
 import localFont from 'next/font/local';
 import { Providers } from '@/store/provider';

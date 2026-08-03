@@ -1,4 +1,4 @@
-import { EmailTemplate } from '@/app/(public)/_components/email-template';
+import { EmailTemplate } from '@/app/(marketing)/_components/email-template';
 import { Resend } from 'resend';
 
 const resendApiKey ="re_WAsL1jwy_69W8QmnpGc5qxZXk3jv6fQJp"

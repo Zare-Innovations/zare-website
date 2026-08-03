@@ -34,7 +34,7 @@ import {
   type Job,
 } from '@/store/api/job.api';
 import { useGetAppliedJobsQuery } from '@/store/api/applied-jobs.api';
-import type { Where } from '@/app/core-fe/models/query';
+import type { Where } from '@/lib/query/types';
 
 const PAGE_SIZE_OPTIONS = [
   { value: '10', label: '10 / page' },

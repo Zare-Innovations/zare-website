@@ -1,18 +1,18 @@
 "use client";
 
 import { Card, Flex } from "@mantine/core";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
 import CareerCard from "./career-card";
 import CareersFilter from "./careers-filter";
 import { Job, useGetJobsQuery } from "@/store/api/job.api";
 import { IconRefresh } from "@tabler/icons-react";
-import { CollectionQuery } from "@/app/core-fe/models/query";
+import { CollectionQuery } from "@/lib/query/types";
 import {
   buildWhere,
   type SearchableColumn,
   type SelectedFilter,
-} from "@/app/utility/build-where";
+} from "@/lib/query/build-where";
 import { careersEmail } from "@/constants";
 
 export interface JobType {

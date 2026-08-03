@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Hero from "./hero";
 import { projectCategories } from "@/data/projects";
-import ProjectCategory from "./ProjectCategory";
+import ProjectCategory from "./project-category";
 import Projectfilter from "./project-filter";
 
 export default function FilterableProjects() {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import createGlobe from "cobe";
-import CountUp from "@/app/(public)/_components/count-up";
+import CountUp from "@/app/(marketing)/_components/count-up";
 import { consultationLink } from "@/constants";
 import ZareEstimatorModal from "./calculator-modal";
 

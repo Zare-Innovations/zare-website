@@ -1,4 +1,4 @@
-import { CollectionQuery, Where, Order, FilterOperator } from '../core-fe/models/query';
+import { CollectionQuery, Where, Order, FilterOperator } from '@/lib/query/types';
 
 // Function to encode a CollectionQuery object to a custom URL query string
 export function encodeCollectionQuery(query: CollectionQuery): string {
