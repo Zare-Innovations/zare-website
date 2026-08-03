@@ -54,18 +54,21 @@ export function OTPChecker() {
 
   const [otp, setOtp] = useState("");
   const [counter, setCounter] = useState(600);
-  const [canResend, setCanResend] = useState(false);
   const [resendCount, setResendCount] = useState(0);
   const maxResends = 3;
 
+  // Names the expired state: it locks the OTP inputs and the Verify button.
+  const canResend = counter <= 0;
+
   useEffect(() => {
-    if (counter > 0) {
-      const timer = setTimeout(() => setCounter(counter - 1), 1000);
-      return () => clearTimeout(timer);
-    } else {
-      setCanResend(true);
-      setResendCount(0);
-    }
+    if (counter <= 0) return;
+    const timer = setTimeout(() => {
+      const next = counter - 1;
+      setCounter(next);
+      // Expiring grants a fresh batch of resends.
+      if (next <= 0) setResendCount(0);
+    }, 1000);
+    return () => clearTimeout(timer);
   }, [counter]);
 
   const handleResend = async () => {
@@ -82,7 +85,6 @@ export function OTPChecker() {
       if (!email) return;
       await resetpasswordEmail({ email }).unwrap();
       setCounter(600);
-      setCanResend(false);
       setResendCount((prev) => prev + 1);
 
       notifications.show({

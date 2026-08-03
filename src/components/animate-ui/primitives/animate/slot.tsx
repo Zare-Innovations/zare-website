@@ -16,7 +16,6 @@ type WithAsChild<Base extends object> =
   | (Base & { asChild?: false | undefined });
 
 type SlotProps<T extends HTMLElement = HTMLElement> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: any;
 } & DOMMotionProps<T>;
 
@@ -58,6 +57,29 @@ function mergeProps<T extends HTMLElement>(
   return merged;
 }
 
+const motionTagCache = new Map<string, React.ElementType>();
+
+function resolveMotionComponent(
+  childType: React.ReactElement['type'],
+): React.ElementType {
+  if (
+    typeof childType === 'object' &&
+    childType !== null &&
+    isMotionComponent(childType)
+  ) {
+    return childType as React.ElementType;
+  }
+
+  if (typeof childType !== 'string') return motion.div;
+
+  let cached = motionTagCache.get(childType);
+  if (!cached) {
+    cached = motion.create(childType as keyof HTMLElementTagNameMap);
+    motionTagCache.set(childType, cached);
+  }
+  return cached;
+}
+
 function Slot<T extends HTMLElement = HTMLElement>({
   children,
   ref,
@@ -65,30 +87,16 @@ function Slot<T extends HTMLElement = HTMLElement>({
 }: SlotProps<T>) {
   if (!React.isValidElement(children)) return null;
 
-  const childType = (children as React.ReactElement).type;
-
-  const isAlreadyMotion =
-    typeof childType === 'object' &&
-    childType !== null &&
-    isMotionComponent(childType);
-
-  const isHTMLTag = typeof childType === 'string';
-
-  const Base = React.useMemo(
-    () =>
-      isAlreadyMotion
-        ? (childType as React.ElementType)
-        : isHTMLTag
-          ? motion.create(childType as keyof HTMLElementTagNameMap)
-          : motion.div,
-    [isAlreadyMotion, isHTMLTag, childType],
-  );
+  const Base = resolveMotionComponent((children as React.ReactElement).type);
 
   const { ref: childRef, ...childProps } = children.props as AnyProps;
 
   const mergedProps = mergeProps(childProps, props);
 
   return (
+    // motionTagCache keys by tag name, so Base is referentially stable per tag.
+    // The rule cannot see through the lookup and assumes a fresh component.
+    // eslint-disable-next-line react-hooks/static-components
     <Base {...mergedProps} ref={mergeRefs(childRef as React.Ref<T>, ref)} />
   );
 }

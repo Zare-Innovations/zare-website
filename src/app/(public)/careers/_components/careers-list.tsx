@@ -29,7 +29,8 @@ export interface JobType {
 }
 
 const CareersList = () => {
-  // All jobs
+  // Snapshot of the first non-empty response, so the filter dropdown options
+  // stay stable as the user filters (later fetches return only a subset).
   const [allJobs, setAllJobs] = useState<Job[]>([]);
   // State for filter selections
   const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
@@ -114,17 +115,11 @@ const CareersList = () => {
     refetch,
   } = useGetJobsQuery(queryArgs);
 
-  // Capture the first non-empty response to keep filter dropdown options stable
-  // as the user filters/searches (subsequent fetches return a subset).
-  const mounted = useRef(false);
-  useEffect(() => {
-    if (!mounted.current && jobsDataResponse?.items) {
-      setAllJobs(jobsDataResponse.items);
-      mounted.current = true;
-    }
-  }, [jobsDataResponse]);
-
   const results = jobsDataResponse?.items ?? [];
+
+  if (allJobs.length === 0 && results.length > 0) {
+    setAllJobs(results);
+  }
   const showLoading = isFetching;
   const showFilter = allJobs.length > 0 || showLoading;
 
@@ -190,15 +185,15 @@ const CareersList = () => {
             <Card className="md:max-w-4xl self-center flex flex-col items-center text-center gap-3">
               <span className="text-black/70 text-wrap">
                 No open roles at the moment, but great talent is always welcome.
-                If you're looking for meaningful work with a collaborative team,
-                reach out to{" "}
+                If you&apos;re looking for meaningful work with a collaborative
+                team, reach out to{" "}
                 <a
                   href={`mailto:${careersEmail}`}
                   className="font-medium hover:underline hover:underline-offset-1 cursor-pointer"
                 >
                   {careersEmail}
                 </a>
-                , we'd love to connect.
+                , we&apos;d love to connect.
               </span>
             </Card>
           )}
