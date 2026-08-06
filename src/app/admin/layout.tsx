@@ -1,3 +1,5 @@
+import '@/styles/mantine.css';
+
 import RootStyleRegistry from '@/providers/mantine';
 import { Providers } from '@/store/provider';
 

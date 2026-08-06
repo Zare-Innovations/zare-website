@@ -1,12 +1,15 @@
-@import '@mantine/core/styles.css';
-@import '@mantine/carousel/styles.css';
-@import '@mantine/notifications/styles.css';
-@import '@mantine/dates/styles.css';
+/* Layer order, declared once and up front so it does not depend on which file
+   happens to be imported first:
 
-/* Mantine ships unlayered CSS, which outranks anything in a cascade layer.
-   Theme and preflight are layered so Mantine keeps winning over them, while
-   utilities stay unlayered so they still override Mantine by specificity. */
-@layer theme, base;
+     theme, base   Tailwind's variables and preflight
+     mantine       Mantine, loaded ONLY by (marketing) and admin via
+                   src/styles/mantine.css
+     (unlayered)   Tailwind utilities, which beat every layer above
+
+   Mantine's stylesheets used to be imported here, which meant the root layout
+   pulled the admin panel's CSS onto every page including the rebuilt site. */
+@layer theme, base, mantine;
+
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/preflight.css' layer(base);
 @import 'tailwindcss/utilities.css';
