@@ -2,24 +2,20 @@ import type { Metadata } from 'next';
 
 import './globals.css';
 
-// core styles are required for all packages
-import '@mantine/core/styles.css';
-import '@mantine/carousel/styles.css';
-import '@mantine/notifications/styles.css';
-import '@mantine/dates/styles.css';
-
-import RootStyleRegistry from '@/providers/mantine';
-
 import localFont from 'next/font/local';
-import { Providers } from '@/store/provider';
 import { logo, ogImage, siteName, siteUrl } from '@/constants';
+
+// The root layout deliberately holds NO providers. Redux and Mantine belong to
+// the route groups that use them: `(marketing)/layout.tsx` and
+// `admin/layout.tsx`. Keeping them here forced every visitor to download the
+// admin panel's runtime. See docs/superpowers/specs — M0.
 
 const gotham = localFont({
   src: [
     {
       path: './fonts/Gotham-Light.otf',
       weight: '200',
-      style: 'light',
+      style: 'normal',
     },
     {
       path: './fonts/Gotham-Book.otf',
@@ -109,12 +105,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${gotham.className} antialiased overflow-x-hidden`}
-      >
-        <Providers>
-        <RootStyleRegistry>{children}</RootStyleRegistry>
-        </Providers>
+      <body className={`${gotham.className} antialiased overflow-x-hidden`}>
+        {children}
       </body>
     </html>
   );

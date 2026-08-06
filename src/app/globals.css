@@ -1,6 +1,7 @@
 @import '@mantine/core/styles.css';
 @import '@mantine/carousel/styles.css';
 @import '@mantine/notifications/styles.css';
+@import '@mantine/dates/styles.css';
 
 /* Mantine ships unlayered CSS, which outranks anything in a cascade layer.
    Theme and preflight are layered so Mantine keeps winning over them, while

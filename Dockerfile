@@ -1,29 +1,48 @@
-# Dockerfile for Next.js
+# Multi-stage build for the Zare Next.js app.
+#
+# Secrets are NEVER baked in here. Provide them at run time via
+# docker-compose environment / env_file. Anything passed with --build-arg or
+# ENV lands in the image history and is readable by anyone who pulls it.
 
-# Use the official Node.js image as the base image
-FROM node:20-alpine
-
-# Set the working directory inside the container
+# ---------- deps ----------
+FROM node:22-alpine AS deps
 WORKDIR /app
+RUN corepack enable
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
-# Copy package.json and pnpm-lock.yaml to /app
-COPY package.json ./
-
-# Install pnpm globally
-#RUN npm install -g pnpm
-
-# Install dependencies
-RUN npm i --force
-
-ENV  RESEND_API_KEY  re_WAsL1jwy_69W8QmnpGc5qxZXk3jv6fQJp
-ENV  NEXT_PUBLIC_API_URL  https://landing.zareinnovations.com
-#Copy the rest of the application code to the working directory
+# ---------- build ----------
+FROM node:22-alpine AS builder
+WORKDIR /app
+RUN corepack enable
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the Next.js application
-RUN npm run build
+# Public build-time values only. NEXT_PUBLIC_* is inlined into the client
+# bundle by design, so nothing secret may go here.
+ARG NEXT_PUBLIC_API_URL=https://landing.zareinnovations.com
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Expose port 3000 for the application
+RUN pnpm build
+
+# ---------- runtime ----------
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
+# `output: 'standalone'` emits a self-contained server with only the modules
+# it actually uses, so node_modules is not copied into the runtime image.
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+USER nextjs
 EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
