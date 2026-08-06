@@ -9,6 +9,7 @@ import { TrustStrip } from '../_sections/trust-strip';
 import { TwoPaths } from '../_sections/two-paths';
 import { FeaturedWork } from '../_sections/featured-work';
 import { HowWeDeliver } from '../_sections/how-we-deliver';
+import { WorkingModel } from '../_sections/working-model';
 
 /**
  * The homepage under construction.
@@ -52,6 +53,7 @@ export default function HomePreviewPage() {
         <TwoPaths />
         <FeaturedWork />
         <HowWeDeliver />
+        <WorkingModel />
       </main>
 
       <Footer />
