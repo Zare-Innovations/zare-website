@@ -20,16 +20,20 @@ const NAV = [
  * The only client component in M1. Everything else in the design system is a
  * server component.
  */
-export function Header() {
-  const [scrolled, setScrolled] = useState(false);
+export function Header({ solid = false }: { solid?: boolean } = {}) {
+  const [scrolled, setScrolled] = useState(solid);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // `solid` pins the scrolled appearance. Pages that do not open on a dark
+  // section need it, because the transparent state renders white text over
+  // whatever is underneath.
   useEffect(() => {
+    if (solid) return;
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [solid]);
 
   // Prevent the page scrolling behind the open mobile panel.
   useEffect(() => {
