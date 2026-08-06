@@ -10,20 +10,27 @@ import { TwoPaths } from './_sections/two-paths';
 import { FeaturedWork } from './_sections/featured-work';
 import { HowWeDeliver } from './_sections/how-we-deliver';
 import { WorkingModel } from './_sections/working-model';
+import { Security } from './_sections/security';
+import { People } from './_sections/people';
+import { ContactCta } from './_sections/contact-cta';
 
 /**
- * The homepage, complete.
+ * The homepage.
  *
  * Cut over from /home-preview in M7.2. `(marketing)` no longer owns `/`.
- * resolves to /, and two pages cannot claim the same path. At cutover this
- * file becomes `(site)/page.tsx`, the marketing group is retired, and the
- * noindex comes off.
+ *
+ * Section order follows the approved eight-part architecture:
+ *
+ *   Act I   orientation   Hero, Trust
+ *   Act II  evidence      Two paths, Work and results, How we deliver,
+ *                         Working model, Security and IP
+ *   Act III people        The people, Contact
  */
 export const metadata: Metadata = {
   alternates: { canonical: siteUrl },
 };
 
-export default function HomePreviewPage() {
+export default function HomePage() {
   return (
     <>
       {/* Restored in M7.4. Deleting the old marketing homepage in M7.2 removed
@@ -46,6 +53,9 @@ export default function HomePreviewPage() {
         <FeaturedWork />
         <HowWeDeliver />
         <WorkingModel />
+        <Security />
+        <People />
+        <ContactCta />
       </main>
 
       <Footer />
