@@ -15,6 +15,5 @@
    out of the root safe. */
 
 @import '@mantine/core/styles.css' layer(mantine);
-@import '@mantine/carousel/styles.css' layer(mantine);
 @import '@mantine/notifications/styles.css' layer(mantine);
 @import '@mantine/dates/styles.css' layer(mantine);
