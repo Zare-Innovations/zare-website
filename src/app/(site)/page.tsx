@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { siteUrl } from '@/constants';
 import { Hero } from './_sections/hero';
 import { TrustStrip } from './_sections/trust-strip';
 import { TwoPaths } from './_sections/two-paths';
@@ -18,8 +19,7 @@ import { WorkingModel } from './_sections/working-model';
  * noindex comes off.
  */
 export const metadata: Metadata = {
-  title: 'Homepage preview (internal)',
-  robots: { index: false, follow: false, nocache: true },
+  alternates: { canonical: siteUrl },
 };
 
 export default function HomePreviewPage() {

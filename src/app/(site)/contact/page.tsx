@@ -18,6 +18,7 @@ import {
   email,
   phone,
   phoneEthiopia,
+  siteUrl,
   stateUSA,
 } from '@/constants';
 import { InquiryForm } from './_components/inquiry-form';
@@ -26,8 +27,7 @@ export const metadata: Metadata = {
   title: 'Contact',
   description:
     'Start a software project or build an embedded engineering team with Zare Innovations. We reply within one business day.',
-  // noindex until launch cutover, matching /work and /home-preview.
-  robots: { index: false, follow: false },
+  alternates: { canonical: `${siteUrl}/contact` },
 };
 
 type Props = {

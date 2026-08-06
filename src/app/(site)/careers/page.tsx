@@ -10,16 +10,16 @@ import { Metric } from '@/components/data/metric';
 import { FactBlock } from '@/components/data/fact-block';
 import { Reveal } from '@/components/motion/reveal';
 import { getOpenRoles } from '@/lib/roles';
-import { careersEmail } from '@/constants';
+import { careersEmail, siteUrl } from '@/constants';
 import { vettingSteps } from '@/content/delivery';
 import { RoleCard } from './_components/role-card';
 
-// Staging surface. `(marketing)/careers` owns /careers until cutover, and two
-// pages cannot claim one path. Detail pages and the whole application flow
-// stay on the existing route, untouched.
+// Detail pages and the whole application flow remain on (marketing)/careers/[id].
 export const metadata: Metadata = {
   title: 'Careers',
-  robots: { index: false, follow: false },
+  description:
+    'Engineers, designers and operators in Addis Ababa, working on products used by companies in the US, the UK and across Africa.',
+  alternates: { canonical: `${siteUrl}/careers` },
 };
 
 export default async function CareersPreviewPage() {

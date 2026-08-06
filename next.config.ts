@@ -30,10 +30,19 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // NOTE: the /our-work -> /work 308 redirect is deliberately NOT here yet.
-  // /work does not exist and /our-work is live and indexed, so adding it now
-  // would break a working page. It goes in with M4, in the same commit that
-  // creates /work.
+  async redirects() {
+    return [
+      // /our-work was the live, indexed portfolio route. /work replaced it at
+      // the M7.2 cutover, so this preserves the inbound links and passes the
+      // ranking signal on. 308 rather than 302: the move is permanent.
+      { source: '/our-work', destination: '/work', permanent: true },
+      {
+        source: '/our-work/:path*',
+        destination: '/work/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" })(

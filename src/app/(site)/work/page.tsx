@@ -7,15 +7,15 @@ import { MonoLabel } from '@/components/typography/mono-label';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Reveal } from '@/components/motion/reveal';
+import { siteUrl } from '@/constants';
 import { featuredCases, workReferences } from '@/content/work';
 import { FeaturedCase } from './_components/featured-case';
 
-// noindex until launch cutover. /our-work is live, indexed, and remains
-// canonical until /work replaces it. Shipping both as indexable would split
-// the same content across two URLs for the duration of the rebuild.
 export const metadata: Metadata = {
   title: 'Our Work',
-  robots: { index: false, follow: false },
+  description:
+    'Case studies in custom software, AI engineering and embedded teams, delivered from our Addis Ababa engineering centre.',
+  alternates: { canonical: `${siteUrl}/work` },
 };
 
 export default function WorkPage() {

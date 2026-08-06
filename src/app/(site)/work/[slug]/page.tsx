@@ -37,10 +37,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!c) return { title: 'Not found', robots: { index: false } };
 
   return {
-    title: `${clientName(c.client)} — ${c.industry}`,
+    title: `${clientName(c.client)} · ${c.industry}`,
     description: c.summary,
-    // noindex until launch cutover, matching /work.
-    robots: { index: false, follow: false },
+    alternates: { canonical: `${siteUrl}/work/${c.slug}` },
+    openGraph: {
+      title: `${clientName(c.client)} · ${c.industry}`,
+      description: c.summary,
+      url: `${siteUrl}/work/${c.slug}`,
+      type: 'article',
+    },
   };
 }
 
