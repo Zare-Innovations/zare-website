@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { siteUrl } from '@/constants';
+import { homepageJsonLd } from '@/lib/seo';
 import { Hero } from './_sections/hero';
 import { TrustStrip } from './_sections/trust-strip';
 import { TwoPaths } from './_sections/two-paths';
@@ -25,6 +26,17 @@ export const metadata: Metadata = {
 export default function HomePreviewPage() {
   return (
     <>
+      {/* Restored in M7.4. Deleting the old marketing homepage in M7.2 removed
+          the Organization, WebSite, LocalBusiness and navigation records with
+          it. Rebuilt in lib/seo.ts against the current positioning. */}
+      {homepageJsonLd.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
+
       <Header />
 
       <main id="main">
