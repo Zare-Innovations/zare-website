@@ -5,9 +5,9 @@ import { Container } from '@/components/layout/container';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { servicePaths } from '@/content/services';
 import { communicationModel } from '@/content/working-model';
-import { RingCanvas } from '@/components/three/ring-canvas';
+import { MarkCanvas } from '@/components/three/mark-canvas';
 
-// Imported directly rather than through next/dynamic. RingCanvas is a client
+// Imported directly rather than through next/dynamic. MarkCanvas is a client
 // component that renders null until Three.js has loaded inside an effect, so it
 // contributes nothing to the server render and Three never enters the initial
 // bundle. `dynamic(..., { ssr: false })` is additionally not allowed from a
@@ -16,14 +16,14 @@ import { RingCanvas } from '@/components/three/ring-canvas';
 /**
  * S1 — Hero.
  *
- * A six-state scroll sequence. The state boundaries live in ring-canvas.tsx;
+ * A six-state scroll sequence. The state boundaries live in mark-canvas.tsx;
  * this file owns only what is on screen at each one.
  *
  *   0  today's hero exactly: eyebrow, headline, two lines, both path cards
- *   1  particles converge while the cards travel out of frame in X
- *   2  the structure becomes recognisable
- *   3  the ring closes
- *   4  it holds and turns
+ *   1  the particle stream gathers while the cards travel out of frame in X
+ *   2  the Z mark becomes recognisable
+ *   3  the mark completes
+ *   4  it holds and sways
  *   5  four messages arrive around it
  *   6  release to the trust strip
  *
@@ -57,7 +57,7 @@ export function Hero() {
         }}
       >
         <div className="pointer-events-none absolute inset-0 z-[1]">
-          <RingCanvas />
+          <MarkCanvas />
         </div>
 
         {/* Readability haze. Keeps the headline legible over the brightest part

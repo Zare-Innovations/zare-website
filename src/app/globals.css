@@ -262,10 +262,10 @@ html {
 /* ====================================================================
    HERO SCROLL SEQUENCE
    Six states, driven entirely by scroll position. The boundaries between
-   them live in src/components/three/ring-canvas.tsx; this block owns only
+   them live in src/components/three/mark-canvas.tsx; this block owns only
    what each one looks like.
 
-   EVERY rule here is gated on [data-scroll-ready], which RingCanvas sets
+   EVERY rule here is gated on [data-scroll-ready], which MarkCanvas sets
    after Three has actually booted on a fine pointer without reduced
    motion. Without the attribute the hero is one viewport of state 0 and
    nothing below moves, which is what no-JS, no-WebGL, reduced-motion and
@@ -289,23 +289,23 @@ html {
 
    The attribute is set one frame after the element mounts, so the transition
    has a resolved starting style to animate from. */
-[data-hero-scroll] zare-ring {
+[data-hero-scroll] zare-mark {
   opacity: 0;
   transition: opacity 2500ms var(--ease-resolve);
 }
 
-[data-hero-scroll] zare-ring[data-lit='true'] {
+[data-hero-scroll] zare-mark[data-lit='true'] {
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-hero-scroll] zare-ring {
+  [data-hero-scroll] zare-mark {
     transition: none;
   }
 }
 
 /* State 1 — the copy layer leaves.
-   --hero-cards and --hero-head are written on this element by RingCanvas,
+   --hero-cards and --hero-head are written on this element by MarkCanvas,
    once per frame, and inherit down. Two clocks rather than one because the
    cards have to be clear of the frame before the headline starts to go. */
 [data-hero-scroll][data-scroll-ready='true'] [data-hero-cards] {
@@ -332,15 +332,15 @@ html {
 }
 
 /* State 5 — the messages.
-   Positioned around the ring in screen space rather than pinned to the
-   geometry: the ring is tilted and turning, so anchored text would be
-   dragged through perspective and out of the safe area.
+   Positioned around the mark in screen space rather than pinned to the
+   geometry: the mark sways through perspective, so anchored text would be
+   dragged with it and out of the safe area.
 
    The messages RESOLVE OUT OF BLUR rather than travelling. Nothing moves:
    `transform` carries the centring only and is constant, and the entrance is
    carried entirely by opacity and blur over 1.6s. Text that slides announces
    itself; text that comes into focus reads as the structure clarifying, which
-   is what the ring is doing underneath it.
+   is what the mark is doing underneath it.
 
    Keeping motion off `transform` also sidesteps a real hazard. An earlier
    version split centring onto `translate` and the entrance onto `transform`;
