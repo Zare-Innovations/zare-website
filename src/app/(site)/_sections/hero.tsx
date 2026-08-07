@@ -56,8 +56,20 @@ export function Hero() {
         }}
       />
 
-      <Container className="relative z-[3] flex flex-1 flex-col pb-14 pt-[136px] md:pt-[176px]">
-        <div className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
+      {/* Top padding is fluid against VIEWPORT HEIGHT, not width.
+          The problem it solves is specifically short viewports: a 1366x768
+          screen has roughly 630px of inner height once browser chrome is
+          subtracted, and the hero stack measured about 725px, which pushed
+          the two path cards below the fold. Those cards are the hero's entire
+          purpose, so losing them undoes the decision to use them instead of a
+          generic button pair.
+
+          clamp(104px, 13vh, 168px) keeps 104px of clearance under the 96px
+          header on short screens and opens back up to 168px on tall ones, so
+          the hero is not shortened everywhere to fix a laptop. No new
+          breakpoint: the query is the viewport itself. */}
+      <Container className="relative z-[3] flex flex-1 flex-col pb-12 pt-[clamp(104px,13vh,168px)]">
+        <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
           <MonoLabel className="text-accent-bright">
             ዛሬ · Zare means today
           </MonoLabel>
@@ -83,8 +95,9 @@ export function Hero() {
           </p>
         </div>
 
-        {/* The two paths ARE the call to action. */}
-        <div className="mt-10 flex flex-col items-center gap-6">
+        {/* The two paths ARE the call to action, so they must stay above the
+            fold on a laptop. See the padding note above. */}
+        <div className="mt-8 flex flex-col items-center gap-5">
           <div className="grid w-full gap-4 sm:grid-cols-2 lg:max-w-4xl">
             {servicePaths.map((path) => (
               <Link
