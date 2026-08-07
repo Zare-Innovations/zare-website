@@ -16,7 +16,7 @@ type MarkElement = HTMLElement & {
      2  0.32 .. 0.52   the mark becomes recognisable
      3  0.52 .. 0.66   the mark completes
      4  0.66 .. 0.76   it holds and sways
-     5  0.76 .. 1.00   messages arrive around it
+     5  0.76 .. 1.00   messages slide out of it into the right half
         1.00           unpin, next narrative section
 
    Every boundary below is a fraction of one number, the hero wrapper's

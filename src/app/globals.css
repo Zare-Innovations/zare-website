@@ -332,87 +332,59 @@ html {
 }
 
 /* State 5 — the messages.
-   Positioned around the mark in screen space rather than pinned to the
-   geometry: the mark sways through perspective, so anchored text would be
-   dragged with it and out of the safe area.
+   The mark sits left of centre (see ANCHOR in mark.js), which leaves the
+   right half of the frame empty on purpose: it belongs to these. They stack
+   as a column in that space and each one SLIDES IN LEFT TO RIGHT — out of
+   the mark, in the same direction the particle stream travels — landing on a
+   shared left edge at 54%. Positioned in screen space rather than pinned to
+   the geometry, because the mark sways through perspective and anchored text
+   would be dragged with it.
 
-   The messages RESOLVE OUT OF BLUR rather than travelling. Nothing moves:
-   `transform` carries the centring only and is constant, and the entrance is
-   carried entirely by opacity and blur over 1.6s. Text that slides announces
-   itself; text that comes into focus reads as the structure clarifying, which
-   is what the mark is doing underneath it.
-
-   Keeping motion off `transform` also sidesteps a real hazard. An earlier
-   version split centring onto `translate` and the entrance onto `transform`;
-   Lightning CSS folds those two properties together during minification and
-   drops the percentage doing it, so `translate: -50% 0` silently vanished from
-   the shipped stylesheet and every message landed off centre. One property,
-   one job. */
+   `transform` carries the entrance travel and nothing else; the resting
+   position lives entirely in left/top. An earlier version split centring
+   onto `translate` and motion onto `transform`, and Lightning CSS folded the
+   two together during minification, silently dropping the `-50%` — one
+   property, one job is what makes this block minifier-proof. */
 [data-hero-scroll] [data-hero-msg] {
   opacity: 0;
-  filter: blur(8px);
+  filter: blur(6px);
+  transform: translate(-72px, 0);
   transition:
-    opacity 1600ms var(--ease-resolve),
-    filter 1600ms var(--ease-resolve);
+    opacity 900ms var(--ease-resolve),
+    filter 900ms var(--ease-resolve),
+    transform 900ms var(--ease-resolve);
+}
+
+[data-hero-scroll] [data-hero-msg] {
+  left: 54%;
+  text-align: left;
 }
 
 [data-hero-scroll] [data-hero-msg='0'] {
-  left: 50%;
-  top: 15%;
-  text-align: center;
-  transform: translate(-50%, 0);
+  top: 24%;
 }
 
 [data-hero-scroll] [data-hero-msg='1'] {
-  right: 6%;
-  top: 50%;
-  text-align: right;
-  transform: translate(0, -50%);
+  top: 40%;
 }
 
 [data-hero-scroll] [data-hero-msg='2'] {
-  left: 50%;
-  bottom: 14%;
-  text-align: center;
-  transform: translate(-50%, 0);
+  top: 56%;
 }
 
 [data-hero-scroll] [data-hero-msg='3'] {
-  left: 6%;
-  top: 50%;
-  text-align: left;
-  transform: translate(0, -50%);
+  top: 72%;
 }
 
 /* `none`, not `blur(0)`. Lightning CSS minifies `blur(0)` down to a bare
    `blur()`, and whether that parses is ambiguous enough that a browser
    dropping the declaration would leave every message permanently blurred and
    unreadable. `none` cannot be mangled, and it interpolates against
-   `blur(8px)` identically because an absent filter is the identity value. */
+   `blur(6px)` identically because an absent filter is the identity value. */
 [data-hero-scroll] [data-hero-msg].is-in {
   opacity: 1;
   filter: none;
-}
-
-@media (min-width: 1280px) {
-  [data-hero-scroll] [data-hero-msg='1'] {
-    right: 10%;
-  }
-  [data-hero-scroll] [data-hero-msg='3'] {
-    left: 10%;
-  }
-}
-
-/* Short viewports put the top and bottom messages under the header and over
-   the fold edge. Pulling them inward costs a little symmetry and keeps all
-   four legible, which matters more. */
-@media (max-height: 780px) {
-  [data-hero-scroll] [data-hero-msg='0'] {
-    top: 19%;
-  }
-  [data-hero-scroll] [data-hero-msg='2'] {
-    bottom: 17%;
-  }
+  transform: translate(0, 0);
 }
 
 /* Reveal.

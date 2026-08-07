@@ -24,7 +24,7 @@ import { MarkCanvas } from '@/components/three/mark-canvas';
  *   2  the Z mark becomes recognisable
  *   3  the mark completes
  *   4  it holds and sways
- *   5  four messages arrive around it
+ *   5  the messages slide out of it, left to right, into the right half
  *   6  release to the trust strip
  *
  * Three rules govern this section:

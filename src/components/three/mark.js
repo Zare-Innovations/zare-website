@@ -1,7 +1,8 @@
 /* Zare Innovations — particle assembly of the Z mark.
-   <zare-mark> renders one THREE.Points cloud that streams in from off-frame
-   left and settles into a lit, three-dimensional Z under an externally driven
-   clock, then holds and sways.
+   <zare-mark> renders one THREE.Points cloud that rests as a field of dust
+   across the hero, sweeps out to the right, and returns to settle into a lit,
+   three-dimensional Z left of centre — all under an externally driven clock —
+   then holds and sways.
 
    This replaces ring.js, which built a torus. The scaffolding is the same and
    is unchanged: one draw call, one ShaderMaterial, all per-particle motion on
@@ -59,9 +60,17 @@
      deep the mark becomes an extruded prop. */
   var THICK = 0.08;
 
-  /* Formation timing. Particles are staggered left to right across the mark so
-     the incoming stream lays it down as it sweeps, rather than the whole shape
-     fading up at once. FORM_T is when the last one lands. */
+  /* Where the mark sits: its centre at this fraction of the view half-width,
+     left of centre. -0.45 puts it around 27% across the frame, which leaves
+     the right side clear for the messages that slide out of it in state 5.
+     Recomputed on resize and clamped so narrow viewports never push the mark
+     off the left edge. */
+  var ANCHOR = -0.45;
+
+  /* Formation timing. Particles are staggered right to left across the mark:
+     the flow travels out to the right first, turns, and lays the mark down as
+     it comes back — so the right edge lands first and the returning stream is
+     the same motion that builds the shape. FORM_T is when the last one lands. */
   var SWEEP = 2.6, JITTER = 1.4, TRAVEL = 3.4;
   var FORM_T = SWEEP + JITTER + TRAVEL;
 
@@ -275,8 +284,6 @@
       this._camera = camera;
 
       var group = new THREE.Group();
-      var ox = this.getAttribute('offset-x');
-      group.position.x = ox != null && ox !== '' ? parseFloat(ox) || 0 : 0;
       group.scale.setScalar(parseFloat(this.getAttribute('scale') || '1') || 1);
       scene.add(group);
       this._group = group;
@@ -292,7 +299,22 @@
       this._halfH = MARK_H / 2;
       this._halfW = (W - PAD * 2) * unit / 2;
 
-      var N = coarse ? 9000 : 30000;
+      /* Anchor before the buffers: the rest field below has to cover the
+         viewport in group-local coordinates, which depend on where the group
+         sits. _resize keeps the anchor current afterwards. */
+      var vw = this.clientWidth || 1600, vh = this.clientHeight || 900;
+      this._applyAnchor(vw, vh);
+      var sc = group.scale.x, ax = group.position.x;
+      var halfView = Math.tan(camera.fov * Math.PI / 360) * camera.position.z * (vw / vh);
+      var halfViewH = Math.tan(camera.fov * Math.PI / 360) * camera.position.z;
+      /* Group-local extents of the visible frame, with margin. Asymmetric,
+         because the group is left of centre: the rest field reaches further to
+         its right than to its left. */
+      var lxMin = (-halfView - ax) / sc - 0.3;
+      var lxMax = (halfView - ax) / sc + 0.3;
+      var lyMax = halfViewH / sc + 0.2;
+
+      var N = coarse ? 11000 : 36000;
       var aStart = new Float32Array(N * 3), aTarget = new Float32Array(N * 3),
           aNorm = new Float32Array(N * 3), aVia1 = new Float32Array(N * 3),
           aVia2 = new Float32Array(N * 3), aSize = new Float32Array(N),
@@ -342,32 +364,35 @@
         aTarget[i * 3] = tx; aTarget[i * 3 + 1] = ty; aTarget[i * 3 + 2] = tz;
         aNorm[i * 3] = nx / nl; aNorm[i * 3 + 1] = ny / nl; aNorm[i * 3 + 2] = nz / nl;
 
-        /* Loose start cloud — state 0. */
-        var rr = 2.4 + Math.random() * 2.8,
-            thh = Math.random() * Math.PI * 2,
-            ph = Math.acos(2 * Math.random() - 1);
-        aStart[i * 3] = rr * Math.sin(ph) * Math.cos(thh);
-        aStart[i * 3 + 1] = rr * Math.sin(ph) * Math.sin(thh) * 0.7;
-        aStart[i * 3 + 2] = rr * Math.cos(ph) * 0.8;
+        /* Rest field — state 0. A flat spread across the whole visible frame,
+           not a ball around the origin: at rest this IS the hero background,
+           a field of dust behind the copy, so it has to reach the corners. */
+        aStart[i * 3] = lxMin + Math.random() * (lxMax - lxMin);
+        aStart[i * 3 + 1] = (Math.random() * 2 - 1) * lyMax;
+        aStart[i * 3 + 2] = (Math.random() * 2 - 1) * 0.9;
 
-        /* Two control points turn the approach into a stream. Every particle
-           funnels through the same gate off-frame left and arrives at its own
-           target from the same relative direction, which is what reads as flow;
-           a straight interpolation from the start cloud reads as an implosion,
-           because each particle comes from somewhere different. The jitter is
-           what keeps the stream from collapsing into a rigid tube. */
-        aVia1[i * 3] = -3.0 + (Math.random() - 0.5) * 0.9;
-        aVia1[i * 3 + 1] = 0.7 + (Math.random() - 0.5) * 1.7;
-        aVia1[i * 3 + 2] = 0.5 + (Math.random() - 0.5) * 1.3;
+        /* Two control points turn the flight into a current. Every particle
+           swings out through the same gate on the right, turns, and approaches
+           its target from the right — one direction of flow for the whole
+           cloud, which is what reads as a stream; a straight interpolation
+           from the rest field reads as an implosion, because each particle
+           arrives from somewhere different. The jitter keeps the current from
+           collapsing into a rigid tube. */
+        aVia1[i * 3] = lxMax * 0.8 + Math.random() * 1.1;
+        aVia1[i * 3 + 1] = (Math.random() - 0.5) * 2.4;
+        aVia1[i * 3 + 2] = 0.4 + (Math.random() - 0.5) * 1.2;
 
-        aVia2[i * 3] = tx - 1.0 + (Math.random() - 0.5) * 0.7;
-        aVia2[i * 3 + 1] = ty - 0.55 + (Math.random() - 0.5) * 0.6;
-        aVia2[i * 3 + 2] = 0.75 + (Math.random() - 0.5) * 0.5;
+        aVia2[i * 3] = tx + 1.2 + (Math.random() - 0.5) * 0.7;
+        aVia2[i * 3 + 1] = ty + 0.3 + (Math.random() - 0.5) * 0.6;
+        aVia2[i * 3 + 2] = 0.65 + (Math.random() - 0.5) * 0.5;
 
         aSize[i] = 0.5 + Math.random() * Math.random() * 1.25;
-        /* Staggered along the direction of travel, so the sweep that carries
-           the stream in is the same sweep that builds the mark. */
-        aDelay[i] = (fx / W) * SWEEP + Math.random() * JITTER;
+        /* A few brighter grains so the rest field has stars, not just dust. */
+        if (Math.random() < 0.04) aSize[i] *= 1.8;
+        /* Staggered right to left across the mark: the right edge lands first,
+           so the stream returning from the right gate is the same motion that
+           lays the shape down. */
+        aDelay[i] = ((this._halfW - tx) / (this._halfW * 2)) * SWEEP + Math.random() * JITTER;
         aShade[i] = Math.random();
         aDetach[i] = Math.random() < 0.03 ? 0.5 + Math.random() : 0.0;
         aPhase[i] = Math.random() * Math.PI * 2;
@@ -416,6 +441,13 @@
           '  pos += aNorm * sin(uTime * 0.5 + aPhase) * 0.010 * formed;',
           '  float drift = max(0.0, sin(uTime * 0.12 + aPhase));',
           '  pos += aNorm * drift * drift * aDetach * 0.30 * formed;',
+          /* At rest the field floats. Slow, phase-scattered, and faded out by
+             s: a motionless rest state reads as a dead texture, but this must
+             never fight the flight path once the particle is under way. */
+          '  float rest = 1.0 - s;',
+          '  pos += vec3(sin(uTime * 0.11 + aPhase),',
+          '              cos(uTime * 0.13 + aPhase * 1.7),',
+          '              sin(uTime * 0.07 + aPhase * 2.3)) * 0.05 * rest;',
           /* Lit in view space, so the sway actually moves the highlight across
              the slab instead of painting it on. */
           '  vec3 n = normalize(normalMatrix * aNorm);',
@@ -423,9 +455,13 @@
           '  vLight = 0.30 + 0.70 * max(dot(n, L), 0.0);',
           '  vec4 mv = modelViewMatrix * vec4(pos, 1.0);',
           '  gl_Position = projectionMatrix * mv;',
-          '  gl_PointSize = aSize * uPR * (22.0 / -mv.z) * (0.42 + 0.58 * s);',
+          '  gl_PointSize = aSize * uPR * (22.0 / -mv.z) * (0.55 + 0.45 * s);',
           '  vShade = aShade;',
-          '  vFade = 0.22 + 0.78 * s;',
+          /* The rest field is a visible subject in its own right, so it sits
+             at over half strength rather than near zero, and twinkles gently —
+             the twinkle, like the drift, fades out as the particle forms. */
+          '  float tw = 0.85 + 0.15 * sin(uTime * 0.8 + aPhase * 4.0);',
+          '  vFade = mix(0.55 * tw, 1.0, s);',
           '  vForm = s;',
           '}'
         ].join('\n'),
@@ -492,12 +528,26 @@
       this._syncRunning();
     }
 
+    /* Seats the mark left of centre. `want` is the composition; `minX` is the
+       constraint — on a viewport narrow enough that the composition would push
+       the mark past the left edge, the clamp wins and the mark hugs a margin
+       instead. Math.min(0, ...) stops the clamp itself from ever pushing the
+       mark right of centre. */
+    _applyAnchor(w, h) {
+      var halfView = Math.tan(this._camera.fov * Math.PI / 360) *
+        this._camera.position.z * (w / h);
+      var want = ANCHOR * halfView;
+      var minX = -(halfView - this._halfW * this._group.scale.x - 0.25);
+      this._group.position.x = Math.min(0, Math.max(want, minX));
+    }
+
     _resize() {
       if (!this._renderer) return;
       var w = this.clientWidth || 1, h = this.clientHeight || 1;
       this._renderer.setSize(w, h, false);
       this._camera.aspect = w / h;
       this._camera.updateProjectionMatrix();
+      this._applyAnchor(w, h);
       if (this._static) this._renderOnce();
     }
 
