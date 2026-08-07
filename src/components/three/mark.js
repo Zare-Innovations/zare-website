@@ -589,7 +589,8 @@
           aNoise = new Float32Array(N * 3), aU = new Float32Array(N),
           aRow = new Float32Array(N), aSize = new Float32Array(N),
           aBig = new Float32Array(N), aShade = new Float32Array(N),
-          aDetach = new Float32Array(N), aPhase = new Float32Array(N);
+          aDetach = new Float32Array(N), aPhase = new Float32Array(N),
+          aOrbit = new Float32Array(N);
 
       for (var i = 0; i < N; i++) {
         var onRim = Math.random() < RIM_SHARE;
@@ -689,6 +690,14 @@
         aShade[i] = Math.random();
         aDetach[i] = Math.random() < 0.03 ? 0.5 + Math.random() : 0.0;
         aPhase[i] = Math.random() * Math.PI * 2;
+        /* The reference's post-arrival orbit, adapted. A ring lets the whole
+           population circulate forever after landing; a glyph cannot slide
+           without smearing, so a small tracer share carries the orbit
+           instead: after formation these leave their cell, lift just off the
+           slab and ride the stroke path end to end on the wall clock —
+           energy flowing through the written mark. Face particles only; the
+           rim is the silhouette and stays fully intact. */
+        aOrbit[i] = !onRim && Math.random() < 0.02 ? 1 : 0;
       }
 
       var pg = new THREE.BufferGeometry();
@@ -704,6 +713,7 @@
       pg.setAttribute('aShade', new THREE.BufferAttribute(aShade, 1));
       pg.setAttribute('aDetach', new THREE.BufferAttribute(aDetach, 1));
       pg.setAttribute('aPhase', new THREE.BufferAttribute(aPhase, 1));
+      pg.setAttribute('aOrbit', new THREE.BufferAttribute(aOrbit, 1));
 
       var pmat = new THREE.ShaderMaterial({
         transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -720,21 +730,15 @@
           uRows: { value: ROWS },
           uSamples: { value: SAMPLES },
           uFlowStart: { value: flowStart },
-          /* Damped pointer, in group-local coordinates, and its eased
-             presence. Together they drive the hover response: the rest
-             field parts around uPtr; the formed slab glints under it. */
-          uPtr: { value: new THREE.Vector2(99, 99) },
-          uPtrOn: { value: 0 },
           uPR: { value: Math.min(window.devicePixelRatio || 1, 2) }
         },
         vertexShader: [
           'attribute vec3 aNorm; attribute vec3 aNoise;',
           'attribute float aU; attribute float aRow; attribute float aSize; attribute float aBig;',
-          'attribute float aShade; attribute float aDetach; attribute float aPhase;',
+          'attribute float aShade; attribute float aDetach; attribute float aPhase; attribute float aOrbit;',
           'uniform float uTime; uniform float uForm; uniform float uDrift;',
           'uniform sampler2D uTraj; uniform float uRows; uniform float uSamples;',
           'uniform float uFlowStart; uniform float uPR;',
-          'uniform vec2 uPtr; uniform float uPtrOn;',
           'varying float vShade; varying float vFade; varying float vLight; varying float vForm; varying float vRest;',
           'float wmod(float v, float r){ return mod(mod(v, r) + r, r); }',
           /* Manual bilinear along the row; the float texture is NEAREST.
@@ -780,27 +784,27 @@
           '  pos += vec3(sin(uTime * 0.05 + aPhase) + 0.6 * sin(uTime * 0.13 + aPhase * 2.1),',
           '              cos(uTime * 0.06 + aPhase * 1.7) + 0.6 * cos(uTime * 0.11 + aPhase * 3.3),',
           '              sin(uTime * 0.04 + aPhase * 2.3)) * 0.035 * rest;',
-          /* The cursor. At rest the field PARTS around it — a gentle radial
-             push with a soft falloff, riding the damped pointer so the wake
-             trails fluidly. uPtrOn eases in and out so entering and leaving
-             the hero never snaps. */
-          '  vec2 away = pos.xy - uPtr;',
-          '  float pd = length(away);',
-          '  float pr = 1.0 - smoothstep(0.0, 1.1, pd);',
-          '  pos.xy += (pd > 0.001 ? away / pd : vec2(0.0)) * pr * pr * 0.42 * rest * uPtrOn;',
           '  float formed = smoothstep(0.96, 1.0, tsp);',
           '  pos += aNorm * sin(uTime * 0.5 + aPhase) * 0.010 * formed;',
           '  float dr = max(0.0, sin(uTime * 0.12 + aPhase));',
           '  pos += aNorm * dr * dr * aDetach * 0.30 * formed;',
+          /* The orbit (see aOrbit in the bake). Once formed, tracers ride
+             the stroke on the wall clock: appearing at the top of the mark,
+             tracing the writing path just off the front face, fading out at
+             the tip. wmod recycles each one forever; the phase hash spreads
+             them along the whole stroke so the current never bunches. */
+          '  float ocn = wmod(aPhase * 1.113 + uTime * 0.03, 1.0);',
+          '  vec4 os = traj(aRow, ocn * strokeU);',
+          '  float trE = smoothstep(0.0, 0.10, ocn) * (1.0 - smoothstep(0.88, 1.0, ocn));',
+          '  float tr = aOrbit * formed;',
+          '  pos = mix(pos, vec3(os.xy, 0.14), tr);',
           /* Lit in view space, so the sway moves the highlight across the
-             slab instead of painting it on. Once the mark is formed the
-             cursor becomes a second light: a specular glint that sweeps the
-             slab as the pointer moves — reactive without displacing a
-             single particle of the approved glyph. */
+             slab instead of painting it on. */
           '  vec3 n = normalize(normalMatrix * aNorm);',
           '  vec3 L = normalize(vec3(-0.35, 0.65, 0.72));',
           '  vLight = 0.30 + 0.70 * max(dot(n, L), 0.0);',
-          '  vLight += pr * pr * 0.6 * (1.0 - rest) * uPtrOn * max(n.z, 0.0);',
+          /* Tracers read as light, not surface: full highlight, no shading. */
+          '  vLight = mix(vLight, 1.2, tr * trE);',
           '  vec4 mv = modelViewMatrix * vec4(pos, 1.0);',
           '  gl_Position = projectionMatrix * mv;',
           /* Quantised depth: ~24 discrete bands with size and opacity
@@ -816,7 +820,7 @@
           /* Rest points are SMALLER than formed ones — the reference field
              reads as fine dust, and coverage comes from count, not size. */
           '  gl_PointSize = aSize * uPR * (22.0 / -mv.z) * (0.5 + 0.5 * tsp)',
-          '    * mix(mix(0.6, 1.4, dt) * aBig, 1.0, tsp);',
+          '    * mix(mix(0.6, 1.4, dt) * aBig, 1.0, tsp) * mix(1.0, 0.8, tr);',
           '  vShade = aShade;',
           /* Fade the ends of the parameter window at rest, so the slow
              conveyor recycles particles invisibly instead of popping them
@@ -826,8 +830,9 @@
           /* Twinkle dies exactly at arrival, so the settled mark is crisp. */
           '  float tw = 0.85 + 0.15 * sin(uTime * 0.55 + aPhase * 4.0);',
           '  vFade = mix(0.72 * tw * mix(0.55, 1.0, dt) * edge, 1.0, tsp);',
-          /* Grains at the rim of the cursor's wake catch a little light. */
-          '  vFade += pr * 0.30 * rest * uPtrOn;',
+          /* Tracer visibility is its stroke-edge envelope: born at the top,
+             gone at the tip, so recycling never pops. */
+          '  vFade = mix(vFade, 0.9 * trE, tr);',
           '  vForm = smoothstep(0.45, 0.95, tsp);',
           '  vRest = rest;',
           '}'
@@ -887,11 +892,9 @@
           if (!rect.width || !rect.height) return;
           self._tx = (e.clientX - rect.left) / rect.width * 2 - 1;
           self._ty = (e.clientY - rect.top) / rect.height * 2 - 1;
-          self._ptrIn = true;
         });
         evHost.addEventListener('pointerleave', function () {
           self._tx = 0; self._ty = 0;
-          self._ptrIn = false;
         });
       }
 
@@ -1019,22 +1022,6 @@
          to read as detached rather than fluid. */
       this._px += (this._tx - this._px) * 0.09;
       this._py += (this._ty - this._py) * 0.09;
-
-      /* Hover. The damped pointer, mapped into group-local coordinates, and
-         an eased presence value so entering and leaving never snap. The
-         same pair drives both responses: the rest field parts around the
-         point; the formed slab glints under it. */
-      if (this._pmat) {
-        var g = this._group;
-        this._ptrOn = (this._ptrOn || 0) +
-          (((this._ptrIn ? 1 : 0) - (this._ptrOn || 0)) * Math.min(1, dt * 5));
-        this._pmat.uniforms.uPtrOn.value = this._ptrOn;
-        this._pmat.uniforms.uPtr.value.set(
-          (this._px * (this._viewHalfW || 4) - g.position.x) / g.scale.x,
-          (-this._py * (this._viewHalfH || 2.2) - g.position.y) / g.scale.y
-        );
-      }
-
       /* Wall clock, so the mark keeps breathing while the visitor is
          stationary at state 4. Only the gate depends on scroll. */
       this._pose(this._elapsed * this._speed * (this._coarse ? 0.75 : 1), gate);
