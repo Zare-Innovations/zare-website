@@ -140,6 +140,10 @@
   /* --- motion ----------------------------------------------------- */
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  /* Slow in, slow out, with a long flat middle. Used only where something
+     RESOLVES rather than arrives: text coming out of blur, the canvas
+     dissolving up. An ease-out would land it too eagerly. */
+  --ease-resolve: cubic-bezier(0.7, 0, 0.2, 1);
 
   @keyframes blink {
     50% {
@@ -277,6 +281,29 @@ html {
   height: 300svh;
 }
 
+/* The canvas dissolves up rather than switching on.
+   Three.js finishes loading at an arbitrary moment after first paint, and
+   without this the formation appears in a single frame — which reads as a
+   late-loading asset, not as an intention. 2.5s is long enough that nobody
+   catches the boundary.
+
+   The attribute is set one frame after the element mounts, so the transition
+   has a resolved starting style to animate from. */
+[data-hero-scroll] zare-ring {
+  opacity: 0;
+  transition: opacity 2500ms var(--ease-resolve);
+}
+
+[data-hero-scroll] zare-ring[data-lit='true'] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-hero-scroll] zare-ring {
+    transition: none;
+  }
+}
+
 /* State 1 — the copy layer leaves.
    --hero-cards and --hero-head are written on this element by RingCanvas,
    once per frame, and inherit down. Two clocks rather than one because the
@@ -309,61 +336,62 @@ html {
    geometry: the ring is tilted and turning, so anchored text would be
    dragged through perspective and out of the safe area.
 
-   Centring and entrance are BOTH carried by `transform`, deliberately. The
-   obvious split — `translate` for the centring, `transform` for the entrance —
-   does not survive the build: Lightning CSS folds the two properties together
-   when it finds them on one rule and drops the percentage while doing it, so
-   `translate: -50% 0` silently vanishes and every message lands off centre.
-   One property, one source of truth, and the offsets are written out per
-   message instead.
+   The messages RESOLVE OUT OF BLUR rather than travelling. Nothing moves:
+   `transform` carries the centring only and is constant, and the entrance is
+   carried entirely by opacity and blur over 1.6s. Text that slides announces
+   itself; text that comes into focus reads as the structure clarifying, which
+   is what the ring is doing underneath it.
 
-   Each message enters travelling AWAY from the ring, which reads as the
-   structure emitting them rather than as text sliding into place. */
+   Keeping motion off `transform` also sidesteps a real hazard. An earlier
+   version split centring onto `translate` and the entrance onto `transform`;
+   Lightning CSS folds those two properties together during minification and
+   drops the percentage doing it, so `translate: -50% 0` silently vanished from
+   the shipped stylesheet and every message landed off centre. One property,
+   one job. */
 [data-hero-scroll] [data-hero-msg] {
   opacity: 0;
+  filter: blur(8px);
   transition:
-    opacity 520ms var(--ease-enter),
-    transform 520ms var(--ease-enter);
+    opacity 1600ms var(--ease-resolve),
+    filter 1600ms var(--ease-resolve);
 }
 
 [data-hero-scroll] [data-hero-msg='0'] {
   left: 50%;
   top: 15%;
   text-align: center;
-  transform: translate(-50%, 18px);
+  transform: translate(-50%, 0);
 }
 
 [data-hero-scroll] [data-hero-msg='1'] {
   right: 6%;
   top: 50%;
   text-align: right;
-  transform: translate(-18px, -50%);
+  transform: translate(0, -50%);
 }
 
 [data-hero-scroll] [data-hero-msg='2'] {
   left: 50%;
   bottom: 14%;
   text-align: center;
-  transform: translate(-50%, -18px);
+  transform: translate(-50%, 0);
 }
 
 [data-hero-scroll] [data-hero-msg='3'] {
   left: 6%;
   top: 50%;
   text-align: left;
-  transform: translate(18px, -50%);
-}
-
-[data-hero-scroll] [data-hero-msg='0'].is-in,
-[data-hero-scroll] [data-hero-msg='2'].is-in {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-[data-hero-scroll] [data-hero-msg='1'].is-in,
-[data-hero-scroll] [data-hero-msg='3'].is-in {
-  opacity: 1;
   transform: translate(0, -50%);
+}
+
+/* `none`, not `blur(0)`. Lightning CSS minifies `blur(0)` down to a bare
+   `blur()`, and whether that parses is ambiguous enough that a browser
+   dropping the declaration would leave every message permanently blurred and
+   unreadable. `none` cannot be mangled, and it interpolates against
+   `blur(8px)` identically because an absent filter is the identity value. */
+[data-hero-scroll] [data-hero-msg].is-in {
+  opacity: 1;
+  filter: none;
 }
 
 @media (min-width: 1280px) {

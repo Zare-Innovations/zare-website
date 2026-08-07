@@ -80,6 +80,11 @@ export function RingCanvas({
   className?: string;
 }) {
   const [ready, setReady] = useState(false);
+  /** Drives the 2.5s dissolve in globals.css. Separate from `ready` because
+   *  the transition needs a frame in which the element exists at opacity 0
+   *  before the target value is applied; setting both at once would resolve
+   *  the starting and ending styles together and skip the animation. */
+  const [lit, setLit] = useState(false);
   const elRef = useRef<RingElement | null>(null);
 
   useEffect(() => {
@@ -105,6 +110,21 @@ export function RingCanvas({
       cancelled = true;
     };
   }, []);
+
+  // Two frames, not one. A single rAF can still be batched into the same style
+  // resolution as the mount on some engines, which skips the transition
+  // entirely and makes the canvas snap on.
+  useEffect(() => {
+    if (!ready) return;
+    let inner = 0;
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => setLit(true));
+    });
+    return () => {
+      cancelAnimationFrame(outer);
+      if (inner) cancelAnimationFrame(inner);
+    };
+  }, [ready]);
 
   useEffect(() => {
     if (!ready) return;
@@ -210,6 +230,7 @@ export function RingCanvas({
   // augmenting the global JSX namespace for one component.
   return createElement('zare-ring', {
     ref: elRef,
+    'data-lit': String(lit),
     speed: String(speed),
     markers: String(markers),
     scale: String(scale),
