@@ -77,8 +77,10 @@
   var SAMPLES = 257;
   /* Bins for the geodesic centreline extraction. */
   var STROKE_BINS = 96;
-  /* u per second of ambient conveyor drift at rest, toward the mark. */
-  var FLOW_SPEED = -0.022;
+  /* u per second of ambient conveyor drift at rest, toward the mark. The
+     path is ~17 world units long, so this is the dominant rest motion:
+     -0.006 is about 20px/s at 1600w — a current you sense, not watch. */
+  var FLOW_SPEED = -0.006;
   /* Duration, in seconds, of the time-driven formation used when the scroll
      handover never happens (coarse pointers). */
   var FORM_T = 7;
@@ -577,7 +579,7 @@
       };
 
       /* ---- Particles ---------------------------------------------------- */
-      var N = coarse ? 16000 : 60000;
+      var N = coarse ? 12000 : 46000;
       /* Share of particles that rest as loose dust across the whole frame
          rather than on the braids. Their scatter offset is the vector from
          their path anchor to a uniform random point, so the same collapse
@@ -773,19 +775,19 @@
              around its anchor — two incommensurate frequencies per axis,
              phases scattered, so no two share a direction or a rhythm —
              and the whole term is gone by arrival. The frequencies sit
-             around 0.1rad/s: drift you notice only when you watch for it. */
+             around 0.05rad/s: a two-minute loop, barely more than stillness. */
           '  float rest = 1.0 - tsp;',
-          '  pos += vec3(sin(uTime * 0.10 + aPhase) + 0.6 * sin(uTime * 0.26 + aPhase * 2.1),',
-          '              cos(uTime * 0.11 + aPhase * 1.7) + 0.6 * cos(uTime * 0.23 + aPhase * 3.3),',
-          '              sin(uTime * 0.08 + aPhase * 2.3)) * 0.05 * rest;',
+          '  pos += vec3(sin(uTime * 0.05 + aPhase) + 0.6 * sin(uTime * 0.13 + aPhase * 2.1),',
+          '              cos(uTime * 0.06 + aPhase * 1.7) + 0.6 * cos(uTime * 0.11 + aPhase * 3.3),',
+          '              sin(uTime * 0.04 + aPhase * 2.3)) * 0.035 * rest;',
           /* The cursor. At rest the field PARTS around it — a gentle radial
              push with a soft falloff, riding the damped pointer so the wake
              trails fluidly. uPtrOn eases in and out so entering and leaving
              the hero never snaps. */
           '  vec2 away = pos.xy - uPtr;',
           '  float pd = length(away);',
-          '  float pr = 1.0 - smoothstep(0.0, 0.95, pd);',
-          '  pos.xy += (pd > 0.001 ? away / pd : vec2(0.0)) * pr * pr * 0.34 * rest * uPtrOn;',
+          '  float pr = 1.0 - smoothstep(0.0, 1.1, pd);',
+          '  pos.xy += (pd > 0.001 ? away / pd : vec2(0.0)) * pr * pr * 0.42 * rest * uPtrOn;',
           '  float formed = smoothstep(0.96, 1.0, tsp);',
           '  pos += aNorm * sin(uTime * 0.5 + aPhase) * 0.010 * formed;',
           '  float dr = max(0.0, sin(uTime * 0.12 + aPhase));',
@@ -872,15 +874,22 @@
       this._ro.observe(this);
       this._resize();
 
-      if (!coarse && !reduced && this.parentElement) {
-        var host = this.parentElement;
-        host.addEventListener('pointermove', function (e) {
-          var rect = host.getBoundingClientRect();
+      if (!coarse && !reduced) {
+        /* NOT this.parentElement: the canvas sits inside a
+           pointer-events-none wrapper, which never receives pointer events —
+           a listener there is silently dead. The hero <section> is the
+           nearest ancestor that actually gets them; events from the copy and
+           the cards bubble up to it, so the field responds wherever in the
+           hero the pointer is. */
+        var evHost = this.closest('section') || document.body;
+        evHost.addEventListener('pointermove', function (e) {
+          var rect = self.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
           self._tx = (e.clientX - rect.left) / rect.width * 2 - 1;
           self._ty = (e.clientY - rect.top) / rect.height * 2 - 1;
           self._ptrIn = true;
         });
-        host.addEventListener('pointerleave', function () {
+        evHost.addEventListener('pointerleave', function () {
           self._tx = 0; self._ty = 0;
           self._ptrIn = false;
         });
@@ -1005,8 +1014,11 @@
         }
       }
 
-      this._px += (this._tx - this._px) * 0.04;
-      this._py += (this._ty - this._py) * 0.04;
+      /* 0.09/frame, not the old 0.04: the damped pointer now also drives
+         the hover wake, and at 0.04 it trailed far enough behind the cursor
+         to read as detached rather than fluid. */
+      this._px += (this._tx - this._px) * 0.09;
+      this._py += (this._ty - this._py) * 0.09;
 
       /* Hover. The damped pointer, mapped into group-local coordinates, and
          an eased presence value so entering and leaving never snap. The
