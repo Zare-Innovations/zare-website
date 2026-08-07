@@ -276,9 +276,11 @@ html {
 
 /* The only number governing how long the sequence takes. Reduce it if the
    trust strip feels too far away; every state boundary is a fraction of
-   this, so they all rescale together. */
+   this, so they all rescale together. Raised from 300svh so state 5 has
+   real scroll room: each message gets ~175px between its arrival and the
+   next one starting to move. */
 [data-hero-scroll][data-scroll-ready='true'] {
-  height: 300svh;
+  height: 380svh;
 }
 
 /* The canvas dissolves up rather than switching on.

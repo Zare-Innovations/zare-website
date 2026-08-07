@@ -15,8 +15,8 @@ type MarkElement = HTMLElement & {
      1  0.06 .. 0.32   the stream gathers, copy travels out of frame
      2  0.32 .. 0.52   the mark becomes recognisable
      3  0.52 .. 0.66   the mark completes
-     4  0.66 .. 0.76   it holds and sways
-     5  0.76 .. 1.00   messages slide out of it into the right half
+     4  0.66 .. 0.74   it holds and sways
+     5  0.74 .. 1.00   messages slide out of it into the right half
         1.00           unpin, next narrative section
 
    Every boundary below is a fraction of one number, the hero wrapper's
@@ -34,12 +34,14 @@ const CARDS_TO = 0.22;
 const HEAD_FROM = 0.12;
 const HEAD_TO = 0.3;
 
-/** One threshold per message, staggered through state 5. The last lands at
- *  0.93, which leaves a deliberate hold before the hero unpins. */
-const MESSAGE_AT = [0.78, 0.83, 0.88, 0.93];
+/** One threshold per message, staggered through state 5. 0.07 of the range
+ *  apart — with the hero at 380svh that is roughly 175px of scroll per
+ *  message, so each one has landed and been read before the next moves. The
+ *  last lands at 0.96, leaving a short hold before the hero unpins. */
+const MESSAGE_AT = [0.76, 0.83, 0.9, 0.96];
 
 /** Upper bound of each state, used only to publish `data-hero-state`. */
-const STATE_END = [0.06, 0.32, 0.52, 0.66, 0.76, 1];
+const STATE_END = [0.06, 0.32, 0.52, 0.66, 0.74, 1];
 
 /** Time constant of the scroll damping, in seconds.
  *
