@@ -30,10 +30,11 @@ import { MobiusCanvas } from '@/components/three/mobius-canvas';
  */
 export function Hero() {
   return (
+    <div data-hero-scroll>
     <section
       data-tone="ink"
       aria-label="Zare Innovations"
-      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-surface-ink text-on-dark"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-surface-ink text-on-dark [[data-scroll-ready]_&]:sticky [[data-scroll-ready]_&]:top-0 [[data-scroll-ready]_&]:h-[100svh]"
       style={{
         // Static, server-rendered. This is the reduced-motion and no-WebGL
         // experience in full, not a placeholder for one.
@@ -144,5 +145,6 @@ export function Hero() {
         </div>
       </Container>
     </section>
+    </div>
   );
 }

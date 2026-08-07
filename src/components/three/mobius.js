@@ -71,6 +71,23 @@
       this._inView = false; this._booted = false;
       this._px = 0; this._py = 0; this._tx = 0; this._ty = 0;
       this._markerT = 0;
+      /* Formation source. Defaults to the wall clock, which is the behaviour
+         that has always shipped. Only setScrollDriven(true) changes it, and
+         only the React wrapper calls that, and only after Three has actually
+         booted on a fine pointer without reduced motion. Everything else
+         (mobile, reduced motion, no WebGL, no JS) keeps the original path. */
+      this._scrollDriven = false;
+      this._formP = 0;
+    }
+
+    /* Public. p is 0..1 across the hero's scroll range. */
+    setFormProgress(p) {
+      this._formP = p < 0 ? 0 : p > 1 ? 1 : p;
+    }
+
+    /* Public. Hands the formation clock over to the scrollbar. */
+    setScrollDriven(on) {
+      this._scrollDriven = !!on;
     }
     attributeChangedCallback(n, _o, v) {
       if (n === 'speed') { var f = parseFloat(v); this._speed = isFinite(f) ? f : 1; }
@@ -218,15 +235,22 @@
           transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
           uniforms: {
             uTime: { value: 0 },
+            // Formation clock, split from uTime so the two can be driven
+            // independently. When the hero is scroll-driven, uForm follows the
+            // scrollbar while uTime keeps running on the wall clock: without
+            // the split, a visitor who stops scrolling would freeze the idle
+            // breathing and drift below and see a dead object.
+            uForm: { value: 0 },
             uPR: { value: Math.min(window.devicePixelRatio || 1, 2) }
           },
           vertexShader: [
             'attribute vec3 aTarget; attribute vec3 aNorm;',
             'attribute float aSize; attribute float aDelay; attribute float aShade; attribute float aDetach; attribute float aPhase;',
-            'uniform float uTime; uniform float uPR;',
+            'uniform float uTime; uniform float uForm; uniform float uPR;',
             'varying float vShade; varying float vFade;',
             'void main(){',
-            '  float e = clamp((uTime - aDelay) / 3.2, 0.0, 1.0);',
+            // formation reads uForm; the two idle terms below stay on uTime
+            '  float e = clamp((uForm - aDelay) / 3.2, 0.0, 1.0);',
             '  e = e * e * (3.0 - 2.0 * e);',
             '  vec3 pos = mix(position, aTarget, e);',
             '  pos += aNorm * sin(e * 3.14159) * 0.45;',
@@ -397,7 +421,14 @@
 
       if (reduced) {
         this._angle = 1.1;
-        if (this._pmat) this._pmat.uniforms.uTime.value = 200;
+        // Both clocks are pushed past the end so the strip renders already
+        // formed and static. uForm matters as much as uTime here: without it
+        // a reduced-motion visitor would get the unformed start cloud, which
+        // is the one state that means nothing on its own.
+        if (this._pmat) {
+          this._pmat.uniforms.uTime.value = 200;
+          this._pmat.uniforms.uForm.value = 200;
+        }
         this._pose(0); this._renderOnce(); return;
       }
       this._syncRunning();
@@ -445,11 +476,33 @@
       var sp = this._speed * (this._coarse ? 0.75 : 1);
       var rotGate = 1;
       if (this._pmat) {
+        // uTime always advances on the wall clock. It drives the idle
+        // breathing and the detach drift, which must keep moving whether or
+        // not the visitor is scrolling.
         this._elapsed = (this._elapsed || 0) + dt;
         this._pmat.uniforms.uTime.value = this._elapsed;
-        rotGate = Math.max(0, Math.min(1, (this._elapsed - this._formT + 2) / 3));
+
+        // uForm drives formation only: scrollbar when handed over, otherwise
+        // the same clock, which reproduces the original behaviour exactly.
+        // Scroll maps to formT + 1 rather than formT so two things hold at the
+        // end of the range: rotGate below reaches a full 1.0 instead of
+        // stalling at 2/3, and formation finishes at about 89% of the scroll,
+        // leaving the last stretch as the formed system holding its shape.
+        // That final stretch is the third beat; without it the strip completes
+        // exactly as the hero unpins and the beat is never seen.
+        var form = this._scrollDriven
+          ? this._formP * (this._formT + 1)
+          : this._elapsed;
+        this._pmat.uniforms.uForm.value = form;
+
+        // Gates key off formation progress rather than elapsed time, so the
+        // rotation eases in and the light completes its circuit as the strip
+        // completes, not on a timer running independently of it.
+        rotGate = Math.max(0, Math.min(1, (form - this._formT + 2) / 3));
         if (this._loopLight) {
-          var lt = (this._elapsed - this._formT + 1.5) / 14; // one circuit
+          var lt = this._scrollDriven
+            ? (this._formP - 0.55) / 0.45      // one circuit over the last 45%
+            : (form - this._formT + 1.5) / 14; // one circuit on the clock
           if (lt > 0 && lt < 1) {
             this._loopLight.material.opacity = Math.sin(Math.min(lt, 1) * Math.PI) * 0.9;
             this._loopLight.position.copy(this._edge.getPointAt(lt % 1));

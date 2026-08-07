@@ -255,6 +255,20 @@ html {
   --accent-text: var(--color-accent-ink);
 }
 
+/* Hero scroll range.
+   The wrapper is the height of one viewport by default, which is exactly the
+   hero as it renders on the server. The extra range is added ONLY when
+   MobiusCanvas has successfully booted Three on a fine pointer without
+   reduced motion, because that is the only case where there is an animation
+   to drive. Without this gate a failed WebGL init would leave a screen of
+   empty space below the hero.
+
+   One number governs how much scrolling the formation takes. Reduce it if the
+   trust strip feels too far away. */
+[data-hero-scroll][data-scroll-ready='true'] {
+  height: 200svh;
+}
+
 /* Reveal.
    Hidden states exist ONLY under html.anim, which AnimGate adds when it can
    guarantee the reveal will run. Without JS, in a prerendered snapshot, or
