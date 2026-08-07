@@ -577,7 +577,12 @@
       };
 
       /* ---- Particles ---------------------------------------------------- */
-      var N = coarse ? 11000 : 36000;
+      var N = coarse ? 16000 : 60000;
+      /* Share of particles that rest as loose dust across the whole frame
+         rather than on the braids. Their scatter offset is the vector from
+         their path anchor to a uniform random point, so the same collapse
+         that condenses the braids sweeps the dust into the stream. */
+      var DUST_SHARE = 0.42;
       var aLat = new Float32Array(N * 3), aNorm = new Float32Array(N * 3),
           aNoise = new Float32Array(N * 3), aU = new Float32Array(N),
           aRow = new Float32Array(N), aSize = new Float32Array(N),
@@ -649,15 +654,25 @@
         aLat[i * 3 + 1] = ty - lineP.y;
         aLat[i * 3 + 2] = tz;
 
-        /* Rest scatter, sampled in path space at this particle's rest
-           position: two frequency bands, decorrelated per component. The
-           coherence is what gives the rest field its leaning, cloudy grain —
-           the "lineation" — instead of uniform fog. */
+        /* Rest scatter. Braid particles get path-space fBm — two frequency
+           bands, decorrelated per component, sampled at the particle's own
+           rest position so neighbours share low-frequency structure and the
+           field forms leaning, cloudy rivers. Dust particles instead store
+           the exact offset to a uniform random point in the frame (divided
+           by the shader's scatter gain), so at rest the whole viewport is
+           seeded and the same collapse gathers them into the stream. */
         var rp = pathAt(row, u);
-        aNoise[i * 3] = fbm(rp.x * 0.5, rp.y * 0.5) * 0.6 +
-          fbm(rp.x * 2.4 + 7.3, rp.y * 2.4) * 0.25;
-        aNoise[i * 3 + 1] = fbm(rp.x * 0.5 + 3.1, rp.y * 0.5 + 3.1) * 0.6 +
-          fbm(rp.x * 2.4, rp.y * 2.4 + 9.7) * 0.25;
+        if (Math.random() < DUST_SHARE) {
+          aNoise[i * 3] =
+            (lxMin + Math.random() * (lxMax - lxMin) - rp.x) / 2.0;
+          aNoise[i * 3 + 1] =
+            ((Math.random() * 2 - 1) * lyMax - rp.y) / 1.5;
+        } else {
+          aNoise[i * 3] = fbm(rp.x * 0.5, rp.y * 0.5) * 0.6 +
+            fbm(rp.x * 2.4 + 7.3, rp.y * 2.4) * 0.25;
+          aNoise[i * 3 + 1] = fbm(rp.x * 0.5 + 3.1, rp.y * 0.5 + 3.1) * 0.6 +
+            fbm(rp.x * 2.4, rp.y * 2.4 + 9.7) * 0.25;
+        }
         aNoise[i * 3 + 2] = fbm(rp.x * 0.7 + 11, rp.y * 0.7 + 11) * 0.6;
 
         /* aSize is the FORMED size — the distribution the settled logo is
@@ -712,7 +727,7 @@
           'uniform float uTime; uniform float uForm; uniform float uDrift;',
           'uniform sampler2D uTraj; uniform float uRows; uniform float uSamples;',
           'uniform float uFlowStart; uniform float uPR;',
-          'varying float vShade; varying float vFade; varying float vLight; varying float vForm;',
+          'varying float vShade; varying float vFade; varying float vLight; varying float vForm; varying float vRest;',
           'float wmod(float v, float r){ return mod(mod(v, r) + r, r); }',
           /* Manual bilinear along the row; the float texture is NEAREST.
              u = 1 is the far inflow, u = 0 the stroke's bottom tip. */
@@ -748,11 +763,14 @@
           '  vec3 pos = vec3(s4.xy, s4.a * (1.0 - tsp))',
           '           + position * lat',
           '           + aNoise * nU * vec3(2.0, 1.5, 1.0);',
-          /* Rest float: slow, phase-scattered, gone by arrival. */
+          /* Rest wander: every particle strolls its own smooth random loop
+             around its anchor — two incommensurate frequencies per axis,
+             phases scattered, so no two share a direction or a rhythm —
+             and the whole term is gone by arrival. */
           '  float rest = 1.0 - tsp;',
-          '  pos += vec3(sin(uTime * 0.11 + aPhase),',
-          '              cos(uTime * 0.13 + aPhase * 1.7),',
-          '              sin(uTime * 0.07 + aPhase * 2.3)) * 0.05 * rest;',
+          '  pos += vec3(sin(uTime * 0.21 + aPhase) + 0.6 * sin(uTime * 0.53 + aPhase * 2.1),',
+          '              cos(uTime * 0.24 + aPhase * 1.7) + 0.6 * cos(uTime * 0.47 + aPhase * 3.3),',
+          '              sin(uTime * 0.16 + aPhase * 2.3)) * 0.075 * rest;',
           '  float formed = smoothstep(0.96, 1.0, tsp);',
           '  pos += aNorm * sin(uTime * 0.5 + aPhase) * 0.010 * formed;',
           '  float dr = max(0.0, sin(uTime * 0.12 + aPhase));',
@@ -774,20 +792,30 @@
           '  float dz = s4.a * rest + position.z * lat + aNoise.z * nU;',
           '  float band = min(' + (DEPTH_BANDS - 1) + '.0, floor(clamp(dz * 0.9 + 0.5, 0.0, 1.0) * ' + DEPTH_BANDS + '.0));',
           '  float dt = band / ' + (DEPTH_BANDS - 1) + '.0;',
-          '  gl_PointSize = aSize * uPR * (22.0 / -mv.z) * (0.55 + 0.45 * tsp)',
+          /* Rest points are SMALLER than formed ones — the reference field
+             reads as fine dust, and coverage comes from count, not size. */
+          '  gl_PointSize = aSize * uPR * (22.0 / -mv.z) * (0.5 + 0.5 * tsp)',
           '    * mix(mix(0.6, 1.4, dt) * aBig, 1.0, tsp);',
           '  vShade = aShade;',
+          /* Fade the ends of the parameter window at rest, so the slow
+             conveyor recycles particles invisibly instead of popping them
+             from one end of the path to the other. */
+          '  float edge = smoothstep(0.0, 0.05, flowing)',
+          '             * (1.0 - smoothstep(flowRange - 0.05, flowRange, flowing));',
           /* Twinkle dies exactly at arrival, so the settled mark is crisp. */
           '  float tw = 0.85 + 0.15 * sin(uTime * 0.8 + aPhase * 4.0);',
-          '  vFade = mix(0.55 * tw * mix(0.55, 1.0, dt), 1.0, tsp);',
+          '  vFade = mix(0.72 * tw * mix(0.55, 1.0, dt) * edge, 1.0, tsp);',
           '  vForm = smoothstep(0.45, 0.95, tsp);',
+          '  vRest = rest;',
           '}'
         ].join('\n'),
         fragmentShader: [
-          'varying float vShade; varying float vFade; varying float vLight; varying float vForm;',
+          'varying float vShade; varying float vFade; varying float vLight; varying float vForm; varying float vRest;',
           'void main(){',
           '  float d = length(gl_PointCoord - 0.5);',
-          '  float a = smoothstep(0.5, 0.10, d) * vFade;',
+          /* Harder-edged at rest — small crisp dots read as a starfield;
+             the soft glow belongs to the formed slab. */
+          '  float a = smoothstep(0.5, mix(0.10, 0.34, vRest), d) * vFade;',
           /* The logo teal, its shadow and its highlight. */
           '  vec3 teal = vec3(0.251, 0.757, 0.780);',
           '  vec3 deep = vec3(0.055, 0.290, 0.355);',
@@ -795,11 +823,13 @@
           '  vec3 col = mix(deep, teal, smoothstep(0.0, 0.55, vLight));',
           '  col = mix(col, lit, smoothstep(0.72, 1.0, vLight) * 0.85);',
           '  col = mix(col, lit, vShade * 0.10);',
-          /* In flight the stream is pale; the brand colour arrives with the
-             shape rather than preceding it. */
-          '  vec3 pale = vec3(0.72, 0.86, 0.92);',
+          /* At rest and in flight the field is pale, near-white and brighter
+             than the formed slab — a starfield against the navy. The brand
+             colour and the quieter alpha arrive with the shape; the formed
+             logo's a * 0.30 is untouched. */
+          '  vec3 pale = vec3(0.86, 0.94, 0.97);',
           '  col = mix(pale, col, vForm);',
-          '  gl_FragColor = vec4(col, a * 0.30);',
+          '  gl_FragColor = vec4(col, a * (0.30 + 0.26 * vRest));',
           '}'
         ].join('\n')
       });
