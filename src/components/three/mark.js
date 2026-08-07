@@ -718,6 +718,11 @@
           uRows: { value: ROWS },
           uSamples: { value: SAMPLES },
           uFlowStart: { value: flowStart },
+          /* Damped pointer, in group-local coordinates, and its eased
+             presence. Together they drive the hover response: the rest
+             field parts around uPtr; the formed slab glints under it. */
+          uPtr: { value: new THREE.Vector2(99, 99) },
+          uPtrOn: { value: 0 },
           uPR: { value: Math.min(window.devicePixelRatio || 1, 2) }
         },
         vertexShader: [
@@ -727,6 +732,7 @@
           'uniform float uTime; uniform float uForm; uniform float uDrift;',
           'uniform sampler2D uTraj; uniform float uRows; uniform float uSamples;',
           'uniform float uFlowStart; uniform float uPR;',
+          'uniform vec2 uPtr; uniform float uPtrOn;',
           'varying float vShade; varying float vFade; varying float vLight; varying float vForm; varying float vRest;',
           'float wmod(float v, float r){ return mod(mod(v, r) + r, r); }',
           /* Manual bilinear along the row; the float texture is NEAREST.
@@ -766,20 +772,33 @@
           /* Rest wander: every particle strolls its own smooth random loop
              around its anchor — two incommensurate frequencies per axis,
              phases scattered, so no two share a direction or a rhythm —
-             and the whole term is gone by arrival. */
+             and the whole term is gone by arrival. The frequencies sit
+             around 0.1rad/s: drift you notice only when you watch for it. */
           '  float rest = 1.0 - tsp;',
-          '  pos += vec3(sin(uTime * 0.21 + aPhase) + 0.6 * sin(uTime * 0.53 + aPhase * 2.1),',
-          '              cos(uTime * 0.24 + aPhase * 1.7) + 0.6 * cos(uTime * 0.47 + aPhase * 3.3),',
-          '              sin(uTime * 0.16 + aPhase * 2.3)) * 0.075 * rest;',
+          '  pos += vec3(sin(uTime * 0.10 + aPhase) + 0.6 * sin(uTime * 0.26 + aPhase * 2.1),',
+          '              cos(uTime * 0.11 + aPhase * 1.7) + 0.6 * cos(uTime * 0.23 + aPhase * 3.3),',
+          '              sin(uTime * 0.08 + aPhase * 2.3)) * 0.05 * rest;',
+          /* The cursor. At rest the field PARTS around it — a gentle radial
+             push with a soft falloff, riding the damped pointer so the wake
+             trails fluidly. uPtrOn eases in and out so entering and leaving
+             the hero never snaps. */
+          '  vec2 away = pos.xy - uPtr;',
+          '  float pd = length(away);',
+          '  float pr = 1.0 - smoothstep(0.0, 0.95, pd);',
+          '  pos.xy += (pd > 0.001 ? away / pd : vec2(0.0)) * pr * pr * 0.34 * rest * uPtrOn;',
           '  float formed = smoothstep(0.96, 1.0, tsp);',
           '  pos += aNorm * sin(uTime * 0.5 + aPhase) * 0.010 * formed;',
           '  float dr = max(0.0, sin(uTime * 0.12 + aPhase));',
           '  pos += aNorm * dr * dr * aDetach * 0.30 * formed;',
           /* Lit in view space, so the sway moves the highlight across the
-             slab instead of painting it on. */
+             slab instead of painting it on. Once the mark is formed the
+             cursor becomes a second light: a specular glint that sweeps the
+             slab as the pointer moves — reactive without displacing a
+             single particle of the approved glyph. */
           '  vec3 n = normalize(normalMatrix * aNorm);',
           '  vec3 L = normalize(vec3(-0.35, 0.65, 0.72));',
           '  vLight = 0.30 + 0.70 * max(dot(n, L), 0.0);',
+          '  vLight += pr * pr * 0.6 * (1.0 - rest) * uPtrOn * max(n.z, 0.0);',
           '  vec4 mv = modelViewMatrix * vec4(pos, 1.0);',
           '  gl_Position = projectionMatrix * mv;',
           /* Quantised depth: ~24 discrete bands with size and opacity
@@ -803,8 +822,10 @@
           '  float edge = smoothstep(0.0, 0.05, flowing)',
           '             * (1.0 - smoothstep(flowRange - 0.05, flowRange, flowing));',
           /* Twinkle dies exactly at arrival, so the settled mark is crisp. */
-          '  float tw = 0.85 + 0.15 * sin(uTime * 0.8 + aPhase * 4.0);',
+          '  float tw = 0.85 + 0.15 * sin(uTime * 0.55 + aPhase * 4.0);',
           '  vFade = mix(0.72 * tw * mix(0.55, 1.0, dt) * edge, 1.0, tsp);',
+          /* Grains at the rim of the cursor's wake catch a little light. */
+          '  vFade += pr * 0.30 * rest * uPtrOn;',
           '  vForm = smoothstep(0.45, 0.95, tsp);',
           '  vRest = rest;',
           '}'
@@ -857,8 +878,12 @@
           var rect = host.getBoundingClientRect();
           self._tx = (e.clientX - rect.left) / rect.width * 2 - 1;
           self._ty = (e.clientY - rect.top) / rect.height * 2 - 1;
+          self._ptrIn = true;
         });
-        host.addEventListener('pointerleave', function () { self._tx = 0; self._ty = 0; });
+        host.addEventListener('pointerleave', function () {
+          self._tx = 0; self._ty = 0;
+          self._ptrIn = false;
+        });
       }
 
       if (reduced) {
@@ -885,6 +910,9 @@
       var want = ANCHOR * halfView;
       var minX = -(halfView - this._halfW * this._group.scale.x - 0.25);
       this._group.position.x = Math.min(0, Math.max(want, minX));
+      /* Cached for the pointer-to-local mapping in _tick. */
+      this._viewHalfW = halfView;
+      this._viewHalfH = halfView * h / w;
     }
 
     _resize() {
@@ -979,6 +1007,22 @@
 
       this._px += (this._tx - this._px) * 0.04;
       this._py += (this._ty - this._py) * 0.04;
+
+      /* Hover. The damped pointer, mapped into group-local coordinates, and
+         an eased presence value so entering and leaving never snap. The
+         same pair drives both responses: the rest field parts around the
+         point; the formed slab glints under it. */
+      if (this._pmat) {
+        var g = this._group;
+        this._ptrOn = (this._ptrOn || 0) +
+          (((this._ptrIn ? 1 : 0) - (this._ptrOn || 0)) * Math.min(1, dt * 5));
+        this._pmat.uniforms.uPtrOn.value = this._ptrOn;
+        this._pmat.uniforms.uPtr.value.set(
+          (this._px * (this._viewHalfW || 4) - g.position.x) / g.scale.x,
+          (-this._py * (this._viewHalfH || 2.2) - g.position.y) / g.scale.y
+        );
+      }
+
       /* Wall clock, so the mark keeps breathing while the visitor is
          stationary at state 4. Only the gate depends on scroll. */
       this._pose(this._elapsed * this._speed * (this._coarse ? 0.75 : 1), gate);
