@@ -255,18 +255,136 @@ html {
   --accent-text: var(--color-accent-ink);
 }
 
-/* Hero scroll range.
-   The wrapper is the height of one viewport by default, which is exactly the
-   hero as it renders on the server. The extra range is added ONLY when
-   MobiusCanvas has successfully booted Three on a fine pointer without
-   reduced motion, because that is the only case where there is an animation
-   to drive. Without this gate a failed WebGL init would leave a screen of
-   empty space below the hero.
+/* ====================================================================
+   HERO SCROLL SEQUENCE
+   Six states, driven entirely by scroll position. The boundaries between
+   them live in src/components/three/ring-canvas.tsx; this block owns only
+   what each one looks like.
 
-   One number governs how much scrolling the formation takes. Reduce it if the
-   trust strip feels too far away. */
+   EVERY rule here is gated on [data-scroll-ready], which RingCanvas sets
+   after Three has actually booted on a fine pointer without reduced
+   motion. Without the attribute the hero is one viewport of state 0 and
+   nothing below moves, which is what no-JS, no-WebGL, reduced-motion and
+   touch visitors get. A hero with three viewports of scroll range but no
+   animation would be two screens of empty space, so the height and the
+   choreography are deliberately switched on by the same flag.
+   ==================================================================== */
+
+/* The only number governing how long the sequence takes. Reduce it if the
+   trust strip feels too far away; every state boundary is a fraction of
+   this, so they all rescale together. */
 [data-hero-scroll][data-scroll-ready='true'] {
-  height: 200svh;
+  height: 300svh;
+}
+
+/* State 1 — the copy layer leaves.
+   --hero-cards and --hero-head are written on this element by RingCanvas,
+   once per frame, and inherit down. Two clocks rather than one because the
+   cards have to be clear of the frame before the headline starts to go. */
+[data-hero-scroll][data-scroll-ready='true'] [data-hero-cards] {
+  opacity: calc(1 - var(--hero-cards, 0));
+}
+
+[data-hero-scroll][data-scroll-ready='true'] [data-hero-card] {
+  translate: calc(var(--hero-cards, 0) * var(--dir, 1) * 62vw) 0;
+}
+
+[data-hero-scroll][data-scroll-ready='true'] [data-hero-head] {
+  opacity: calc(1 - var(--hero-head, 0));
+  translate: 0 calc(var(--hero-head, 0) * -48px);
+}
+
+/* Once the cards are off screen they must stop being focusable, not merely
+   become invisible. visibility also removes them from the accessibility
+   tree, and it reverses cleanly when the visitor scrolls back up. */
+[data-hero-scroll][data-hero-state='2'] [data-hero-cards],
+[data-hero-scroll][data-hero-state='3'] [data-hero-cards],
+[data-hero-scroll][data-hero-state='4'] [data-hero-cards],
+[data-hero-scroll][data-hero-state='5'] [data-hero-cards] {
+  visibility: hidden;
+}
+
+/* State 5 — the messages.
+   Positioned around the ring in screen space rather than pinned to the
+   geometry: the ring is tilted and turning, so anchored text would be
+   dragged through perspective and out of the safe area.
+
+   Centring and entrance are BOTH carried by `transform`, deliberately. The
+   obvious split — `translate` for the centring, `transform` for the entrance —
+   does not survive the build: Lightning CSS folds the two properties together
+   when it finds them on one rule and drops the percentage while doing it, so
+   `translate: -50% 0` silently vanishes and every message lands off centre.
+   One property, one source of truth, and the offsets are written out per
+   message instead.
+
+   Each message enters travelling AWAY from the ring, which reads as the
+   structure emitting them rather than as text sliding into place. */
+[data-hero-scroll] [data-hero-msg] {
+  opacity: 0;
+  transition:
+    opacity 520ms var(--ease-enter),
+    transform 520ms var(--ease-enter);
+}
+
+[data-hero-scroll] [data-hero-msg='0'] {
+  left: 50%;
+  top: 15%;
+  text-align: center;
+  transform: translate(-50%, 18px);
+}
+
+[data-hero-scroll] [data-hero-msg='1'] {
+  right: 6%;
+  top: 50%;
+  text-align: right;
+  transform: translate(-18px, -50%);
+}
+
+[data-hero-scroll] [data-hero-msg='2'] {
+  left: 50%;
+  bottom: 14%;
+  text-align: center;
+  transform: translate(-50%, -18px);
+}
+
+[data-hero-scroll] [data-hero-msg='3'] {
+  left: 6%;
+  top: 50%;
+  text-align: left;
+  transform: translate(18px, -50%);
+}
+
+[data-hero-scroll] [data-hero-msg='0'].is-in,
+[data-hero-scroll] [data-hero-msg='2'].is-in {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+[data-hero-scroll] [data-hero-msg='1'].is-in,
+[data-hero-scroll] [data-hero-msg='3'].is-in {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+@media (min-width: 1280px) {
+  [data-hero-scroll] [data-hero-msg='1'] {
+    right: 10%;
+  }
+  [data-hero-scroll] [data-hero-msg='3'] {
+    left: 10%;
+  }
+}
+
+/* Short viewports put the top and bottom messages under the header and over
+   the fold edge. Pulling them inward costs a little symmetry and keeps all
+   four legible, which matters more. */
+@media (max-height: 780px) {
+  [data-hero-scroll] [data-hero-msg='0'] {
+    top: 19%;
+  }
+  [data-hero-scroll] [data-hero-msg='2'] {
+    bottom: 17%;
+  }
 }
 
 /* Reveal.
