@@ -187,6 +187,13 @@ export function MarkCanvas({
 
     const onScroll = () => {
       targetP = readScroll();
+      // The final end. Past p = 1 the hero is unpinning, and the damped
+      // clock would otherwise still be catching up while the section slides
+      // away — a fast flick would hand the next section a mid-flight,
+      // half-scattered field. Land it: at the unpin there is nothing left
+      // to ease toward, so the scene the next section arrives over is the
+      // finished one — mark formed, icons written, labels latched.
+      if (targetP >= 1) curP = 1;
       kick();
     };
 

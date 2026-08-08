@@ -25,7 +25,8 @@ import { MarkCanvas } from '@/components/three/mark-canvas';
  *   4  it holds and sways
  *   5  the three pillars peel off the mark, one per scroll window, each
  *      connected to it by a two-way particle stream; labels latch mid-peel
- *   6  release — the whole field lets go upward, unpin to the trust strip
+ *   6  the unpin — mark, icons and labels hold their formed, solid state;
+ *      the next section arrives over the finished scene, no dispersal
  *
  * Three rules govern this section:
  *
