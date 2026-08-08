@@ -343,6 +343,66 @@
     return strokeU;
   }
 
+  /* Pillar icon point sets — CREATE (spark), BUILD (blocks), TRANSFORM
+     (cycle). Drawn as primitives on a small canvas and sampled, same idea as
+     the mask; normalized to -0.5..0.5. Sandbox-only addition. */
+  function buildIconPoints(kind) {
+    var c = document.createElement('canvas');
+    c.width = c.height = 96;
+    var x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.strokeStyle = '#fff';
+    x.lineWidth = 11; x.lineCap = 'round'; x.lineJoin = 'round';
+    if (kind === 0) {
+      /* CREATE — four-point spark. */
+      x.beginPath();
+      x.moveTo(48, 6); x.quadraticCurveTo(53, 43, 90, 48);
+      x.quadraticCurveTo(53, 53, 48, 90);
+      x.quadraticCurveTo(43, 53, 6, 48);
+      x.quadraticCurveTo(43, 43, 48, 6);
+      x.fill();
+    } else if (kind === 1) {
+      /* BUILD — three slabs on the mark's own diagonal. */
+      var slab = function (yy, w) {
+        x.beginPath();
+        x.moveTo(48 - w / 2 + 7, yy); x.lineTo(48 + w / 2 + 7, yy);
+        x.lineTo(48 + w / 2 - 7, yy + 16); x.lineTo(48 - w / 2 - 7, yy + 16);
+        x.closePath(); x.fill();
+      };
+      slab(10, 34); slab(38, 52); slab(66, 70);
+    } else {
+      /* TRANSFORM — two arcs chasing, arrowheads at each end. */
+      x.beginPath(); x.arc(48, 48, 32, -1.2, 1.5); x.stroke();
+      x.beginPath(); x.arc(48, 48, 32, Math.PI - 1.2, Math.PI + 1.5); x.stroke();
+      var head = function (ang) {
+        var hx = 48 + 32 * Math.cos(ang), hy = 48 + 32 * Math.sin(ang);
+        x.beginPath();
+        x.moveTo(hx - Math.sin(ang) * 15, hy + Math.cos(ang) * 15);
+        x.lineTo(hx + Math.cos(ang) * 9, hy + Math.sin(ang) * 9);
+        x.lineTo(hx - Math.cos(ang) * 9, hy - Math.sin(ang) * 9);
+        x.closePath(); x.fill();
+      };
+      head(1.5); head(Math.PI + 1.5);
+    }
+    var d = x.getImageData(0, 0, 96, 96).data;
+    /* Each point carries a write order t in 0..1 — the icon is DRAWN, like
+       the mark: top-to-bottom for the solid glyphs, along the arc for the
+       cycle. */
+    var pts = [];
+    for (var yy = 0; yy < 96; yy++) for (var xx = 0; xx < 96; xx++) {
+      if (d[(yy * 96 + xx) * 4 + 3] <= 100) continue;
+      var t;
+      if (kind === 2) {
+        /* Both arcs write together, mirrored — order is angle mod π. */
+        var ang = Math.atan2(yy - 48, xx - 48);
+        t = ((((ang + 1.2) % Math.PI) + Math.PI) % Math.PI) / Math.PI;
+      } else {
+        t = yy / 96;
+      }
+      pts.push([(xx - 48) / 96, (48 - yy) / 96, t]);
+    }
+    return pts;
+  }
+
   class ZareMark extends HTMLElement {
     static get observedAttributes() { return ['speed']; }
 
@@ -361,6 +421,7 @@
          after a successful boot on a fine pointer without reduced motion. */
       this._scrollDriven = false;
       this._formP = 0;
+      this._peelMax = 0;
       this._halfW = 0.7;
       this._halfH = MARK_H / 2;
     }
@@ -373,6 +434,24 @@
     /** Public. Hands the formation clock over to the scrollbar. */
     setScrollDriven(on) {
       this._scrollDriven = !!on;
+    }
+
+    /** Public. Release — the whole field disperses upward as the hero hands
+     *  off to the next section. */
+    setRelease(r) {
+      this._relV = r < 0 ? 0 : r > 1 ? 1 : r;
+      if (this._pmat && this._pmat.uniforms.uRelease) {
+        this._pmat.uniforms.uRelease.value = this._relV;
+      }
+    }
+
+    /** Public. Per-pillar peel progress, each 0..1 — the front face of the
+     *  formed mark streams right to write the three pillar icons. */
+    setPeel(a, b, c) {
+      this._peelMax = Math.max(a || 0, Math.max(b || 0, c || 0));
+      if (this._pmat && this._pmat.uniforms.uPeel) {
+        this._pmat.uniforms.uPeel.value.set(a || 0, b || 0, c || 0);
+      }
     }
 
     attributeChangedCallback(n, _o, v) {
@@ -579,6 +658,13 @@
       };
 
       /* ---- Particles ---------------------------------------------------- */
+      var pillarsOn = !!this.getAttribute('pillars');
+      this._pillarsOn = pillarsOn;
+      var iconSets = [buildIconPoints(0), buildIconPoints(1), buildIconPoints(2)];
+      var iconCx = lxMax * 0.52;
+      var iconYs = [lyMax * 0.5, 0, -lyMax * 0.5];
+      var iconR = 0.55;
+
       var N = coarse ? 12000 : 46000;
       /* Share of particles that rest as loose dust across the whole frame
          rather than on the braids. Their scatter offset is the vector from
@@ -590,7 +676,8 @@
           aRow = new Float32Array(N), aSize = new Float32Array(N),
           aBig = new Float32Array(N), aShade = new Float32Array(N),
           aDetach = new Float32Array(N), aPhase = new Float32Array(N),
-          aOrbit = new Float32Array(N);
+          aPillar = new Float32Array(N), aIconT = new Float32Array(N * 3),
+          aLink = new Float32Array(N);
 
       for (var i = 0; i < N; i++) {
         var onRim = Math.random() < RIM_SHARE;
@@ -657,15 +744,15 @@
         aLat[i * 3 + 1] = ty - lineP.y;
         aLat[i * 3 + 2] = tz;
 
-        /* Rest scatter. Braid particles get path-space fBm — two frequency
-           bands, decorrelated per component, sampled at the particle's own
-           rest position so neighbours share low-frequency structure and the
-           field forms leaning, cloudy rivers. Dust particles instead store
-           the exact offset to a uniform random point in the frame (divided
-           by the shader's scatter gain), so at rest the whole viewport is
-           seeded and the same collapse gathers them into the stream. */
+        /* Rest scatter, sampled in path space at this particle's rest
+           position: two frequency bands, decorrelated per component. The
+           coherence is what gives the rest field its leaning, cloudy grain —
+           the "lineation" — instead of uniform fog. */
         var rp = pathAt(row, u);
         if (Math.random() < DUST_SHARE) {
+          /* Dust: exact offset to a uniform random point in the frame,
+             divided by the shader's scatter gain, so at rest the whole
+             viewport is seeded and the same collapse gathers them in. */
           aNoise[i * 3] =
             (lxMin + Math.random() * (lxMax - lxMin) - rp.x) / 2.0;
           aNoise[i * 3 + 1] =
@@ -688,16 +775,27 @@
         aBig[i] = big < 0.02 ? 2.8 : big < 0.10 ? 1.9 : 1.0;
 
         aShade[i] = Math.random();
+        /* Peel set: a thin veil of the front face — the mark keeps most of
+           its density; peeled particles render larger to compensate. */
+        if (pillarsOn && !onRim && tz > 0 && Math.random() < 0.75) {
+          var pil = (Math.random() * 3) | 0;
+          aPillar[i] = pil + 1;
+          if (Math.random() < 0.10) {
+            /* Link tracer: rides the mark→icon channel instead of filling
+               the icon; z slot is its cycle phase. */
+            aLink[i] = 1;
+            aIconT[i * 3 + 2] = Math.random();
+          } else {
+            var ipts = iconSets[pil];
+            var ip = ipts[(Math.random() * ipts.length) | 0];
+            aIconT[i * 3] = iconCx + ip[0] * iconR + (Math.random() - 0.5) * 0.015;
+            aIconT[i * 3 + 1] = iconYs[pil] + ip[1] * iconR + (Math.random() - 0.5) * 0.015;
+            /* z slot carries the write order, not depth. */
+            aIconT[i * 3 + 2] = ip[2];
+          }
+        }
         aDetach[i] = Math.random() < 0.03 ? 0.5 + Math.random() : 0.0;
         aPhase[i] = Math.random() * Math.PI * 2;
-        /* The reference's post-arrival orbit, adapted. A ring lets the whole
-           population circulate forever after landing; a glyph cannot slide
-           without smearing, so a small tracer share carries the orbit
-           instead: after formation these leave their cell, lift just off the
-           slab and ride the stroke path end to end on the wall clock —
-           energy flowing through the written mark. Face particles only; the
-           rim is the silhouette and stays fully intact. */
-        aOrbit[i] = !onRim && Math.random() < 0.02 ? 1 : 0;
       }
 
       var pg = new THREE.BufferGeometry();
@@ -713,7 +811,9 @@
       pg.setAttribute('aShade', new THREE.BufferAttribute(aShade, 1));
       pg.setAttribute('aDetach', new THREE.BufferAttribute(aDetach, 1));
       pg.setAttribute('aPhase', new THREE.BufferAttribute(aPhase, 1));
-      pg.setAttribute('aOrbit', new THREE.BufferAttribute(aOrbit, 1));
+      pg.setAttribute('aPillar', new THREE.BufferAttribute(aPillar, 1));
+      pg.setAttribute('aIconT', new THREE.BufferAttribute(aIconT, 3));
+      pg.setAttribute('aLink', new THREE.BufferAttribute(aLink, 1));
 
       var pmat = new THREE.ShaderMaterial({
         transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -730,12 +830,21 @@
           uRows: { value: ROWS },
           uSamples: { value: SAMPLES },
           uFlowStart: { value: flowStart },
-          uPR: { value: Math.min(window.devicePixelRatio || 1, 2) }
+          uPR: { value: Math.min(window.devicePixelRatio || 1, 2) },
+          /* Per-pillar peel progress. */
+          uPeel: { value: new THREE.Vector3(0, 0, 0) },
+          uRelease: { value: 0 },
+          uLink0: { value: new THREE.Vector4() },
+          uLink1: { value: new THREE.Vector4() },
+          uLink2: { value: new THREE.Vector4() }
         },
         vertexShader: [
           'attribute vec3 aNorm; attribute vec3 aNoise;',
           'attribute float aU; attribute float aRow; attribute float aSize; attribute float aBig;',
-          'attribute float aShade; attribute float aDetach; attribute float aPhase; attribute float aOrbit;',
+          'attribute float aShade; attribute float aDetach; attribute float aPhase;',
+          'attribute float aPillar; attribute vec3 aIconT; attribute float aLink;',
+          'uniform vec3 uPeel; uniform float uRelease;',
+          'uniform vec4 uLink0; uniform vec4 uLink1; uniform vec4 uLink2;',
           'uniform float uTime; uniform float uForm; uniform float uDrift;',
           'uniform sampler2D uTraj; uniform float uRows; uniform float uSamples;',
           'uniform float uFlowStart; uniform float uPR;',
@@ -778,8 +887,7 @@
           /* Rest wander: every particle strolls its own smooth random loop
              around its anchor — two incommensurate frequencies per axis,
              phases scattered, so no two share a direction or a rhythm —
-             and the whole term is gone by arrival. The frequencies sit
-             around 0.05rad/s: a two-minute loop, barely more than stillness. */
+             and the whole term is gone by arrival. */
           '  float rest = 1.0 - tsp;',
           '  pos += vec3(sin(uTime * 0.05 + aPhase) + 0.6 * sin(uTime * 0.13 + aPhase * 2.1),',
           '              cos(uTime * 0.06 + aPhase * 1.7) + 0.6 * cos(uTime * 0.11 + aPhase * 3.3),',
@@ -788,23 +896,49 @@
           '  pos += aNorm * sin(uTime * 0.5 + aPhase) * 0.010 * formed;',
           '  float dr = max(0.0, sin(uTime * 0.12 + aPhase));',
           '  pos += aNorm * dr * dr * aDetach * 0.30 * formed;',
-          /* The orbit (see aOrbit in the bake). Once formed, tracers ride
-             the stroke on the wall clock: appearing at the top of the mark,
-             tracing the writing path just off the front face, fading out at
-             the tip. wmod recycles each one forever; the phase hash spreads
-             them along the whole stroke so the current never bunches. */
-          '  float ocn = wmod(aPhase * 1.113 + uTime * 0.03, 1.0);',
-          '  vec4 os = traj(aRow, ocn * strokeU);',
-          '  float trE = smoothstep(0.0, 0.10, ocn) * (1.0 - smoothstep(0.88, 1.0, ocn));',
-          '  float tr = aOrbit * formed;',
-          '  pos = mix(pos, vec3(os.xy, 0.14), tr);',
+          /* Pillar peel: the icon is WRITTEN — each particle's departure is
+             gated by its cell's order along the icon's stroke, so coverage
+             extends along the shape exactly like the mark's own write. The
+             small lift is zero at both ends. */
+          '  float peelPe = 0.0; float linkGate = 0.0; float linkEnv = 1.0;',
+          '  if (aPillar > 0.5) {',
+          '    float pp = aPillar < 1.5 ? uPeel.x : (aPillar < 2.5 ? uPeel.y : uPeel.z);',
+          '    if (aLink > 0.5) {',
+          /* The connection IS particles: tracers cycle the mark→icon channel
+             on the wall clock, staggered by phase so the channel reads as a
+             continuous current. Faded at both ends so recycling never pops;
+             a small transverse wander keeps it a stream, not a printed
+             line. */
+          '      vec4 LK = aPillar < 1.5 ? uLink0 : (aPillar < 2.5 ? uLink1 : uLink2);',
+          /* Half the tracers run mark→icon, half back — dependence flows both
+             ways. */
+          '      float dir = step(0.5, fract(aPhase * 0.31831)) * 2.0 - 1.0;',
+          '      float cyc = fract(aIconT.z + uTime * 0.11 * dir);',
+          '      vec2 lp = mix(LK.xy, LK.zw, cyc);',
+          '      lp += vec2(sin(aPhase * 7.0 + uTime * 0.5), cos(aPhase * 5.3 + uTime * 0.44)) * 0.012;',
+          '      linkGate = smoothstep(0.12, 0.5, pp);',
+          '      linkEnv = smoothstep(0.0, 0.12, cyc) * (1.0 - smoothstep(0.86, 1.0, cyc));',
+          '      pos = mix(pos, vec3(lp, 0.05), linkGate);',
+          '    } else {',
+          '    float ord = aIconT.z;',
+          '    float st = clamp((pp - ord * 0.68) / 0.32, 0.0, 1.0);',
+          '    float pe = st * st * (3.0 - 2.0 * st);',
+          '    vec3 lift = vec3(0.12, 0.2, 0.3) * (0.5 + aShade * 0.5) * sin(pe * 3.14159);',
+          '    pos = mix(pos, vec3(aIconT.xy, 0.0), pe) + lift;',
+          /* Settled icons breathe: a tiny phase-scattered stroll, far below
+             one particle diameter of the icon grid, so the shape holds. */
+          '    pos += vec3(sin(uTime * 0.5 + aPhase * 3.1),',
+          '                cos(uTime * 0.43 + aPhase * 2.3), 0.0) * 0.010 * pe;',
+          '    peelPe = pe;',
+          '    }',
+          '  }',
+          /* Release — the field lets go upward as the hero unpins. */
+          '  pos += (aNoise * vec3(2.2, 1.2, 1.0) + vec3(0.0, 2.4, 0.0)) * uRelease * uRelease;',
           /* Lit in view space, so the sway moves the highlight across the
              slab instead of painting it on. */
           '  vec3 n = normalize(normalMatrix * aNorm);',
           '  vec3 L = normalize(vec3(-0.35, 0.65, 0.72));',
           '  vLight = 0.30 + 0.70 * max(dot(n, L), 0.0);',
-          /* Tracers read as light, not surface: full highlight, no shading. */
-          '  vLight = mix(vLight, 1.2, tr * trE);',
           '  vec4 mv = modelViewMatrix * vec4(pos, 1.0);',
           '  gl_Position = projectionMatrix * mv;',
           /* Quantised depth: ~24 discrete bands with size and opacity
@@ -817,10 +951,10 @@
           '  float dz = s4.a * rest + position.z * lat + aNoise.z * nU;',
           '  float band = min(' + (DEPTH_BANDS - 1) + '.0, floor(clamp(dz * 0.9 + 0.5, 0.0, 1.0) * ' + DEPTH_BANDS + '.0));',
           '  float dt = band / ' + (DEPTH_BANDS - 1) + '.0;',
-          /* Rest points are SMALLER than formed ones — the reference field
-             reads as fine dust, and coverage comes from count, not size. */
+          /* Rest points are SMALLER than formed ones — the field reads as fine
+             dust; coverage comes from count, not size. */
           '  gl_PointSize = aSize * uPR * (22.0 / -mv.z) * (0.5 + 0.5 * tsp)',
-          '    * mix(mix(0.6, 1.4, dt) * aBig, 1.0, tsp) * mix(1.0, 0.8, tr);',
+          '    * mix(mix(0.6, 1.4, dt) * aBig, 1.0, tsp) * (1.0 + peelPe * 0.3) * mix(1.0, 0.45, linkGate);',
           '  vShade = aShade;',
           /* Fade the ends of the parameter window at rest, so the slow
              conveyor recycles particles invisibly instead of popping them
@@ -830,9 +964,10 @@
           /* Twinkle dies exactly at arrival, so the settled mark is crisp. */
           '  float tw = 0.85 + 0.15 * sin(uTime * 0.55 + aPhase * 4.0);',
           '  vFade = mix(0.72 * tw * mix(0.55, 1.0, dt) * edge, 1.0, tsp);',
-          /* Tracer visibility is its stroke-edge envelope: born at the top,
-             gone at the tip, so recycling never pops. */
-          '  vFade = mix(vFade, 0.9 * trE, tr);',
+          '  vFade *= 1.0 - uRelease;',
+          /* Peeled icons sit quieter than the lit slab. */
+          '  vFade *= 1.0 - peelPe * 0.38;',
+          '  vFade = mix(vFade, 0.6 * linkEnv * (1.0 - uRelease), linkGate);',
           '  vForm = smoothstep(0.45, 0.95, tsp);',
           '  vRest = rest;',
           '}'
@@ -851,10 +986,11 @@
           '  vec3 col = mix(deep, teal, smoothstep(0.0, 0.55, vLight));',
           '  col = mix(col, lit, smoothstep(0.72, 1.0, vLight) * 0.85);',
           '  col = mix(col, lit, vShade * 0.10);',
+          /* In flight the stream is pale; the brand colour arrives with the
+             shape rather than preceding it. */
           /* At rest and in flight the field is pale, near-white and brighter
              than the formed slab — a starfield against the navy. The brand
-             colour and the quieter alpha arrive with the shape; the formed
-             logo's a * 0.30 is untouched. */
+             colour and the quieter alpha arrive with the shape. */
           '  vec3 pale = vec3(0.86, 0.94, 0.97);',
           '  col = mix(pale, col, vForm);',
           '  gl_FragColor = vec4(col, a * (0.30 + 0.26 * vRest));',
@@ -864,6 +1000,12 @@
 
       group.add(new THREE.Points(pg, pmat));
       this._pmat = pmat;
+      if (pillarsOn) {
+        pmat.uniforms.uLink0.value.set(this._halfW * 0.62, iconYs[0] * 0.22, iconCx - iconR * 0.32, iconYs[0]);
+        pmat.uniforms.uLink1.value.set(this._halfW * 0.62, iconYs[1] * 0.22, iconCx - iconR * 0.32, iconYs[1]);
+        pmat.uniforms.uLink2.value.set(this._halfW * 0.62, iconYs[2] * 0.22, iconCx - iconR * 0.32, iconYs[2]);
+      }
+
 
       /* Light that crosses the mark once as it completes, tracing the same
          diagonal the write descends. */
@@ -874,6 +1016,7 @@
       tl.scale.setScalar(0.5);
       group.add(tl);
       this._sweepLight = tl;
+
 
       this._ro = new ResizeObserver(function () { self._resize(); });
       this._ro.observe(this);
@@ -922,9 +1065,6 @@
       var want = ANCHOR * halfView;
       var minX = -(halfView - this._halfW * this._group.scale.x - 0.25);
       this._group.position.x = Math.min(0, Math.max(want, minX));
-      /* Cached for the pointer-to-local mapping in _tick. */
-      this._viewHalfW = halfView;
-      this._viewHalfH = halfView * h / w;
     }
 
     _resize() {
@@ -933,6 +1073,8 @@
       this._renderer.setSize(w, h, false);
       this._camera.aspect = w / h;
       this._camera.updateProjectionMatrix();
+      this._halfViewH = Math.tan(this._camera.fov * Math.PI / 360) * this._camera.position.z;
+      this._halfViewW = this._halfViewH * (w / h);
       this._applyAnchor(w, h);
       if (this._static) this._renderOnce();
     }
@@ -996,9 +1138,18 @@
         this._pmat.uniforms.uDrift.value =
           this._drift * Math.pow(1 - form, 1.5);
 
-        /* Sway eases in as the write completes, so nothing turns before
-           there is a thing to turn. */
+        /* Coarse pointers never get the scroll handover, so the pillars
+           auto-play after the time-driven formation completes. */
+        if (!this._scrollDriven && this._pillarsOn && form >= 1) {
+          var pt = this._elapsed - FORM_T - 0.8;
+          var c01 = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
+          this.setPeel(c01(pt / 2), c01((pt - 2.6) / 2), c01((pt - 5.2) / 2));
+        }
+
+        /* Sway eases in as the write completes, and back out as the pillars
+           peel — icons far from the origin would swing on the lever arm. */
         gate = Math.max(0, Math.min(1, (form - 0.85) / 0.15));
+        gate *= Math.max(0, 1 - (this._peelMax || 0) * 1.4);
 
         if (this._sweepLight) {
           var lt = this._scrollDriven
@@ -1017,9 +1168,8 @@
         }
       }
 
-      /* 0.09/frame, not the old 0.04: the damped pointer now also drives
-         the hover wake, and at 0.04 it trailed far enough behind the cursor
-         to read as detached rather than fluid. */
+      /* 0.09/frame, not 0.04: at 0.04 the damped pointer trailed far enough
+         behind the cursor to read as detached rather than fluid. */
       this._px += (this._tx - this._px) * 0.09;
       this._py += (this._ty - this._py) * 0.09;
       /* Wall clock, so the mark keeps breathing while the visitor is

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Container } from '@/components/layout/container';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { servicePaths } from '@/content/services';
-import { communicationModel } from '@/content/working-model';
 import { MarkCanvas } from '@/components/three/mark-canvas';
 
 // Imported directly rather than through next/dynamic. MarkCanvas is a client
@@ -24,8 +23,9 @@ import { MarkCanvas } from '@/components/three/mark-canvas';
  *   2  the Z mark becomes recognisable
  *   3  the mark completes
  *   4  it holds and sways
- *   5  the messages slide out of it, left to right, into the right half
- *   6  release to the trust strip
+ *   5  the three pillars peel off the mark, one per scroll window, each
+ *      connected to it by a two-way particle stream; labels latch mid-peel
+ *   6  release — the whole field lets go upward, unpin to the trust strip
  *
  * Three rules govern this section:
  *
@@ -42,6 +42,14 @@ import { MarkCanvas } from '@/components/three/mark-canvas';
  *    `TwoPaths` is the third section on the page and offers the same choice
  *    again at full weight. Without it this would strand the visitor.
  */
+/** State-5 pillar rows. The icons themselves are particles (mark.js); these
+ *  are only the labels that latch beside them mid-peel. */
+const pillars = [
+  { title: 'CREATE', body: 'Ideas shaped into products, from first sketch.' },
+  { title: 'BUILD', body: 'Engineering that ships, embedded in your team.' },
+  { title: 'TRANSFORM', body: 'Legacy systems carried into what comes next.' },
+];
+
 export function Hero() {
   return (
     <div data-hero-scroll>
@@ -71,30 +79,40 @@ export function Hero() {
           }}
         />
 
-        {/* State 5. Hidden until the scroll sequence reveals them, and
-            aria-hidden throughout: these four lines are the communication
-            model, and `WorkingModel` further down the page is their accessible
-            home. A screen reader should meet them once, in the section that
-            explains them. */}
+        {/* State 5. The three pillars peel out of the mark; aria-hidden here —
+            their accessible home is the section that explains them. Position
+            and entrance live in globals.css, keyed off the index. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-[3]"
           data-hero-messages
         >
-          {communicationModel.map((line, i) => (
-            <p
-              key={line}
-              // Position and entrance both live in globals.css, keyed off this
-              // index. Tailwind's translate utilities would fight the entrance
-              // transform for the same two properties, and splitting the
-              // choreography across two files to save four rules is not worth
-              // the ambiguity about which one wins.
+          {pillars.map((pillar, i) => (
+            <div
+              key={pillar.title}
               data-hero-msg={i}
-              className="absolute max-w-[17ch] font-display text-body font-semibold text-on-dark-strong"
-              style={{ textShadow: '0 2px 24px rgba(2,15,24,.9)' }}
+              className="absolute flex flex-col gap-1.5"
             >
-              {line}
-            </p>
+              <span
+                className="font-display font-medium tracking-[0.14em] text-on-dark-strong"
+                style={{
+                  fontSize: 'clamp(16px, 1.9vw, 26px)',
+                  textShadow: '0 2px 24px rgba(2,15,24,.9)',
+                }}
+              >
+                {pillar.title}
+              </span>
+              <span
+                className="text-on-dark-muted"
+                style={{
+                  fontSize: 'clamp(12px, 1.4vw, 14px)',
+                  lineHeight: 1.55,
+                  maxWidth: 'min(26ch, 26vw)',
+                }}
+              >
+                {pillar.body}
+              </span>
+            </div>
           ))}
         </div>
 

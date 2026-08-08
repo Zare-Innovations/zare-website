@@ -333,49 +333,40 @@ html {
   visibility: hidden;
 }
 
-/* State 5 — the messages.
-   The mark sits left of centre (see ANCHOR in mark.js), which leaves the
-   right half of the frame empty on purpose: it belongs to these. They stack
-   as a column in that space and each one SLIDES IN LEFT TO RIGHT — out of
-   the mark, in the same direction the particle stream travels — landing on a
-   shared left edge at 54%. Positioned in screen space rather than pinned to
-   the geometry, because the mark sways through perspective and anchored text
-   would be dragged with it.
+/* State 5 — the pillar labels.
+   The particle icons peel off the mark and sit at 25/50/75% of the frame
+   height (see iconYs in mark.js); each label row is vertically centred on
+   its icon and SLIDES IN LEFT TO RIGHT beside it, out of the mark, in the
+   direction the peel travels. Positioned in screen space rather than pinned
+   to the geometry, because the icons breathe and anchored text would drift
+   with them.
 
-   `transform` carries the entrance travel and nothing else; the resting
-   position lives entirely in left/top. An earlier version split centring
-   onto `translate` and motion onto `transform`, and Lightning CSS folded the
-   two together during minification, silently dropping the `-50%` — one
-   property, one job is what makes this block minifier-proof. */
+   `transform` carries both the entrance travel (x) and the vertical
+   centring (y, constant across both states). That is safe here because the
+   `translate` PROPERTY is unused — the Lightning CSS hazard was translate
+   and transform being folded together during minification; a single
+   transform cannot fold into itself. */
 [data-hero-scroll] [data-hero-msg] {
+  left: 72%;
   opacity: 0;
   filter: blur(6px);
-  transform: translate(-72px, 0);
+  transform: translate(-72px, -50%);
   transition:
-    opacity 900ms var(--ease-resolve),
-    filter 900ms var(--ease-resolve),
-    transform 900ms var(--ease-resolve);
-}
-
-[data-hero-scroll] [data-hero-msg] {
-  left: 54%;
-  text-align: left;
+    opacity 900ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 900ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 [data-hero-scroll] [data-hero-msg='0'] {
-  top: 24%;
+  top: 25%;
 }
 
 [data-hero-scroll] [data-hero-msg='1'] {
-  top: 40%;
+  top: 50%;
 }
 
 [data-hero-scroll] [data-hero-msg='2'] {
-  top: 56%;
-}
-
-[data-hero-scroll] [data-hero-msg='3'] {
-  top: 72%;
+  top: 75%;
 }
 
 /* `none`, not `blur(0)`. Lightning CSS minifies `blur(0)` down to a bare
@@ -386,7 +377,21 @@ html {
 [data-hero-scroll] [data-hero-msg].is-in {
   opacity: 1;
   filter: none;
-  transform: translate(0, 0);
+  transform: translate(0, -50%);
+}
+
+/* Small viewports: tuck toward the icon column; drop the support line. */
+@media (max-width: 768px) {
+  [data-hero-scroll] [data-hero-msg] {
+    left: 55%;
+    right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  [data-hero-scroll] [data-hero-msg] > span:last-child {
+    display: none;
+  }
 }
 
 /* Reveal.
