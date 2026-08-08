@@ -19,7 +19,8 @@ type MarkElement = HTMLElement & {
      3  0.52 .. 0.58   the mark completes
      4  0.58 .. 0.62   it holds and sways
      5  0.62 .. 0.94   the three pillars peel off the mark, one window each
-     6  0.955 .. 1.00  release: the field lets go upward, unpin
+        1.00           unpin — the mark, icons and labels HOLD their formed
+                       state as the next section arrives; no dispersal
    ------------------------------------------------------------------ */
 
 const FORM_FROM = 0.06;
@@ -37,10 +38,6 @@ const PEEL: ReadonlyArray<readonly [number, number]> = [
   [0.74, 0.84],
   [0.86, 0.94],
 ];
-
-/** The whole field disperses upward across the last stretch, labels retract
- *  once it is 35% gone. */
-const RELEASE_FROM = 0.955;
 
 /** Upper bound of each state, used only to publish `data-hero-state`. */
 const STATE_END = [0.06, 0.32, 0.52, 0.66, 0.74, 1];
@@ -144,17 +141,15 @@ export function MarkCanvas({
         host.dataset.heroState = String(state < 0 ? STATE_END.length - 1 : state);
       }
 
-      // Pillar peels and the release, all off the same damped clock.
+      // Pillar peels, off the damped clock. There is deliberately no release
+      // here: the mark, icons and labels hold their formed state through the
+      // unpin, and the next section simply scrolls over them.
       const peels = PEEL.map(([a, b]) => span(p, a, b));
       el.setPeel?.(peels[0], peels[1], peels[2]);
-      const rel = span(p, RELEASE_FROM, 1);
-      el.setRelease?.(rel);
 
-      // Labels latch mid-peel and unlatch on the way back up; they retract
-      // with the release.
+      // Labels latch mid-peel and unlatch on the way back up.
       let shown = 0;
       while (shown < PEEL.length && peels[shown] > 0.45) shown++;
-      if (rel > 0.35) shown = 0;
       if (shown !== lastShown) {
         for (let i = 0; i < pillars.length; i++) {
           pillars[i].classList.toggle('is-in', i < shown);
