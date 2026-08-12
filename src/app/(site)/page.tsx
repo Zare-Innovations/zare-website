@@ -4,9 +4,10 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { siteUrl } from '@/constants';
 import { homepageJsonLd } from '@/lib/seo';
-// Möbius hero variant. To go back to the Z-mark hero, swap this single
-// import for `import { Hero } from './_sections/hero'` and render <Hero />.
-import { HeroMobius } from './_sections/hero-mobius';
+// Globe hero variant. Sibling versions, one import swap away:
+//   Z-mark   `import { Hero } from './_sections/hero'`
+//   Möbius   `import { HeroMobius } from './_sections/hero-mobius'`
+import { HeroGlobe } from './_sections/hero-globe';
 import { TrustStrip } from './_sections/trust-strip';
 import { TwoPaths } from './_sections/two-paths';
 import { FeaturedWork } from './_sections/featured-work';
@@ -49,7 +50,7 @@ export default function HomePage() {
       <Header />
 
       <main id="main">
-        <HeroMobius />
+        <HeroGlobe />
         <TrustStrip />
         <TwoPaths />
         <FeaturedWork />

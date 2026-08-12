@@ -293,21 +293,24 @@ html {
    has a resolved starting style to animate from. */
 [data-hero-scroll] zare-mark,
 [data-hero-scroll] zare-mobius,
-[data-hero-scroll] zare-mobius-write {
+[data-hero-scroll] zare-mobius-write,
+[data-hero-scroll] zare-globe-write {
   opacity: 0;
   transition: opacity 2500ms var(--ease-resolve);
 }
 
 [data-hero-scroll] zare-mark[data-lit='true'],
 [data-hero-scroll] zare-mobius[data-lit='true'],
-[data-hero-scroll] zare-mobius-write[data-lit='true'] {
+[data-hero-scroll] zare-mobius-write[data-lit='true'],
+[data-hero-scroll] zare-globe-write[data-lit='true'] {
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-hero-scroll] zare-mark,
   [data-hero-scroll] zare-mobius,
-  [data-hero-scroll] zare-mobius-write {
+  [data-hero-scroll] zare-mobius-write,
+  [data-hero-scroll] zare-globe-write {
     transition: none;
   }
 }
@@ -435,6 +438,91 @@ html {
   [data-hero-scroll] [data-hero-pillar] > span:last-child {
     display: none;
   }
+}
+
+/* State 5, globe hero variant — the descriptive block. Real content with
+   clickable CTAs, so visibility gates it out of the tab order until it is
+   latched; the transition delays visibility on the way OUT so the exit
+   animates, and clears the delay on the way in.
+
+   Single `transform` property throughout — Lightning CSS folding hazard,
+   see [data-hero-msg]. */
+[data-hero-scroll] [data-hero-desc] {
+  left: clamp(24px, 7vw, 128px);
+  top: 50%;
+  max-width: min(30rem, 38vw);
+  opacity: 0;
+  visibility: hidden;
+  filter: blur(6px);
+  transform: translate(-28px, -50%);
+  transition:
+    opacity 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s linear 800ms;
+}
+
+/* `none`, not `blur(0)` — same minifier rationale as [data-hero-msg]. */
+[data-hero-scroll] [data-hero-desc].is-in {
+  opacity: 1;
+  visibility: visible;
+  filter: none;
+  transform: translate(0, -50%);
+  transition:
+    opacity 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s;
+}
+
+/* Small viewports: the block tucks to the bottom, full width, under the
+   globe rather than beside it. */
+@media (max-width: 768px) {
+  [data-hero-scroll] [data-hero-desc] {
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: 6%;
+    max-width: none;
+    transform: translate(0, 28px);
+  }
+
+  [data-hero-scroll] [data-hero-desc].is-in {
+    transform: translate(0, 0);
+  }
+}
+
+/* The formed globe is draggable; the cursor says so. The element adds
+   .globe-dragging to the section while a drag is live. */
+[data-hero-scroll][data-hero-state='4'] section,
+[data-hero-scroll][data-hero-state='5'] section {
+  cursor: grab;
+}
+
+[data-hero-scroll] section.globe-dragging {
+  cursor: grabbing;
+}
+
+/* Addis Ababa hover label, appended inside <zare-globe-write>. */
+zare-globe-write .globe-label {
+  position: absolute;
+  transform: translate(-50%, -140%);
+  pointer-events: none;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: #10cfd1;
+  background: rgba(2, 15, 24, 0.88);
+  border: 1px solid rgba(64, 193, 199, 0.3);
+  padding: 5px 9px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+zare-globe-write .globe-label.on {
+  opacity: 1;
 }
 
 /* Reveal.
