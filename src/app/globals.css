@@ -292,19 +292,22 @@ html {
    The attribute is set one frame after the element mounts, so the transition
    has a resolved starting style to animate from. */
 [data-hero-scroll] zare-mark,
-[data-hero-scroll] zare-mobius {
+[data-hero-scroll] zare-mobius,
+[data-hero-scroll] zare-mobius-write {
   opacity: 0;
   transition: opacity 2500ms var(--ease-resolve);
 }
 
 [data-hero-scroll] zare-mark[data-lit='true'],
-[data-hero-scroll] zare-mobius[data-lit='true'] {
+[data-hero-scroll] zare-mobius[data-lit='true'],
+[data-hero-scroll] zare-mobius-write[data-lit='true'] {
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-hero-scroll] zare-mark,
-  [data-hero-scroll] zare-mobius {
+  [data-hero-scroll] zare-mobius,
+  [data-hero-scroll] zare-mobius-write {
     transition: none;
   }
 }

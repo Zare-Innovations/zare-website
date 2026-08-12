@@ -11,19 +11,17 @@ type MobiusElement = HTMLElement & {
 /* ------------------------------------------------------------------
    The states, as fractions of the hero's scroll range.
 
-     0  0.00 .. 0.06   loose particle cloud, hero copy at rest
-     1  0.06 .. 0.32   the cloud starts gathering, copy travels out of frame
-     2  0.32 .. 0.52   the Möbius strip becomes recognisable
-     3  0.52 .. 0.58   the strip completes; the loop light rides its edge
-     4  0.58 .. 0.62   it holds, rotating
+     0  0.00 .. 0.06   streaming rest field, hero copy at rest
+     1  0.06 .. 0.32   the stream sweeps right and over the top; copy
+                       travels out of frame
+     2  0.32 .. 0.52   the stream pours down and WRITES the Möbius strip
+                       around its loop; the loop light rides the edge
+     3  0.52 .. 0.58   the write closes its seam; the strip completes
+     4  0.58 .. 0.62   it holds — wobble, markers and rotation ease in
      5  0.62 .. 0.94   the three pillar texts rise out of the strip's
                        centre, one scroll window each
         1.00           unpin — the strip keeps rotating and the texts hold
                        as the next section arrives; no dispersal
-
-   mobius.js maps the formation fraction across formT + 1 internally, so
-   the strip is fully formed at ~89% of the FORM window and spends the
-   rest holding its shape while the loop light completes its circuit.
    ------------------------------------------------------------------ */
 
 const FORM_FROM = 0.06;
@@ -53,17 +51,16 @@ const span = (v: number, from: number, to: number) =>
   clamp01((v - from) / (to - from));
 
 /**
- * Wrapper around the `<zare-mobius>` web component (variant `particles`)
- * and the scroll sequence that drives it. Same choreography contract as
- * MarkCanvas — damped clock, cards/head exit variables, state publishing —
- * but the formation target is the Möbius strip from the zare-website-v3
- * handoff, centred, and the pillars are plain text rising from its centre
- * rather than particle icons peeling off a glyph.
+ * Wrapper around the `<zare-mobius-write>` web component and the scroll
+ * sequence that drives it. Same choreography contract as MarkCanvas —
+ * damped clock, cards/head exit variables, state publishing — driving the
+ * hybrid element: the mark hero's particle field and scroll-flow writing
+ * the v3 Möbius strip (see mobius-write.js). The pillars are plain text
+ * rising from the strip's centre.
  *
- * Coarse pointers stay time-driven: mobius.js plays the original v3
- * timed formation there and the hero stays a single viewport, exactly as
- * the old MobiusCanvas behaved. Reduced motion skips the Three download
- * entirely and keeps the static gradient.
+ * Coarse pointers stay time-driven: the element plays a timed formation
+ * and the hero stays a single viewport. Reduced motion skips the Three
+ * download entirely and keeps the static gradient.
  */
 export function MobiusHeroCanvas({
   speed = 1.4,
@@ -88,7 +85,7 @@ export function MobiusHeroCanvas({
         const THREE = await import('three');
         if (cancelled) return;
         (window as unknown as { THREE: unknown }).THREE = THREE;
-        await import('./mobius.js');
+        await import('./mobius-write.js');
         if (!cancelled) setReady(true);
       } catch {
         // Leaves the static gradient in place.
@@ -233,9 +230,8 @@ export function MobiusHeroCanvas({
 
   if (!ready) return null;
 
-  return createElement('zare-mobius', {
+  return createElement('zare-mobius-write', {
     ref: elRef,
-    variant: 'particles',
     speed: String(speed),
     markers: String(markers),
     scale: String(scale),

@@ -16,15 +16,17 @@ import { MobiusHeroCanvas } from '@/components/three/mobius-hero-canvas';
  * S1 — Hero, Möbius variant.
  *
  * Same six-state scroll contract as the mark hero (see hero.tsx — swap the
- * import in page.tsx to go back), but the formation target is the particle
- * Möbius strip from the zare-website-v3 handoff, centred, and the pillars
- * are plain text rising out of the strip's centre rather than particle
- * icons peeling off a glyph.
+ * import in page.tsx to go back), but the formation target is the centred
+ * Möbius strip: the mark hero's particle field and scroll-flow WRITE the
+ * v3 strip around its loop (see mobius-write.js), and the pillars are
+ * plain text rising out of the strip's centre rather than particle icons
+ * peeling off a glyph.
  *
  *   0  today's hero exactly: eyebrow, headline, two lines, both path cards
- *   1  the particle cloud gathers while the cards travel out of frame in X
- *   2  the Möbius strip becomes recognisable
- *   3  the strip completes; a light rides its single endless edge
+ *   1  the rest field sweeps right and over the top while the cards travel
+ *      out of frame in X
+ *   2  the stream pours down and writes the Möbius strip around its loop
+ *   3  the write closes its seam; a light rides the single endless edge
  *   4  it holds, rotating slowly
  *   5  the three pillar texts rise up out of the strip's centre, one per
  *      scroll window
