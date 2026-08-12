@@ -291,17 +291,20 @@ html {
 
    The attribute is set one frame after the element mounts, so the transition
    has a resolved starting style to animate from. */
-[data-hero-scroll] zare-mark {
+[data-hero-scroll] zare-mark,
+[data-hero-scroll] zare-mobius {
   opacity: 0;
   transition: opacity 2500ms var(--ease-resolve);
 }
 
-[data-hero-scroll] zare-mark[data-lit='true'] {
+[data-hero-scroll] zare-mark[data-lit='true'],
+[data-hero-scroll] zare-mobius[data-lit='true'] {
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-hero-scroll] zare-mark {
+  [data-hero-scroll] zare-mark,
+  [data-hero-scroll] zare-mobius {
     transition: none;
   }
 }
@@ -390,6 +393,57 @@ html {
 
 @media (max-width: 480px) {
   [data-hero-scroll] [data-hero-msg] > span:last-child {
+    display: none;
+  }
+}
+
+/* State 5, Möbius hero variant — the pillar texts RISE OUT OF THE STRIP'S
+   CENTRE. Every row starts at the same point (its final top plus --rise,
+   which always sums to 54svh — just inside the strip), then travels
+   straight up to its slot: the first pillar rises highest, each later one
+   settles beneath the previous, so the stack reads as emerging from the
+   loop. The latch class is the same `is-in` MarkCanvas uses; only the
+   selector and the geometry differ.
+
+   As with [data-hero-msg], `transform` carries both the horizontal
+   centring and the travel; the `translate` PROPERTY stays unused so the
+   Lightning CSS folding hazard cannot apply. */
+[data-hero-scroll] [data-hero-pillar] {
+  left: 50%;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translate(-50%, calc(-50% + var(--rise, 24svh)));
+  transition:
+    opacity 1000ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 1000ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 1000ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+[data-hero-scroll] [data-hero-pillar='0'] {
+  top: 20%;
+  --rise: 34svh;
+}
+
+[data-hero-scroll] [data-hero-pillar='1'] {
+  top: 32%;
+  --rise: 22svh;
+}
+
+[data-hero-scroll] [data-hero-pillar='2'] {
+  top: 44%;
+  --rise: 10svh;
+}
+
+/* `none`, not `blur(0)` — same minifier rationale as [data-hero-msg]. */
+[data-hero-scroll] [data-hero-pillar].is-in {
+  opacity: 1;
+  filter: none;
+  transform: translate(-50%, -50%);
+}
+
+/* Small viewports: the support line goes; the title alone carries it. */
+@media (max-width: 480px) {
+  [data-hero-scroll] [data-hero-pillar] > span:last-child {
     display: none;
   }
 }

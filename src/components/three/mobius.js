@@ -408,9 +408,13 @@
       this._ro.observe(this);
       this._resize();
 
-      // pointer parallax (desktop only)
-      if (!coarse && !reduced && this.parentElement) {
-        var host = this.parentElement;
+      // pointer parallax (desktop only). Attached to the owning <section>
+      // rather than the parent wrapper: in the hero the wrapper div is
+      // pointer-events-none, so events never fire on it. Same fix as the
+      // pointer block in mark.js.
+      var pxHost = this.closest('section') || this.parentElement;
+      if (!coarse && !reduced && pxHost) {
+        var host = pxHost;
         host.addEventListener('pointermove', function (e) {
           var r = host.getBoundingClientRect();
           self._tx = (e.clientX - r.left) / r.width * 2 - 1;
