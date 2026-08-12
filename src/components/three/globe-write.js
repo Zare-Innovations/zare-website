@@ -25,8 +25,19 @@
    meridians around like a scanner, and Ethiopia lands facing the camera as
    the loop closes. Each particle's lateral offset is the 3D vector from
    its equatorial arrival point to its own land dot, eased in as tsp²: at
-   arrival pathPoint + lateral reproduces the dot exactly, so the formed
-   globe is the v3 globe, particle for particle.
+   arrival pathPoint + lateral reproduces the dot exactly — a sphere of
+   the field's own particles.
+
+   THE REVEAL. The particle sphere is not the final globe — it is its
+   chrysalis. A second scroll window (setReveal) fades the REAL v3 globe
+   in — fine land dots, core, coastlines, borders, Ethiopia, markers,
+   arcs, flights — while the field particles LIFT OFF the surface into an
+   orbiting shell around it: the atmosphere glow is made of particles,
+   not a gradient sprite, and the globe underneath stays clean. Particles
+   crossing in front of the disc are veiled out so the geography reads
+   unobstructed; the shell shows around the limb, where an atmosphere
+   belongs. Fully reversible: scrolling back re-condenses the halo onto
+   the sphere and hands it back to the write.
 
    ONE FRAME, TWO SPACES — same trick as the Möbius: the group holds its
    base pose (tilt 0.38, Ethiopia-forward yaw) from the first frame, and
@@ -73,9 +84,9 @@
      The sweep runs once around and the loop closes where it began. */
   var LON0 = MARKERS[0].ll[1] + 180;
 
-  /* Globe centre at this fraction of the view half-width, right of centre —
-     the descriptive block owns the left half. Clamped on narrow viewports. */
-  var ANCHOR = 0.45;
+  /* Globe centre at this fraction of the view half-width, LEFT of centre —
+     the descriptive block owns the right half. Clamped on narrow viewports. */
+  var ANCHOR = -0.45;
 
   var SAMPLES = 257;
   var RING_PTS = 240;
@@ -92,29 +103,18 @@
     };
   }
 
-  function glowTexture(THREE, inner, outer) {
+  /* Soft dot for the v3 land-mass layers — ported verbatim. The rim glow
+     that used to be a gradient sprite is now the particle halo itself. */
+  function dotTexture(THREE) {
     var c = document.createElement('canvas');
-    c.width = c.height = 64;
+    c.width = c.height = 32;
     var x = c.getContext('2d');
-    var g = x.createRadialGradient(32, 32, 2, 32, 32, 30);
-    g.addColorStop(0, inner);
-    g.addColorStop(0.35, outer);
-    g.addColorStop(1, 'rgba(0,0,0,0)');
+    var g = x.createRadialGradient(16, 16, 1, 16, 16, 15);
+    g.addColorStop(0, 'rgba(255,255,255,1)');
+    g.addColorStop(0.5, 'rgba(255,255,255,.6)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
     x.fillStyle = g;
-    x.fillRect(0, 0, 64, 64);
-    return new THREE.CanvasTexture(c);
-  }
-  function rimTexture(THREE) {
-    var c = document.createElement('canvas');
-    c.width = c.height = 256;
-    var x = c.getContext('2d');
-    var g = x.createRadialGradient(128, 128, 60, 128, 128, 126);
-    g.addColorStop(0, 'rgba(64,193,199,0)');
-    g.addColorStop(0.76, 'rgba(64,193,199,0)');
-    g.addColorStop(0.84, 'rgba(64,193,199,.34)');
-    g.addColorStop(1, 'rgba(64,193,199,0)');
-    x.fillStyle = g;
-    x.fillRect(0, 0, 256, 256);
+    x.fillRect(0, 0, 32, 32);
     return new THREE.CanvasTexture(c);
   }
 
@@ -338,11 +338,18 @@
       this._resumeAt = 0;
       this._scrollDriven = false;
       this._formP = 0;
+      this._revP = 0;
     }
 
     /** Public. p is 0..1 across the hero's formation range. */
     setFormProgress(p) {
       this._formP = p < 0 ? 0 : p > 1 ? 1 : p;
+    }
+
+    /** Public. r is 0..1 across the reveal window: the real globe fades in
+     *  while the particle sphere lifts off into the orbiting halo. */
+    setReveal(r) {
+      this._revP = r < 0 ? 0 : r > 1 ? 1 : r;
     }
 
     /** Public. Hands the formation clock over to the scrollbar. */
@@ -663,6 +670,8 @@
           uSamples: { value: SAMPLES },
           uFlowStart: { value: flowStart },
           uPlane: { value: new THREE.Vector3(plA, plB, plC) },
+          uReveal: { value: 0 },
+          uWorldR: { value: this._worldR },
           uPR: { value: Math.min(window.devicePixelRatio || 1, 2) }
         },
         vertexShader: [
@@ -671,8 +680,8 @@
           'attribute float aShade; attribute float aDetach; attribute float aPhase; attribute float aEth;',
           'uniform float uTime; uniform float uForm; uniform float uDrift;',
           'uniform sampler2D uTraj; uniform float uRows; uniform float uSamples;',
-          'uniform float uFlowStart; uniform vec3 uPlane; uniform float uPR;',
-          'varying float vShade; varying float vFade; varying float vForm; varying float vRest; varying float vEth;',
+          'uniform float uFlowStart; uniform vec3 uPlane; uniform float uReveal; uniform float uWorldR; uniform float uPR;',
+          'varying float vShade; varying float vFade; varying float vForm; varying float vRest; varying float vEth; varying float vHalo;',
           'float wmod(float v, float r){ return mod(mod(v, r) + r, r); }',
           'vec4 traj(float row, float u){',
           '  float sp = (1.0 - clamp(u, 0.0, 1.0)) * (uSamples - 1.0);',
@@ -710,8 +719,32 @@
           '  pos += aNorm * sin(uTime * 0.5 + aPhase) * 0.006 * formed;',
           '  float dr = max(0.0, sin(uTime * 0.12 + aPhase));',
           '  pos += aNorm * dr * dr * aDetach * 0.10 * formed;',
+          /* THE REVEAL: the written shell releases into an orbiting halo —
+             the atmosphere is particles. Each particle rides out along its
+             own radial to a personal shell radius and circles the sphere
+             at its own speed and direction (half with the spin, half
+             against), so the glow is a current, not a printed ring. Gated
+             by tsp so nothing lifts that has not first arrived. */
+          '  float rv = uReveal * tsp;',
+          '  if (rv > 0.001) {',
+          '    float hr = 1.12 + fract(aShade * 7.13) * 0.5;',
+          '    float ds = step(0.5, fract(aPhase * 0.31831)) * 2.0 - 1.0;',
+          '    float oa = uTime * (0.015 + 0.05 * fract(aPhase * 1.618)) * ds;',
+          '    vec3 hd = vec3(aNorm.x * cos(oa) + aNorm.z * sin(oa), aNorm.y,',
+          '                   -aNorm.x * sin(oa) + aNorm.z * cos(oa));',
+          '    vec3 halo = hd * hr + aNoise * 0.04;',
+          '    pos = mix(pos, halo, smoothstep(0.0, 1.0, rv));',
+          '  }',
+          '  vHalo = rv;',
           '  vec4 mv = modelViewMatrix * vec4(pos, 1.0);',
           '  gl_Position = projectionMatrix * mv;',
+          /* Keep the revealed globe CLEAN: halo particles crossing in
+             front of the disc are veiled out; the shell shows around the
+             limb, where an atmosphere belongs. */
+          '  vec4 mvC = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);',
+          '  vec3 offv = mv.xyz - mvC.xyz;',
+          '  float veil = smoothstep(uWorldR * 0.98, uWorldR * 0.62, length(offv.xy))',
+          '             * step(0.0, offv.z) * vHalo;',
           /* Banding keys on the braid wave: s4.a minus the view plane's
              own depth at this texel (uPlane), not on screen height. */
           '  float dz = (s4.a - (uPlane.x * s4.x + uPlane.y * s4.y + uPlane.z)) * rest',
@@ -719,25 +752,29 @@
           '  float band = min(' + (DEPTH_BANDS - 1) + '.0, floor(clamp(dz * 0.9 + 0.5, 0.0, 1.0) * ' + DEPTH_BANDS + '.0));',
           '  float dt = band / ' + (DEPTH_BANDS - 1) + '.0;',
           '  gl_PointSize = aSize * uPR * (22.0 / -mv.z) * (0.5 + 0.5 * tsp)',
-          '    * mix(mix(0.6, 1.4, dt) * aBig, 1.0, tsp) * (1.0 + aEth * 0.25 * tsp);',
+          '    * mix(mix(0.6, 1.4, dt) * aBig, 1.0, tsp) * (1.0 + aEth * 0.25 * tsp)',
+          '    * (1.0 - vHalo * 0.35);',
           '  vShade = aShade;',
           '  float edge = smoothstep(0.0, 0.05, flowing)',
           '             * (1.0 - smoothstep(flowRange - 0.05, flowRange, flowing));',
           '  float tw = 0.85 + 0.15 * sin(uTime * 0.55 + aPhase * 4.0);',
           '  vFade = mix(0.72 * tw * mix(0.55, 1.0, dt) * edge, 1.0, tsp);',
+          '  vFade *= 1.0 - veil * 0.9;',
           '  vForm = smoothstep(0.45, 0.95, tsp);',
           '  vRest = rest;',
           '  vEth = aEth;',
           '}'
         ].join('\n'),
         fragmentShader: [
-          'varying float vShade; varying float vFade; varying float vForm; varying float vRest; varying float vEth;',
+          'varying float vShade; varying float vFade; varying float vForm; varying float vRest; varying float vEth; varying float vHalo;',
           'void main(){',
           '  float d = length(gl_PointCoord - 0.5);',
           '  float a = smoothstep(0.5, mix(0.10, 0.34, vRest), d) * vFade;',
           /* The v3 globe's land palette: pale teal dots, Ethiopia brighter.
              Flat like the reference — the globe reads by geography, not by
-             a lit surface. The rest field stays the mark's pale white. */
+             a lit surface. The rest field stays the mark's pale white; the
+             halo takes the atmosphere teal and sits quieter than the
+             sphere it surrounds. */
           '  vec3 landA = vec3(0.659, 0.867, 0.882);',
           '  vec3 landB = vec3(0.847, 0.984, 0.988);',
           '  vec3 ethC  = vec3(0.561, 0.941, 0.957);',
@@ -745,7 +782,9 @@
           '  land = mix(land, ethC, vEth);',
           '  vec3 pale = vec3(0.86, 0.94, 0.97);',
           '  vec3 col = mix(pale, land, vForm);',
-          '  gl_FragColor = vec4(col, a * (0.30 + 0.26 * vRest) * (1.0 + vEth * 0.8));',
+          '  col = mix(col, vec3(0.35, 0.80, 0.83), vHalo * 0.8);',
+          '  float alpha = a * (0.30 + 0.26 * vRest) * (1.0 + vEth * 0.8);',
+          '  gl_FragColor = vec4(col, alpha * (1.0 - vHalo * 0.45));',
           '}'
         ].join('\n')
       });
@@ -753,7 +792,7 @@
       group.add(new THREE.Points(pg, pmat));
       this._pmat = pmat;
 
-      /* ---- The globe's own layers, arriving with the write ------------ */
+      /* ---- The REAL globe, revealed from inside the particle sphere ---- */
       /* Opaque navy core: occludes the far side once the globe exists.
          Rendered first so the depth buffer is in place for everything else. */
       var core = new THREE.Mesh(
@@ -764,16 +803,51 @@
       core.visible = false;
       group.add(core);
       this._core = core;
+      /* No rim sprite: the atmosphere glow is the particle halo itself. */
 
-      var rim = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: rimTexture(THREE), transparent: true, opacity: 0,
-        depthWrite: false, blending: THREE.AdditiveBlending
-      }));
-      rim.scale.setScalar(GR * 2.62);
-      group.add(rim);
-      this._rim = rim;
+      var dtex = dotTexture(THREE);
 
-      var dtex = glowTexture(THREE, 'rgba(255,255,255,1)', 'rgba(255,255,255,.45)');
+      /* The v3 land masses — its own fine dots, so the revealed globe is
+         clean and the field's big particles stay OFF it. PointsMaterial
+         size is world units and does not scale with the group, hence the
+         explicit worldR factor. */
+      var landGeom = (function () {
+        var pos = [], stride = coarse ? 2 : 1;
+        for (var li = 0; li < land.length; li += stride) {
+          var lv = ll2v(land[li][0], land[li][1], GR);
+          pos.push(lv.x, lv.y, lv.z);
+        }
+        var g2 = new THREE.BufferGeometry();
+        g2.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        return g2;
+      })();
+      var landMat = new THREE.PointsMaterial({
+        map: dtex, color: 0xa8dde1,
+        size: (coarse ? 0.017 : 0.0125) * this._worldR,
+        transparent: true, opacity: 0, depthWrite: false,
+        blending: THREE.AdditiveBlending, sizeAttenuation: true
+      });
+      group.add(new THREE.Points(landGeom, landMat));
+      this._landMat = landMat;
+
+      var ethGeom = (function () {
+        var pos = [];
+        for (var ei = 0; ei < ethDots.length; ei++) {
+          var evv = ll2v(ethDots[ei][0], ethDots[ei][1], GR * 1.001);
+          pos.push(evv.x, evv.y, evv.z);
+        }
+        var g3 = new THREE.BufferGeometry();
+        g3.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        return g3;
+      })();
+      var ethMat = new THREE.PointsMaterial({
+        map: dtex, color: 0x8ff0f4,
+        size: (coarse ? 0.019 : 0.014) * this._worldR,
+        transparent: true, opacity: 0, depthWrite: false,
+        blending: THREE.AdditiveBlending, sizeAttenuation: true
+      });
+      group.add(new THREE.Points(ethGeom, ethMat));
+      this._ethMat = ethMat;
 
       /* coastlines (brighter) > country borders (faint) > Ethiopia (brightest) */
       this._lineMats = [];
@@ -901,10 +975,11 @@
       }
 
       if (reduced) {
-        /* Static frame: globe formed, Ethiopia forward, routes visible. */
+        /* Static frame: globe revealed, halo parked, Ethiopia forward. */
         this._pmat.uniforms.uTime.value = 200;
         this._pmat.uniforms.uForm.value = 1;
         this._pmat.uniforms.uDrift.value = 0;
+        this._pmat.uniforms.uReveal.value = 1;
         this._gate = 1;
         this._applyGate(1);
         this._flights.forEach(function (f, i) {
@@ -922,14 +997,15 @@
       this._syncRunning();
     }
 
-    /* Seats the globe right of centre; the descriptive block owns the
-       left. Clamped so narrow viewports keep the sphere on screen. */
+    /* Seats the globe left of centre; the descriptive block owns the
+       right. Clamped so narrow viewports keep the sphere on screen —
+       Math.min(0, ...) stops the clamp itself pushing it right of centre. */
     _applyAnchor(w, h) {
       var halfView = Math.tan(this._camera.fov * Math.PI / 360) *
         this._camera.position.z * (w / h);
       var want = ANCHOR * halfView;
-      var maxX = halfView - this._worldR - 0.25;
-      this._group.position.x = Math.max(0, Math.min(want, maxX));
+      var minX = -(halfView - this._worldR - 0.25);
+      this._group.position.x = Math.min(0, Math.max(want, minX));
       this._group.position.y = 0;
     }
 
@@ -961,12 +1037,14 @@
       this._group.rotation.set(TILT_X, HOME_ROT + this._rot * this._gate, 0);
     }
 
-    /* Everything that is not particles fades with the write's completion. */
+    /* Everything that is not field particles rides the REVEAL: the real
+       globe fades in as the particle sphere lifts off around it. */
     _applyGate(g) {
       this._gate = g;
       this._core.visible = g > 0.02;
       this._core.material.opacity = g;
-      this._rim.material.opacity = 0.9 * g;
+      this._landMat.opacity = 0.62 * g;
+      this._ethMat.opacity = 0.95 * g;
       for (var i = 0; i < this._lineMats.length; i++) {
         this._lineMats[i].uniforms.uGate.value = g;
       }
@@ -1011,10 +1089,15 @@
         this._pmat.uniforms.uDrift.value =
           this._drift * Math.pow(1 - form, 1.5);
 
-        /* Core, rim, geography, markers, arcs and the spin all arrive over
-           the write's last stretch — and leave on reverse scroll. */
-        g = Math.max(0, Math.min(1, (form - 0.85) / 0.15));
+        /* The REVEAL window: scroll-driven through setReveal, or on the
+           clock after the timed formation completes. Core, geography,
+           markers, arcs, the halo lift-off and the spin all ride it — and
+           reverse with it. */
+        g = this._scrollDriven
+          ? this._revP
+          : Math.max(0, Math.min(1, (this._elapsed - FORM_T - 0.5) / 1.5));
         this._applyGate(g);
+        this._pmat.uniforms.uReveal.value = g;
 
         if (!this._dragging && now > this._resumeAt) {
           this._rot += dt * 0.085 * sp * g; /* ~74s per revolution */

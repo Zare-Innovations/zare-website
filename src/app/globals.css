@@ -440,21 +440,22 @@ html {
   }
 }
 
-/* State 5, globe hero variant — the descriptive block. Real content with
-   clickable CTAs, so visibility gates it out of the tab order until it is
-   latched; the transition delays visibility on the way OUT so the exit
-   animates, and clears the delay on the way in.
+/* Globe hero variant — the descriptive block, RIGHT of the globe. Real
+   content with clickable CTAs, so visibility gates it out of the tab
+   order until it is latched; the transition delays visibility on the way
+   OUT so the exit animates, and clears the delay on the way in. It
+   arrives in the same scroll window that reveals the globe.
 
    Single `transform` property throughout — Lightning CSS folding hazard,
    see [data-hero-msg]. */
 [data-hero-scroll] [data-hero-desc] {
-  left: clamp(24px, 7vw, 128px);
+  right: clamp(24px, 7vw, 128px);
   top: 50%;
   max-width: min(30rem, 38vw);
   opacity: 0;
   visibility: hidden;
   filter: blur(6px);
-  transform: translate(-28px, -50%);
+  transform: translate(28px, -50%);
   transition:
     opacity 800ms cubic-bezier(0.22, 0.61, 0.36, 1),
     filter 800ms cubic-bezier(0.22, 0.61, 0.36, 1),

@@ -12,25 +12,27 @@ import { GlobeHeroCanvas } from '@/components/three/globe-hero-canvas';
  * S1 — Hero, globe variant.
  *
  * Same six-state scroll contract as the mark hero (see hero.tsx — swap the
- * import in page.tsx to switch versions), but the formation target is the
- * v3 dotted Earth: the mark hero's particle field and scroll-flow WRITE
- * the globe meridian by meridian, right of centre (see globe-write.js).
- * Once written, the globe is fully interactive — it spins, fine pointers
- * can drag it, Addis Ababa raises a label on hover, the served-country
+ * import in page.tsx to switch versions). The mark hero's particle field
+ * and scroll-flow WRITE a particle sphere, meridian by meridian, left of
+ * centre — then the REAL v3 dotted Earth is revealed from inside it while
+ * the particles lift off into an orbiting halo around it: the atmosphere
+ * glow is particles, the globe underneath stays clean (globe-write.js).
+ * The revealed globe is fully interactive — it spins, fine pointers can
+ * drag it, Addis Ababa raises a label on hover, the served-country
  * markers pulse and delivery arcs carry flight lights — and a descriptive
- * block with real, clickable CTAs slides in on the left.
+ * block with real, clickable CTAs arrives on the right IN THE SAME WINDOW
+ * as the reveal.
  *
  *   0  today's hero exactly: eyebrow, headline, two lines, both path cards
  *   1  the rest field sweeps right and over the top while the cards travel
  *      out of frame in X
- *   2  the stream pours down and writes the globe, meridian by meridian
- *   3  the sweep closes — core, coastlines, Ethiopia, markers and arcs
- *      arrive with it
- *   4  the globe is alive and interactive
- *   5  the descriptive block slides in with its CTAs; the remaining range
- *      is interactive dwell
- *   6  the unpin — globe and copy hold their state; the next section
- *      arrives over the finished scene, no dispersal
+ *   2  the stream pours down and writes the particle sphere
+ *   3  the sphere completes — still pure particles
+ *   4  the reveal — the real globe fades in, the shell becomes the halo,
+ *      and the descriptive block slides in on the right
+ *   5  interactive dwell: spin, drag, flights, hover label
+ *   6  the unpin — globe, halo and copy hold their state; the next
+ *      section arrives over the finished scene, no dispersal
  *
  * The three rules from hero.tsx govern this section unchanged. The
  * descriptive block is real content (NOT aria-hidden): its CTAs must be
@@ -61,12 +63,13 @@ export function HeroGlobe() {
           className="pointer-events-none absolute inset-0 z-[2]"
           style={{
             backgroundImage:
-              'radial-gradient(46% 34% at 60% 50%, rgba(3,16,25,.5), rgba(3,16,25,0) 70%)',
+              'radial-gradient(46% 34% at 40% 50%, rgba(3,16,25,.5), rgba(3,16,25,0) 70%)',
           }}
         />
 
-        {/* State 5. The descriptive block — REAL content with clickable
-            CTAs, so no aria-hidden. Position and entrance in globals.css. */}
+        {/* State 4. The descriptive block, right of the globe — REAL
+            content with clickable CTAs, so no aria-hidden. Position and
+            entrance in globals.css; it latches in the reveal window. */}
         <div className="pointer-events-none absolute inset-0 z-[3]">
           <div
             data-hero-desc

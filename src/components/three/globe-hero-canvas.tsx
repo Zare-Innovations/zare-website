@@ -5,6 +5,7 @@ import { createElement, useEffect, useRef, useState } from 'react';
 /** Element API exposed by globe-write.js once the custom element is defined. */
 type GlobeElement = HTMLElement & {
   setFormProgress?: (p: number) => void;
+  setReveal?: (r: number) => void;
   setScrollDriven?: (on: boolean) => void;
 };
 
@@ -14,17 +15,18 @@ type GlobeElement = HTMLElement & {
      0  0.00 .. 0.06   streaming rest field, hero copy at rest
      1  0.06 .. 0.32   the stream sweeps right and over the top; copy
                        travels out of frame
-     2  0.32 .. 0.52   the stream pours down and WRITES the globe,
-                       meridian by meridian, right of centre
-     3  0.52 .. 0.58   the sweep closes; core, coastlines, borders,
-                       Ethiopia, markers and delivery arcs arrive
-     4  0.58 .. 0.62   the globe is alive — spinning, flights moving,
-                       draggable, Addis label on hover
-     5  0.62 .. 0.72   the descriptive block slides in on the left with
-                       its CTAs; the rest of the range is interactive
-                       dwell — scroll holds, the visitor can play
-        1.00           unpin — globe and copy hold as the next section
-                       arrives; no dispersal
+     2  0.32 .. 0.52   the stream pours down and WRITES a particle
+                       sphere, meridian by meridian, left of centre
+     3  0.52 .. 0.58   the sphere completes — still pure particles
+     4  0.58 .. 0.72   THE REVEAL: the real globe (fine dots, core,
+                       coastlines, Ethiopia, markers, arcs) fades in as
+                       the particle shell lifts off into an orbiting
+                       halo around it; the descriptive block slides in
+                       on the right IN THE SAME WINDOW
+     5  0.72 .. 1.00   interactive dwell — spinning, draggable, flights
+                       moving, Addis label on hover
+        1.00           unpin — globe, halo and copy hold as the next
+                       section arrives; no dispersal
    ------------------------------------------------------------------ */
 
 const FORM_FROM = 0.06;
@@ -35,8 +37,9 @@ const CARDS_TO = 0.22;
 const HEAD_FROM = 0.12;
 const HEAD_TO = 0.3;
 
-/** The descriptive block's window; it latches past 0.45 of it. */
-const DESC: readonly [number, number] = [0.62, 0.72];
+/** The reveal window: real globe in, particle halo out — and the
+ *  descriptive block latches inside the SAME window (past 0.4 of it). */
+const REVEAL: readonly [number, number] = [0.6, 0.72];
 
 /** Upper bound of each state, used only to publish `data-hero-state`. */
 const STATE_END = [0.06, 0.32, 0.52, 0.66, 0.74, 1];
@@ -142,10 +145,12 @@ export function GlobeHeroCanvas({
         host.dataset.heroState = String(state < 0 ? STATE_END.length - 1 : state);
       }
 
-      // The descriptive block latches mid-window and holds to the end —
-      // it is the formed scene's copy, so it stays for the interactive
-      // dwell and through the unpin. Reversible on the way back up.
-      const on = span(p, DESC[0], DESC[1]) > 0.45;
+      // The reveal rides its own window past the formation, and the
+      // descriptive block latches inside the same window, so the copy
+      // arrives WITH the globe. Both hold to the unpin and reverse.
+      const rev = span(p, REVEAL[0], REVEAL[1]);
+      el.setReveal?.(rev);
+      const on = rev > 0.4;
       if (on !== lastIn) {
         desc?.classList.toggle('is-in', on);
         lastIn = on;
@@ -204,6 +209,7 @@ export function GlobeHeroCanvas({
       window.removeEventListener('resize', onResize);
       if (frame) cancelAnimationFrame(frame);
       el.setScrollDriven?.(false);
+      el.setReveal?.(0);
       desc?.classList.remove('is-in');
       host.style.removeProperty('--hero-cards');
       host.style.removeProperty('--hero-head');
