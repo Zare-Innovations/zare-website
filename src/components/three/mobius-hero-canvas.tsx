@@ -18,10 +18,10 @@ type MobiusElement = HTMLElement & {
                        around its loop; the loop light rides the edge
      3  0.52 .. 0.58   the write closes its seam; the strip completes
      4  0.58 .. 0.62   it holds — wobble, markers and rotation ease in
-     5  0.62 .. 0.94   the three pillar texts rise out of the strip's
-                       centre, one scroll window each
-        1.00           unpin — the strip keeps rotating and the texts hold
-                       as the next section arrives; no dispersal
+     5  0.62 .. 0.94   the pillar texts POP UP at the strip's centre, one
+                       scroll window each, each replacing the previous
+        1.00           unpin — the strip keeps rotating and the last text
+                       holds as the next section arrives; no dispersal
    ------------------------------------------------------------------ */
 
 const FORM_FROM = 0.06;
@@ -56,10 +56,12 @@ const span = (v: number, from: number, to: number) =>
  * damped clock, cards/head exit variables, state publishing — driving the
  * hybrid element: the mark hero's particle field and scroll-flow writing
  * the v3 Möbius strip (see mobius-write.js). The pillars are plain text
- * rising from the strip's centre.
+ * popping up at the strip's centre.
  *
- * Coarse pointers stay time-driven: the element plays a timed formation
- * and the hero stays a single viewport. Reduced motion skips the Three
+ * The sequence is scroll-driven on EVERY pointer type — the element's
+ * timed formation never plays when this wrapper is in charge. Momentum
+ * scrolling is absorbed by the damped clock below, and mobile URL-bar
+ * height changes re-measure on resize. Reduced motion skips the Three
  * download entirely and keeps the static gradient.
  */
 export function MobiusHeroCanvas({
@@ -113,8 +115,9 @@ export function MobiusHeroCanvas({
 
     const el = elRef.current;
     if (!el?.setScrollDriven || !el.setFormProgress) return;
-    if (!window.matchMedia('(pointer: fine)').matches) return;
-    // Coarse pointers keep the v3 timed formation; see the component note.
+    // No pointer gate: every device gets the scroll sequence. The timed
+    // auto-formation inside the element remains only as a safety net for
+    // the case where this effect never runs.
 
     const host = el.closest<HTMLElement>('[data-hero-scroll]');
     if (!host) return;
@@ -150,16 +153,18 @@ export function MobiusHeroCanvas({
         host.dataset.heroState = String(state < 0 ? STATE_END.length - 1 : state);
       }
 
-      // Pillar texts latch mid-window and unlatch on the way back up; the
-      // rise itself is a CSS transition out of the strip's centre. There is
-      // deliberately no release at the end: strip and texts hold their
-      // state and the next section simply scrolls over them.
+      // Pillar texts pop up at the strip's centre, mid-window, each
+      // replacing the previous — only the LATEST latched pillar is shown;
+      // the pop itself is a CSS transition. Reversible: scrolling back
+      // hands the centre back to the earlier pillar, then to none. There
+      // is deliberately no release at the end: strip and the last text
+      // hold their state and the next section simply scrolls over them.
       const rises = RISE.map(([a, b]) => span(p, a, b));
       let shown = 0;
       while (shown < RISE.length && rises[shown] > 0.45) shown++;
       if (shown !== lastShown) {
         for (let i = 0; i < pillars.length; i++) {
-          pillars[i].classList.toggle('is-in', i < shown);
+          pillars[i].classList.toggle('is-in', i === shown - 1);
         }
         lastShown = shown;
       }

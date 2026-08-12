@@ -28,9 +28,9 @@ import { MobiusHeroCanvas } from '@/components/three/mobius-hero-canvas';
  *   2  the stream pours down and writes the Möbius strip around its loop
  *   3  the write closes its seam; a light rides the single endless edge
  *   4  it holds, rotating slowly
- *   5  the three pillar texts rise up out of the strip's centre, one per
- *      scroll window
- *   6  the unpin — strip and texts hold their formed state; the next
+ *   5  the pillar texts pop up at the strip's centre, one per scroll
+ *      window, each replacing the previous
+ *   6  the unpin — strip and the last text hold their state; the next
  *      section arrives over the finished scene, no dispersal
  *
  * The three rules from hero.tsx govern this section unchanged:
@@ -48,8 +48,8 @@ import { MobiusHeroCanvas } from '@/components/three/mobius-hero-canvas';
  * 3. The cards leave and do not return. `TwoPaths` is the third section on
  *    the page and offers the same choice again at full weight.
  */
-/** State-5 pillar rows — text only; they rise out of the strip's centre.
- *  Position and entrance live in globals.css, keyed off the index. */
+/** State-5 pillar rows — text only; they pop up at the strip's centre,
+ *  one at a time. Position and entrance live in globals.css. */
 const pillars = [
   { title: 'CREATE', body: 'Ideas shaped into products, from first sketch.' },
   { title: 'BUILD', body: 'Engineering that ships, embedded in your team.' },
@@ -85,9 +85,9 @@ export function HeroMobius() {
           }}
         />
 
-        {/* State 5. The three pillar texts rise from the strip's centre;
-            aria-hidden here — their accessible home is the section that
-            explains them. */}
+        {/* State 5. The pillar texts pop up at the strip's centre, one at
+            a time; aria-hidden here — their accessible home is the section
+            that explains them. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-[3]"
