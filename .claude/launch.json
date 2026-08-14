@@ -1,0 +1,21 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "zare-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "zare-new-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "-C",
+        "C:\\Users\\HPPAVI~1\\DOCUME~1\\work\\DEVELO~1\\Zare\\ZARE-N~1",
+        "dev"
+      ],
+      "port": 3000
+    }
+  ]
+}
