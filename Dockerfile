@@ -1,29 +1,40 @@
-# Dockerfile for Next.js
+# syntax=docker/dockerfile:1
 
-# Use the official Node.js image as the base image
-FROM node:20-alpine
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@10.28.0 --activate
 
-# Set the working directory inside the container
+FROM base AS deps
 WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
-# Copy package.json and pnpm-lock.yaml to /app
-COPY package.json ./
-
-# Install pnpm globally
-#RUN npm install -g pnpm
-
-# Install dependencies
-RUN npm i --force
-
-ENV  RESEND_API_KEY  re_WAsL1jwy_69W8QmnpGc5qxZXk3jv6fQJp
-ENV  NEXT_PUBLIC_API_URL  https://landing.zareinnovations.com
-#Copy the rest of the application code to the working directory
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the Next.js application
-RUN npm run build
+ARG NEXT_PUBLIC_API_URL=https://landing.zareinnovations.com
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Expose port 3000 for the application
+RUN pnpm build
+
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
