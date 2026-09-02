@@ -1,0 +1,225 @@
+import Link from 'next/link';
+import Image from 'next/image';
+
+import { type CaseStudy, clientName } from '@/content/work';
+import { MonoLabel } from '@/components/typography/mono-label';
+
+/**
+ * A showcased case, in the Company Profile 2026 case-spread format — the
+ * layout the profile gives a case its own page for (artboard "07 Case
+ * LitCurrent" and its siblings), reproduced as a card.
+ *
+ * Reading order is the profile's: the CASE STUDY badge with the engine and
+ * the client, the client's mark opposite; the headline in caps; then the
+ * argument split — the problem behind an ink rule, what we built behind a
+ * teal one — beside the screenshot; and a bordered band of numbers closing
+ * it, the last cell filled.
+ *
+ * TONE. The profile prints this on white with heavy ink rules. Here it has
+ * to hold on the dark homepage as well as on /work's paper, so the heavy
+ * rules are drawn in `--heading-color` (ink on light, near-white on dark)
+ * and the band's terminal cell is filled with the accent rather than ink —
+ * an ink fill is invisible against an ink section.
+ *
+ * The profile's own labels are kept for BOTH case kinds: its Womentor
+ * spread, an embedded engagement, is headed THE PROBLEM / WHAT WE BUILT
+ * exactly as the LitCurrent one is.
+ */
+/**
+ * Column count for the numbers band, keyed by how many stats there are, so
+ * the cells divide the band evenly and none is left empty. Written out as
+ * whole class names because Tailwind scans source text — a template built
+ * from `lg:grid-cols-${n}` produces no CSS at all.
+ */
+const BAND_COLUMNS: Record<number, string> = {
+  1: 'lg:grid-cols-1',
+  2: 'lg:grid-cols-2',
+  3: 'lg:grid-cols-3',
+  4: 'lg:grid-cols-4',
+};
+
+export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
+  const pr = caseStudy.profile;
+
+  // Everything printed here comes from the profile where the profile has it.
+  // The fallbacks are for a case the profile does not carry: the engine line
+  // from `kind`, the site's own summary and problem.
+  const eyebrow =
+    pr?.eyebrow ??
+    `${caseStudy.kind === 'system' ? 'Custom AI & Software' : 'Embedded Talent'} · ${clientName(caseStudy.client)}, ${caseStudy.location}`;
+  const headline = pr?.headline ?? caseStudy.summary;
+  const problem =
+    pr?.problem ??
+    (caseStudy.kind === 'system' ? caseStudy.problem : caseStudy.situation);
+  const builtLabel = pr?.builtLabel ?? 'What we built';
+  const logos = pr?.logos ?? (caseStudy.logo ? [caseStudy.logo] : []);
+
+  // Four cells, as the profile's band carries.
+  const stats = caseStudy.outcomes.slice(0, 4);
+  const cover = caseStudy.images?.[0];
+
+  return (
+    <article className="group">
+      <Link href={`/work/${caseStudy.slug}`} className="block no-underline">
+        {/* ------------------------------------------------ the badge line */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="bg-[var(--heading-color)] px-3.5 py-1.5 font-mono text-label uppercase tracking-[0.14em] text-[var(--accent-text)]">
+              Case study
+            </span>
+            <MonoLabel className="tracking-[0.14em] text-[var(--heading-color)]">
+              {eyebrow}
+            </MonoLabel>
+          </div>
+
+          {/* The marks, on white plates and sized to be legible rather than
+              tucked into a corner. Several where the profile shows several —
+              Womentor carries Mastercard AGF beside AFIG. */}
+          {logos.length > 0 || pr?.wordmark ? (
+            <span className="flex shrink-0 items-center gap-3">
+              {logos.map((l) => (
+                <span
+                  key={l.src}
+                  className="logo-plate flex h-14 w-[132px] items-center justify-center px-3 py-2"
+                >
+                  <Image
+                    src={l.src}
+                    alt={`${l.alt} logo`}
+                    width={132}
+                    height={56}
+                    className="max-h-full w-auto max-w-full object-contain"
+                  />
+                </span>
+              ))}
+
+              {/* The profile has no logo file for LitCurrent — it typesets
+                  the product name. Reproduced as type, in the product's own
+                  blue on a white plate, because a client's mark is never
+                  knocked out to the site's palette. */}
+              {pr?.wordmark ? (
+                <span className="logo-plate flex h-14 items-center justify-center px-4">
+                  <span className="font-display text-[24px] font-bold leading-none tracking-[-0.02em] text-[#2563eb]">
+                    Lit<span className="text-[#1d4ed8]">Current</span>
+                  </span>
+                </span>
+              ) : null}
+            </span>
+          ) : null}
+        </div>
+
+        {/* -------------------------------------------------- the headline */}
+        <h3 className="mt-5 max-w-[34ch] font-display text-display-3 font-bold uppercase leading-[1.04] tracking-[-0.02em] text-[var(--heading-color)]">
+          {headline}
+        </h3>
+
+        {/* ------------------------------ the argument, beside the screen */}
+        <div className="mt-8 grid gap-9 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:items-stretch">
+          <div className="flex flex-col gap-6">
+            <div className="border-l-[6px] border-[var(--heading-color)] pl-7">
+              <MonoLabel muted className="block tracking-[0.12em]">
+                The problem
+              </MonoLabel>
+              <p className="mt-2.5 text-body-sm text-[var(--heading-color)]">
+                {problem}
+              </p>
+            </div>
+
+            <div className="border-l-[6px] border-accent pl-7">
+              <MonoLabel className="block tracking-[0.12em] text-[var(--accent-text)]">
+                {builtLabel}
+              </MonoLabel>
+              {pr?.built ? (
+                <p className="mt-2.5 text-body-sm text-[var(--heading-color)]">
+                  {pr.built}
+                </p>
+              ) : caseStudy.kind === 'system' ? (
+                <ul className="mt-2.5 flex flex-col gap-1.5 text-body-sm text-[var(--heading-color)]">
+                  {caseStudy.system.map((c) => (
+                    <li key={c.component}>
+                      <span className="font-semibold">{c.component}</span>
+                      {' — '}
+                      <span className="text-[var(--muted-color)]">{c.note}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2.5 text-body-sm text-[var(--heading-color)]">
+                  {caseStudy.podShape}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="relative min-h-[260px] border-2 border-[var(--heading-color)] bg-white lg:min-h-full">
+            {cover ? (
+              <Image
+                src={cover.src}
+                alt={cover.alt}
+                fill
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                className="object-cover object-top-left"
+              />
+            ) : (
+              <div className="grid h-full place-items-center">
+                <MonoLabel muted size="caption">
+                  Screenshots pending clearance
+                </MonoLabel>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* The numbers band. One column until lg, then ONE COLUMN PER STAT —
+            not a fixed four. Fixed four left a case with two or three
+            outcomes trailing empty cells, and an empty cell inside a ruled
+            band reads as a number that failed to load rather than as a
+            case that has three things to say.
+
+            No intermediate 2-up on purpose: a wrapping grid needs
+            per-position border resets to avoid drawing a rule against the
+            band's own edge, whereas going straight from stacked to
+            n-across means each cell needs exactly one rule — top when
+            stacked, left when in a row. */}
+        {stats.length > 0 ? (
+          <div
+            className={`mt-8 grid grid-cols-1 border-2 border-[var(--heading-color)] ${BAND_COLUMNS[stats.length]}`}
+          >
+            {stats.map((s, i) => {
+              const last = i === stats.length - 1 && stats.length >= 3;
+              return (
+                <div
+                  key={s.metric}
+                  className={[
+                    'px-6 py-4',
+                    'border-t-2 border-[var(--heading-color)] first:border-t-0',
+                    'lg:border-t-0 lg:border-l-2 lg:first:border-l-0',
+                    last ? 'bg-accent' : '',
+                  ].join(' ')}
+                >
+                  <span
+                    className={`block font-display text-[38px] font-bold leading-none tabular-nums ${
+                      last ? 'text-accent-contrast' : 'text-[var(--heading-color)]'
+                    }`}
+                  >
+                    {s.value}
+                  </span>
+                  <span
+                    className={`mt-1.5 block text-body-sm ${
+                      last ? 'text-accent-contrast' : 'text-[var(--muted-color)]'
+                    }`}
+                  >
+                    {s.metric}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+
+        <span className="mt-6 inline-block font-mono text-label uppercase text-[var(--accent-text)] group-hover:underline">
+          Read the case study →
+        </span>
+      </Link>
+    </article>
+  );
+}

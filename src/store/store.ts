@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import entityApi from './entity/api';
 import { authApi } from './api/auth/auth.api';
 import { jobApi } from './api/job.api';
@@ -8,11 +9,13 @@ import { candidatesApi } from './api/candidates.api';
 import { resetPasswordReducer } from './api/auth/resetPasswordSlice';
 
 
-const { reducers, middleware } = entityApi;
+// Entity slices are generated from ENTITY_LIST at module load, so the store
+// picks up new entities without another edit here. Carried over from dev.
+const { reducers: entityReducers, middleware: entityMiddleware } = entityApi;
 
 export const store = configureStore({
   reducer: {
-    ...reducers,
+    ...entityReducers,
     resetPassword: resetPasswordReducer,
     [authApi.reducerPath]: authApi.reducer,
     [jobApi.reducerPath]: jobApi.reducer,
@@ -22,7 +25,7 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      ...middleware,
+      ...entityMiddleware,
       authApi.middleware,
       jobApi.middleware,
       appliedJobsApi.middleware,
