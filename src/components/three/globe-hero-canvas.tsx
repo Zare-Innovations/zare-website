@@ -144,11 +144,20 @@ export function GlobeHeroCanvas({
 
     const desc = host.querySelector<HTMLElement>('[data-hero-desc]');
 
-    // Coarse pointers never scrub. The element still mounts (the globe
-    // writes itself on the engine's own clock behind the static copy)
-    // but the pin, the exits and the scroll clock are skipped. The hero
-    // is never pinned there, so it is truthfully released.
-    if (!window.matchMedia('(pointer: fine)').matches) return;
+    // Coarse pointers and phone-width viewports never scrub. The element
+    // still mounts (the globe writes itself on the engine's own clock
+    // behind the static copy) but the pin, the exits and the scroll
+    // clock are skipped — the hero is never pinned there, so it is
+    // truthfully released. The width clause matches the ENGINE's own
+    // coarse heuristic: under 768px the pinned 100svh section clips the
+    // stacked copy even when the pointer is fine (a narrow desktop
+    // window), because the stack is taller than one small viewport.
+    if (
+      !window.matchMedia('(pointer: fine)').matches ||
+      window.innerWidth < 768
+    ) {
+      return;
+    }
 
     /* ---------------- released contract ---------------- */
     let released = true; // server-rendered default
