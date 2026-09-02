@@ -19,8 +19,6 @@ export interface ClientRegion {
   hoursBehind: number;
   /** Hours behind under the region's daylight saving time, where observed. */
   hoursBehindDst?: number;
-  /** The engagement that makes this region a fact rather than a claim. */
-  evidence: string;
 }
 
 /**
@@ -31,38 +29,46 @@ export interface ClientRegion {
  */
 export const ADDIS_UTC_OFFSET = '+3';
 
+// Client-name evidence labels removed per the 2026-08 leadership comment
+// round: the band is a timezone reference, and the engagements are named
+// where they belong — in the work section. Ethiopia ("same time") was
+// removed earlier for the same reason; the zero row was noise. US Central
+// sits under US East by request, not by distance.
 export const clientRegions: ClientRegion[] = [
   {
     region: 'US West',
     hoursBehind: 11,
     hoursBehindDst: 10,
-    evidence: 'Joveo · California',
   },
   {
     region: 'US East',
     hoursBehind: 8,
     hoursBehindDst: 7,
-    evidence: 'Pickrell · North Carolina · LitCurrent · Washington DC',
   },
   {
-    region: 'UK',
+    region: 'US Central',
+    hoursBehind: 9,
+    hoursBehindDst: 8,
+  },
+  {
+    region: 'GMT',
     hoursBehind: 3,
     hoursBehindDst: 2,
-    evidence: 'Kagool · London',
+  },
+  {
+    region: 'Germany',
+    hoursBehind: 2,
+    hoursBehindDst: 1,
   },
   {
     region: 'South Africa',
     hoursBehind: 1,
-    evidence: 'Africa Communications Media Group · Sandton',
   },
   {
     region: 'Cyprus',
     hoursBehind: 1,
     hoursBehindDst: 0,
-    evidence: 'Exelia Technologies · Nicosia',
   },
-  // Ethiopia ("same time") removed per the 2026-08 leadership comment
-  // round — the band shows distance FROM Addis; the zero row was noise.
 ];
 
 /**
