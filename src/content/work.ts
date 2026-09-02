@@ -182,121 +182,128 @@ export interface WorkReference {
 
 export const caseStudies: CaseStudy[] = [
   {
-    kind: 'system',
-    slug: 'litcurrent-federated-research-engine',
+    kind: "system",
+    slug: "litcurrent-federated-research-engine",
     // Company Profile 2026, page 6. The profile prints Scienthesis as the
     // client and LitCurrent as the product wordmark — it has no logo file,
     // the deck sets the name as type, so the card does the same.
     profile: {
-      format: 'spread',
-      eyebrow: 'Custom AI & Software · Scienthesis, Washington DC',
-      wordmark: 'LitCurrent',
-      headline: 'A clinician evidence platform, surveillance to point of care.',
+      format: "spread",
+      eyebrow: "Custom AI & Software · Scienthesis, Washington DC",
+      wordmark: "LitCurrent",
+      headline: "A clinician evidence platform, surveillance to point of care.",
       problem:
-        'Clinicians need to stay current with the literature and answer questions at the point of care, but the evidence lives across PubMed, Europe PMC, OpenAlex, and ClinicalTrials.gov, four databases with different interfaces, overlapping records, and paywalled full texts.',
-      builtLabel: 'What we built',
+        "Clinicians need to stay current with the literature and answer questions at the point of care, but the evidence lives across PubMed, Europe PMC, OpenAlex, and ClinicalTrials.gov, four databases with different interfaces, overlapping records, and paywalled full texts.",
+      builtLabel: "What we built",
       built:
-        'Scienthesis, a platform with two products: LitCurrent, the evidence-awareness workspace with literature surveillance, article library, audio learning, and AI-supported analysis; and LitPortal, point-of-care evidence search with citation-verified synthesis. Four services, one login, one shared library.',
+        "Scienthesis, a platform with two products: LitCurrent, the evidence-awareness workspace with literature surveillance, article library, audio learning, and AI-supported analysis; and LitPortal, point-of-care evidence search with citation-verified synthesis. Four services, one login, one shared library."
     },
-    client: { named: true, name: 'LitCurrent', url: 'https://litpulse.com' },
-    industry: 'Biomedical research',
-    location: 'Washington DC',
+    client: { named: true, name: "LitCurrent", url: "https://litpulse.com" },
+    industry: "Biomedical research",
+    location: "Washington DC",
     featured: 1,
     summary:
-      'A clinician evidence platform, surveillance to point of care: federated search over scattered biomedical sources, one deduplicated stream.',
+      "A clinician evidence platform, surveillance to point of care: federated search over scattered biomedical sources, one deduplicated stream.",
     problem:
-      'Clinical evidence lives across PubMed, Europe PMC, OpenAlex, and ClinicalTrials.gov — four databases with different interfaces, overlapping records, and paywalled full texts. Researchers lose hours to the same paper under different identifiers, and a review built on an incomplete corpus is a review with a hole in it.',
+      "Clinical evidence lives across PubMed, Europe PMC, OpenAlex, and ClinicalTrials.gov — four databases with different interfaces, overlapping records, and paywalled full texts. Researchers lose hours to the same paper under different identifiers, and a review built on an incomplete corpus is a review with a hole in it.",
     system: [
       {
-        component: 'LitPortal',
-        note: 'Point-of-care evidence search with citation-verified synthesis: the federated multi-agent engine queries the sources in parallel, reconciles duplicate records, and returns a single ranked stream.',
+        component: "LitPortal",
+        note: "Point-of-care evidence search with citation-verified synthesis: the federated multi-agent engine queries the sources in parallel, reconciles duplicate records, and returns a single ranked stream."
       },
       {
-        component: 'LitCurrent',
-        note: 'The evidence-awareness workspace: literature surveillance, an article library, audio learning, and AI-supported analysis.',
+        component: "LitCurrent",
+        note: "The evidence-awareness workspace: literature surveillance, an article library, audio learning, and AI-supported analysis."
       },
       {
-        component: 'Platform',
-        note: 'Four backend services behind one login and one shared library, alongside the wider modules: LitScreen, LitHub, LitStream and LitScholar.',
-      },
+        component: "Platform",
+        note: "Four backend services behind one login and one shared library, alongside the wider modules: LitScreen, LitHub, LitStream and LitScholar."
+      }
     ],
     delivery:
-      'Built as a fixed-scope engagement, live in production. A separate five-week scope merged LitPortal into the platform, moved hosting under the owner\'s control, and produced the handoff package for the downstream migration partner.',
+      "Built as a fixed-scope engagement, live in production. A separate five-week scope merged LitPortal into the platform, moved hosting under the owner's control, and produced the handoff package for the downstream migration partner.",
     // Sourced from the platform's July 2026 current-state architecture
     // handoff (docs/zare-company-profile/uploads/litcurrent-arch.pdf) —
     // the developer-authored document produced for the migration partner.
     decisions: [
       {
         decision:
-          'Four services instead of one monolith: two application backends (LitCurrent and LitPortal) beside shared Identity and library platform services.',
+          "Four services instead of one monolith: two application backends (LitCurrent and LitPortal) beside shared Identity and library platform services.",
         tradeoff:
-          'Four repositories and an internal service-auth layer to operate, instead of one deployable.',
+          "Four repositories and an internal service-auth layer to operate, instead of one deployable.",
         result:
-          'One login and one canonical article library across both applications, with each backend still independently deployable.',
+          "One login and one canonical article library across both applications, with each backend still independently deployable."
       },
       {
         decision:
-          'Stateless auth: the identity service issues one signed RS256 token and every service verifies it offline against cached JWKS keys.',
+          "Stateless auth: the identity service issues one signed RS256 token and every service verifies it offline against cached JWKS keys.",
         tradeoff:
-          'Revocation propagates on token expiry rather than instantly, and key rotation has to be managed with care.',
+          "Revocation propagates on token expiry rather than instantly, and key rotation has to be managed with care.",
         result:
-          'Authentication adds no cross-service round trip to any request.',
+          "Authentication adds no cross-service round trip to any request."
       },
       {
         decision:
-          'Saves mirror into the shared library through a durable outbox with scheduled retries, not an inline call.',
+          "Saves mirror into the shared library through a durable outbox with scheduled retries, not an inline call.",
         tradeoff:
-          'The library is eventually consistent — a save can land seconds later — and a dead-letter path has to be operated.',
+          "The library is eventually consistent — a save can land seconds later — and a dead-letter path has to be operated.",
         result:
-          'A save survives a downstream outage, and every mirror attempt is auditable.',
+          "A save survives a downstream outage, and every mirror attempt is auditable."
       },
       {
         decision:
-          'AI interprets, deterministic systems decide: retrieval, ranking, source eligibility, article selection, and citations are controlled by deterministic code. The model may interpret clinical context and surface labelled supplemental candidates — nothing more.',
+          "AI interprets, deterministic systems decide: retrieval, ranking, source eligibility, article selection, and citations are controlled by deterministic code. The model may interpret clinical context and surface labelled supplemental candidates — nothing more.",
         tradeoff:
-          'Gives up the convenience of end-to-end LLM answers; every AI-adjacent path needs its own enforcement gate.',
+          "Gives up the convenience of end-to-end LLM answers; every AI-adjacent path needs its own enforcement gate.",
         result:
-          'Citation-verified answers a clinician can check — the platform cannot hallucinate a PMID.',
+          "Citation-verified answers a clinician can check — the platform cannot hallucinate a PMID."
       },
       {
         decision:
-          'A hybrid data layer: document stores for the application backends, PostgreSQL for identity and the canonical library.',
+          "A hybrid data layer: document stores for the application backends, PostgreSQL for identity and the canonical library.",
         tradeoff:
-          'Two database technologies to operate, and a consolidation path that must be planned rather than assumed.',
+          "Two database technologies to operate, and a consolidation path that must be planned rather than assumed.",
         result:
-          'The one-entry-per-user-per-paper guarantee lives in a relational core while application workflows keep their flexible stores.',
-      },
+          "The one-entry-per-user-per-paper guarantee lives in a relational core while application workflows keep their flexible stores."
+      }
     ],
-    stack: ['FastAPI', 'LangGraph', 'Next.js', 'MongoDB', 'PostgreSQL', 'Redis'],
+    stack: [
+      "FastAPI",
+      "LangGraph",
+      "Next.js",
+      "MongoDB",
+      "PostgreSQL",
+      "Redis"
+    ],
     images: [
       {
-        src: '/case-studies/litcurrent-litscreen.png',
-        alt: 'LitScreen: the scheduled literature feed with abstracts, AI summaries, and save-to-library screening',
+        src: "/case-studies/litcurrent-litscreen.png",
+        alt: "LitScreen: the scheduled literature feed with abstracts, AI summaries, and save-to-library screening",
         caption:
-          'LitScreen: scheduled surveillance — the digest feed screened article by article, AI summary beside the abstract, one tap to the library.',
-        kind: 'product',
+          "LitScreen: scheduled surveillance — the digest feed screened article by article, AI summary beside the abstract, one tap to the library.",
+        kind: "product"
       },
       {
-        src: '/case-studies/litcurrent-lithub.png',
-        alt: 'LitHub: the saved-article library with abstracts, AI summaries, audio, LitScholar and LitClub actions',
+        src: "/case-studies/litcurrent-lithub.png",
+        alt: "LitHub: the saved-article library with abstracts, AI summaries, audio, LitScholar and LitClub actions",
         caption:
-          'LitHub: the canonical library — every saved article carries its abstract, AI summary, audio, deep-dive and discussion actions.',
-        kind: 'product',
+          "LitHub: the canonical library — every saved article carries its abstract, AI summary, audio, deep-dive and discussion actions.",
+        kind: "product"
       },
       {
-        src: '/case-studies/litcurrent-litstream.png',
-        alt: 'LitStream: generated audio summaries of saved articles with play and download controls',
+        src: "/case-studies/litcurrent-litstream.png",
+        alt: "LitStream: generated audio summaries of saved articles with play and download controls",
         caption:
-          'LitStream: audio learning — saved articles become playable, downloadable summaries with specialty tags.',
-        kind: 'product',
+          "LitStream: audio learning — saved articles become playable, downloadable summaries with specialty tags.",
+        kind: "product"
       },
       {
-        src: '/case-studies/litcurrent-litportal-search.png',
-        alt: 'LitPortal: a clinical question answered with deduplicated, ranked evidence in a sortable table',
+        src: "/case-studies/litcurrent-litportal-search.png",
+        alt: "LitPortal: a clinical question answered with deduplicated, ranked evidence in a sortable table",
         caption:
-          'LitPortal: point-of-care search — a clinical question resolved through the PECO framework into 22 deduplicated records, ranked and filterable.',
-        kind: 'product',
-      },
+          "LitPortal: point-of-care search — a clinical question resolved through the PECO framework into 22 deduplicated records, ranked and filterable.",
+        kind: "product"
+      }
     ],
     outcomes: [
       // The Company Profile 2026 case spread's band, verbatim in value and
@@ -304,86 +311,88 @@ export const caseStudies: CaseStudy[] = [
       // of the profile's four, so it lives past the band and shows on the
       // detail page rather than being dropped.
       {
-        value: '99%+',
-        metric: 'Deduplication accuracy',
+        value: "99%+",
+        metric: "Deduplication accuracy",
         context:
-          'across records federated from multiple biomedical sources, where the same paper appears under different identifiers.',
-        verified: true,
+          "across records federated from multiple biomedical sources, where the same paper appears under different identifiers.",
+        verified: true
       },
       {
-        value: '4',
-        metric: 'Backend services, one login, one shared library',
+        value: "4",
+        metric: "Backend services, one login, one shared library",
         context:
-          'two application backends beside shared identity and library platform services.',
-        verified: true,
+          "two application backends beside shared identity and library platform services.",
+        verified: true
       },
       {
-        value: '<2s',
-        metric: 'Initial search response',
-        context: 'for a federated query spanning multiple upstream sources.',
-        verified: true,
+        value: "<2s",
+        metric: "Initial search response",
+        context: "for a federated query spanning multiple upstream sources.",
+        verified: true
       },
       {
-        value: 'LIVE',
-        metric: 'Deployed in production',
-        context: 'running for clinicians, not a prototype.',
-        verified: true,
+        value: "LIVE",
+        metric: "Deployed in production",
+        context: "running for clinicians, not a prototype.",
+        verified: true
       },
       {
-        value: '>40%',
-        metric: 'Full-text recovery',
+        value: ">40%",
+        metric: "Full-text recovery",
         context:
-          'improvement in retrieving full text for records where it was previously unreachable.',
-        verified: true,
-      },
-    ],
+          "improvement in retrieving full text for records where it was previously unreachable.",
+        verified: true
+      }
+    ]
   },
 
   {
-    kind: 'engagement',
-    slug: 'pickrell-embedded-engineering-pod',
+    kind: "engagement",
+    slug: "pickrell-embedded-engineering-pod",
     // Company Profile 2026, page 8 — a compact card, not a spread. The
     // profile gives it one paragraph, so it is not split into problem and
     // what-we-built the way the full-page cases are.
     profile: {
-      format: 'card',
-      eyebrow: 'Pickrell · North Carolina',
-      logos: [{ src: '/clients/pickrell.png', alt: 'Pickrell Global Technologies' }],
-      headline: 'Embedded developers, proven over time.',
-      body:
-        'Pickrell needed dependable engineering capacity without a US hiring round. Three embedded developers have worked inside their team since January 2024, on their tools and sprint cadence, with Zare proactively managing performance, employment, and payroll.',
-      footnote: '"Reliable, skilled, solid contributors." Their words.',
+      format: "card",
+      eyebrow: "Pickrell · North Carolina",
+      logos: [
+        { src: "/clients/pickrell.png", alt: "Pickrell Global Technologies" }
+      ],
+      headline: "Embedded developers, proven over time.",
+      body: "Pickrell needed dependable engineering capacity without a US hiring round. Three embedded developers have worked inside their team since January 2024, on their tools and sprint cadence, with Zare proactively managing performance, employment, and payroll.",
+      footnote: '"Reliable, skilled, solid contributors." Their words.'
     },
-    logo: { src: '/clients/pickrell.png', alt: 'Pickrell Global Technologies' },
+    logo: { src: "/clients/pickrell.png", alt: "Pickrell Global Technologies" },
     client: {
       named: true,
-      name: 'Pickrell Global Technologies',
-      url: 'https://pickrellglobaltechnologies.com/',
+      name: "Pickrell Global Technologies",
+      url: "https://pickrellglobaltechnologies.com/"
     },
-    industry: 'Technology services',
-    location: 'Concord, North Carolina',
+    industry: "Technology services",
+    location: "Concord, North Carolina",
     featured: 2,
-    duration: 'Since January 2024',
+    duration: "Since January 2024",
     summary:
-      'A three-developer pod embedded in the client delivery organisation, running continuously since January 2024.',
+      "A three-developer pod embedded in the client delivery organisation, running continuously since January 2024.",
     situation:
-      'The client needed to grow its engineering capacity but was constrained by the cost and competition of hiring in the United States. It needed developers inside its own delivery organisation, not a vendor working at arm\'s length.',
-    podShape: 'Three full-time developers, dedicated, not shared with other clients.',
+      "The client needed to grow its engineering capacity but was constrained by the cost and competition of hiring in the United States. It needed developers inside its own delivery organisation, not a vendor working at arm's length.",
+    podShape:
+      "Three full-time developers, dedicated, not shared with other clients.",
     integration: [
-      'Working inside the client delivery organisation',
-      'Dedicated placements, never shared across clients',
-      'Performance managed by Zare, with regular client check-ins',
+      "Working inside the client delivery organisation",
+      "Dedicated placements, never shared across clients",
+      "Performance managed by Zare, with regular client check-ins"
     ],
     continuity:
-      'The same engagement has run since January 2024. Continuity, not headcount, is what the client is buying.',
+      "The same engagement has run since January 2024. Continuity, not headcount, is what the client is buying.",
     images: [
       {
-        src: '/case-studies/pickrell-site.png',
+        src: "/case-studies/pickrell-site.jpg",
         alt: "Pickrell Global Technologies' website",
         caption:
           "The client's delivery organisation — the pod works inside Pickrell's own workflow, on Pickrell's own clients.",
-        kind: 'context',
-      },
+        kind: "context"
+      }
     ],
     outcomes: [
       // The Company Profile's own Pickrell card leads on the shape of the
@@ -391,81 +400,88 @@ export const caseStudies: CaseStudy[] = [
       // figure that used to sit first is gone: it led the case, and leading
       // with cost is the one thing metrics.ts rules out.
       {
-        value: '3',
-        metric: 'Embedded engineers',
+        value: "3",
+        metric: "Embedded engineers",
         context:
-          'a dedicated pod inside the client delivery organisation, working their tools and sprint cadence since January 2024.',
-        verified: true,
+          "a dedicated pod inside the client delivery organisation, working their tools and sprint cadence since January 2024.",
+        verified: true
       },
       {
-        value: '3 stacks',
-        metric: 'Mobile, web, and AI/ML engineering',
+        value: "3 stacks",
+        metric: "Mobile, web, and AI/ML engineering",
         context:
-          'three disciplines covered by the same pod, without three separate hiring rounds.',
-        verified: true,
+          "three disciplines covered by the same pod, without three separate hiring rounds.",
+        verified: true
       },
       {
-        value: '5.0',
-        metric: 'Verified client rating',
-        context: 'Clutch review published February 2025, after a year of delivery.',
-        verified: true,
+        value: "5.0",
+        metric: "Verified client rating",
+        context:
+          "Clutch review published February 2025, after a year of delivery.",
+        verified: true
       },
       {
-        value: '>50%',
-        metric: 'Reduction in talent overhead',
+        value: ">50%",
+        metric: "Reduction in talent overhead",
         context:
-          'against the cost of hiring the equivalent team locally in the United States.',
-        verified: true,
-      },
+          "against the cost of hiring the equivalent team locally in the United States.",
+        verified: true
+      }
     ],
     quote: {
-      text: 'They are constantly responsive and check in frequently to ensure that all expectations are being met.',
-      attribution: 'Pickrell Global Technologies',
-      role: 'Technology services · Concord, NC',
-      source: 'Verified Clutch review · February 2025',
-    },
+      text: "They are constantly responsive and check in frequently to ensure that all expectations are being met.",
+      attribution: "Pickrell Global Technologies",
+      role: "Technology services · Concord, NC",
+      source: "Verified Clutch review · February 2025"
+    }
   },
 
   {
-    kind: 'system',
-    slug: 'womentor-africa-mentorship-platform',
+    kind: "system",
+    slug: "womentor-africa-mentorship-platform",
     // Company Profile 2026, page 7. Two marks, as the profile shows them.
     profile: {
-      format: 'spread',
-      eyebrow: 'Custom AI & Software · Mastercard Foundation backed',
+      format: "spread",
+      eyebrow: "Custom AI & Software · Mastercard Foundation backed",
       logos: [
-        { src: '/clients/africa-growth-fund.svg', alt: 'Mastercard Africa Growth Fund' },
-        { src: '/clients/afig-funds.png', alt: 'AFIG Funds' },
+        {
+          src: "/clients/africa-growth-fund.svg",
+          alt: "Mastercard Africa Growth Fund"
+        },
+        { src: "/clients/afig-funds.png", alt: "AFIG Funds" }
       ],
-      headline: 'Mentorship for women in finance, at continental scale.',
+      headline: "Mentorship for women in finance, at continental scale.",
       problem:
         "AFIG wanted to connect women across Africa's investment industry with mentors, and no off-the-shelf platform could match, manage, and measure those relationships across multiple markets.",
-      builtLabel: 'What we built',
+      builtLabel: "What we built",
       built:
-        'An end-to-end mentorship platform: AI-driven mentor-mentee matching, goal frameworks, messaging, program-wide analytics, and audit trails. Designed and built by a 12-person Ethiopian and Kenyan team, from first wireframe to production.',
+        "An end-to-end mentorship platform: AI-driven mentor-mentee matching, goal frameworks, messaging, program-wide analytics, and audit trails. Designed and built by a 12-person Ethiopian and Kenyan team, from first wireframe to production."
     },
-    logo: { src: '/clients/africa-growth-fund.svg', alt: 'Mastercard Africa Growth Fund' },
-    client: { named: true, name: 'Mastercard Africa Growth Fund, AFIG Funds' },
-    industry: 'Development finance',
-    location: 'Pan-African',
+    logo: {
+      src: "/clients/africa-growth-fund.svg",
+      alt: "Mastercard Africa Growth Fund"
+    },
+    client: { named: true, name: "Mastercard Africa Growth Fund, AFIG Funds" },
+    industry: "Development finance",
+    location: "Pan-African",
     featured: 3,
     summary:
-      'An end-to-end mentorship platform connecting women across Africa\'s investment industry, live in multiple markets.',
+      "An end-to-end mentorship platform connecting women across Africa's investment industry, live in multiple markets.",
     problem:
-      'The Mastercard Foundation wanted to connect women across Africa\'s investment industry with mentors, and no off-the-shelf platform could match, manage, and measure those relationships across multiple markets. Run with AFIG Funds as the Mastercard Africa Growth Fund, the programme needed a platform built for its own mechanics rather than adapted to them.',
+      "The Mastercard Foundation wanted to connect women across Africa's investment industry with mentors, and no off-the-shelf platform could match, manage, and measure those relationships across multiple markets. Run with AFIG Funds as the Mastercard Africa Growth Fund, the programme needed a platform built for its own mechanics rather than adapted to them.",
     system: [
       {
-        component: 'Matching engine',
-        note: 'AI-driven mentor-mentee matching, with goal frameworks that structure each relationship.',
+        component: "Matching engine",
+        note: "AI-driven mentor-mentee matching, with goal frameworks that structure each relationship."
       },
       {
-        component: 'Programme operations',
-        note: 'Relationship lifecycle management, in-platform messaging, and calendar integration.',
+        component: "Programme operations",
+        note: "Relationship lifecycle management, in-platform messaging, and calendar integration."
       },
       {
-        component: 'Programme analytics',
-        note: 'Programme-wide analytics and audit trails for administrators measuring outcomes across markets.',
-      },
+        component: "Programme analytics",
+        note: "Programme-wide analytics and audit trails for administrators measuring outcomes across markets."
+      }
     ],
     // Pending the engineering interview. See ADR 005.
     decisions: [],
@@ -474,338 +490,336 @@ export const caseStudies: CaseStudy[] = [
       // Two surfaces, and the gallery splits on them: the programme team runs
       // the console, the participants live in the other four screens.
       {
-        src: '/case-studies/womentor-dashboard.webp',
-        alt: 'The Womentor programme-analytics dashboard: users per country and per type, with mentorship filters and AI-match export',
+        src: "/case-studies/womentor-dashboard.webp",
+        alt: "The Womentor programme-analytics dashboard: users per country and per type, with mentorship filters and AI-match export",
         caption:
-          'Programme analytics: users per country and per type across markets, with mentorship filters and AI-match export.',
-        kind: 'product',
-        surface: 'admin',
+          "Programme analytics: users per country and per type across markets, with mentorship filters and AI-match export.",
+        kind: "product",
+        surface: "admin"
       },
       {
-        src: '/case-studies/womentor-admin-matching.png',
+        src: "/case-studies/womentor-admin-matching.png",
         alt: "A mentee's record in the admin console, showing three matched mentors each scored by an automatic match and an AI match, with the AI's reasoning open",
         caption:
           "Matching, the part that had to be defensible: every candidate mentor carries two scores — an automatic one and an AI one — and the reasoning is written out in full before an administrator confirms or declines. The mentee's contact details are masked here.",
-        kind: 'product',
-        surface: 'admin',
+        kind: "product",
+        surface: "admin"
       },
       {
-        src: '/case-studies/womentor-mentee-home.png',
+        src: "/case-studies/womentor-mentee-home.png",
         alt: "A mentee's home screen: a passed session awaiting confirmation, the tasks attached to it, and the mentorship plan beside it",
         caption:
-          'A mentee’s home. The passed session asks to be confirmed, its tasks are split into before, during and after, and the plan runs alongside with the next session already scheduled.',
-        kind: 'product',
-        surface: 'participant',
+          "A mentee’s home. The passed session asks to be confirmed, its tasks are split into before, during and after, and the plan runs alongside with the next session already scheduled.",
+        kind: "product",
+        surface: "participant"
       },
       {
-        src: '/case-studies/womentor-training.png',
-        alt: 'A completed training session: speaker, bio, agenda, session date, and the recording link',
+        src: "/case-studies/womentor-training.png",
+        alt: "A completed training session: speaker, bio, agenda, session date, and the recording link",
         caption:
-          'A training session after the fact — speaker and bio, the agenda, and the recording — with attendance confirmed by the participant rather than assumed.',
-        kind: 'product',
-        surface: 'participant',
+          "A training session after the fact — speaker and bio, the agenda, and the recording — with attendance confirmed by the participant rather than assumed.",
+        kind: "product",
+        surface: "participant"
       },
       {
-        src: '/case-studies/womentor-messaging.png',
-        alt: 'A mentee messaging their mentor in-platform, including a shared PDF attachment',
+        src: "/case-studies/womentor-messaging.png",
+        alt: "A mentee messaging their mentor in-platform, including a shared PDF attachment",
         caption:
-          'Mentor and mentee message inside the platform, attachments included, so the relationship and its record stay in the programme rather than moving to private email.',
-        kind: 'product',
-        surface: 'participant',
+          "Mentor and mentee message inside the platform, attachments included, so the relationship and its record stay in the programme rather than moving to private email.",
+        kind: "product",
+        surface: "participant"
       },
       {
-        src: '/case-studies/womentor-community.png',
-        alt: 'The Womentor community feed, showing a post with an image, tags, likes and comments',
+        src: "/case-studies/womentor-community.png",
+        alt: "The Womentor community feed, showing a post with an image, tags, likes and comments",
         caption:
-          'The community feed, where participants post opportunities and resources to the wider cohort — the part of the programme that outlives any one pairing.',
-        kind: 'product',
-        surface: 'participant',
-      },
+          "The community feed, where participants post opportunities and resources to the wider cohort — the part of the programme that outlives any one pairing.",
+        kind: "product",
+        surface: "participant"
+      }
     ],
     outcomes: [
       // The profile's band, in its order. The team line is the revision
       // supplied with it — Ethiopia and the average age, ideation through
       // launch — replacing the profile's own wording for that cell.
       {
-        value: 'LIVE',
-        metric: 'In production across multiple African markets',
+        value: "LIVE",
+        metric: "In production across multiple African markets",
         context:
-          'deployed and running for the programme rather than held as a pilot build.',
-        verified: true,
+          "deployed and running for the programme rather than held as a pilot build.",
+        verified: true
       },
       {
-        value: '12',
-        metric: 'Person team in Ethiopia (avg. age 29), ideation through launch',
+        value: "12",
+        metric:
+          "Person team in Ethiopia (avg. age 29), ideation through launch",
         context:
-          'one accountable vendor carrying the platform from first wireframe to production.',
-        verified: true,
+          "one accountable vendor carrying the platform from first wireframe to production.",
+        verified: true
       },
       {
-        value: '100+',
-        metric: 'Active users in the pilot phase',
-        context: 'within the first 2 months.',
-        verified: true,
-      },
+        value: "100+",
+        metric: "Active users in the pilot phase",
+        context: "within the first 2 months.",
+        verified: true
+      }
     ],
     quote: {
-      text: 'Over the past six months, the Zare team has demonstrated exceptional commitment, quality, and thoughtfulness. The final product received overwhelmingly positive feedback, with very few change requests — a true reflection of the team\'s excellence and hard work. I\'m incredibly proud of what we\'ve built together and excited to carry this momentum forward.',
-      attribution: 'Mastercard Africa Growth Fund',
-      role: 'Womentor Africa',
-      source: 'Client feedback, six months into the engagement',
-    },
+      text: "Over the past six months, the Zare team has demonstrated exceptional commitment, quality, and thoughtfulness. The final product received overwhelmingly positive feedback, with very few change requests — a true reflection of the team's excellence and hard work. I'm incredibly proud of what we've built together and excited to carry this momentum forward.",
+      attribution: "Mastercard Africa Growth Fund",
+      role: "Womentor Africa",
+      source: "Client feedback, six months into the engagement"
+    }
   },
 
   {
-    kind: 'engagement',
-    slug: 'tenasol-clinical-platform-design',
+    kind: "engagement",
+    slug: "tenasol-clinical-platform-design",
     // Company Profile 2026, page 9.
     profile: {
-      format: 'spread',
-      eyebrow: 'Product design, then embedded talent · Tenasol, California',
-      logos: [{ src: '/clients/tenasol.avif', alt: 'Tenasol' }],
-      headline: 'A clinical data platform four kinds of users can actually use.',
+      format: "spread",
+      eyebrow: "Product design, then embedded talent · Tenasol, California",
+      logos: [{ src: "/clients/tenasol.avif", alt: "Tenasol" }],
+      headline:
+        "A clinical data platform four kinds of users can actually use.",
       problem:
         "Tenasol's healthcare data platform serves admins, doctors, nurses, and patients, each needing different views of sensitive clinical data arriving as PDF, DICOM, FHIR, HL7, JSON, and CSV.",
-      builtLabel: 'What we built',
+      builtLabel: "What we built",
       built:
-        'Role-based interface design for all four user types, bulk and individual upload flows for every format, and a patient portal with population-level analytics. Delivered as a Figma prototype plus a reusable design system, with FHIR and HL7 aware design decisions throughout.',
+        "Role-based interface design for all four user types, bulk and individual upload flows for every format, and a patient portal with population-level analytics. Delivered as a Figma prototype plus a reusable design system, with FHIR and HL7 aware design decisions throughout."
     },
-    logo: { src: '/clients/tenasol.avif', alt: 'Tenasol' },
-    client: { named: true, name: 'Tenasol' },
-    industry: 'Healthcare data',
-    location: 'California, USA',
+    logo: { src: "/clients/tenasol.avif", alt: "Tenasol" },
+    client: { named: true, name: "Tenasol" },
+    industry: "Healthcare data",
+    location: "California, USA",
     featured: false,
     summary:
-      'A clinical data platform designed for four kinds of users — a project the client converted into an ongoing embedded placement.',
+      "A clinical data platform designed for four kinds of users — a project the client converted into an ongoing embedded placement.",
     situation:
-      'Tenasol\'s platform serves administrators, doctors, nurses, and patients, with clinical data arriving as PDF, DICOM, FHIR, HL7, JSON, and CSV. It needed role-based interfaces those four audiences could actually use, designed by people who understand the formats underneath.',
+      "Tenasol's platform serves administrators, doctors, nurses, and patients, with clinical data arriving as PDF, DICOM, FHIR, HL7, JSON, and CSV. It needed role-based interfaces those four audiences could actually use, designed by people who understand the formats underneath.",
     podShape:
-      'One senior product designer, on a fixed design engagement that converted into an ongoing embedded placement.',
+      "One senior product designer, on a fixed design engagement that converted into an ongoing embedded placement.",
     integration: [
-      'Role-based interface design for all four user types',
-      'FHIR- and HL7-aware design decisions throughout',
-      'Delivered as a Figma prototype plus a reusable design system',
+      "Role-based interface design for all four user types",
+      "FHIR- and HL7-aware design decisions throughout",
+      "Delivered as a Figma prototype plus a reusable design system"
     ],
     continuity:
-      'Tenasol kept the designer. The strongest review a design engagement can get is the client converting it into a permanent seat.',
+      "Tenasol kept the designer. The strongest review a design engagement can get is the client converting it into a permanent seat.",
     outcomes: [
       {
-        value: '4',
-        metric: 'User roles designed',
+        value: "4",
+        metric: "User roles designed",
         context:
-          'administrators, doctors, nurses, and patients, each with a role-based interface.',
-        verified: true,
+          "administrators, doctors, nurses, and patients, each with a role-based interface.",
+        verified: true
       },
       {
-        value: '6',
-        metric: 'Clinical data formats',
+        value: "6",
+        metric: "Clinical data formats",
         context:
-          'PDF, DICOM, FHIR, HL7, JSON, and CSV, with bulk and individual upload flows for each.',
-        verified: true,
+          "PDF, DICOM, FHIR, HL7, JSON, and CSV, with bulk and individual upload flows for each.",
+        verified: true
       },
       {
-        value: '1',
-        metric: 'Reusable design system',
+        value: "1",
+        metric: "Reusable design system",
         context:
-          'delivered alongside the clickable prototype, ready for the engineering build-out.',
-        verified: true,
-      },
+          "delivered alongside the clickable prototype, ready for the engineering build-out.",
+        verified: true
+      }
     ],
     images: [
       {
-        src: '/case-studies/tenasol-site.png',
-        alt:
-          "Tenasol's clinical intelligence platform: the document-to-FHIR pipeline, health records and claims in, a patient summary with AI-predicted probability, FHIR R4 bundle out",
+        src: "/case-studies/tenasol-site.png",
+        alt: "Tenasol's clinical intelligence platform: the document-to-FHIR pipeline, health records and claims in, a patient summary with AI-predicted probability, FHIR R4 bundle out",
         caption:
           "The client's product world — the clinical data platform the role-based interfaces were designed for.",
-        kind: 'context',
-      },
-    ],
+        kind: "context"
+      }
+    ]
   },
 
   {
-    kind: 'engagement',
-    slug: 'kagool-vetting-at-volume',
+    kind: "engagement",
+    slug: "kagool-vetting-at-volume",
     // Company Profile 2026, page 10. Note the second label: the profile
     // says WHAT WE DID here, not WHAT WE BUILT — this was placement work,
     // not a build, and it makes that distinction on the page.
     profile: {
-      format: 'spread',
-      eyebrow: 'Embedded talent at volume · Kagool, London UK',
-      logos: [{ src: '/clients/kagol.svg', alt: 'Kagool' }],
-      headline: '80+ placements delivered in under one month.',
+      format: "spread",
+      eyebrow: "Embedded talent at volume · Kagool, London UK",
+      logos: [{ src: "/clients/kagol.svg", alt: "Kagool" }],
+      headline: "80+ placements delivered in under one month.",
       problem:
-        'Kagool, a UK data consultancy, needed to staff their local Ethiopian subsidiary, at a volume that breaks most staffing pipelines and with no room to lower the bar.',
-      builtLabel: 'What we did',
+        "Kagool, a UK data consultancy, needed to staff their local Ethiopian subsidiary, at a volume that breaks most staffing pipelines and with no room to lower the bar.",
+      builtLabel: "What we did",
       built:
-        "Ran our vetting pipeline at volume: sourcing, testing, and placing engineers and specialists into Kagool's delivery teams, at the same bar we hold for a single placement. Throughput is a capability, not an accident.",
+        "Ran our vetting pipeline at volume: sourcing, testing, and placing engineers and specialists into Kagool's delivery teams, at the same bar we hold for a single placement. Throughput is a capability, not an accident."
     },
-    logo: { src: '/clients/kagol.svg', alt: 'Kagool' },
-    client: { named: true, name: 'Kagool' },
-    industry: 'Technology consultancy',
-    location: 'London, UK',
+    logo: { src: "/clients/kagol.svg", alt: "Kagool" },
+    client: { named: true, name: "Kagool" },
+    industry: "Technology consultancy",
+    location: "London, UK",
     featured: false,
     summary:
-      '80+ vetted placements delivered in under one month, staffing a new Addis Ababa subsidiary on schedule.',
+      "80+ vetted placements delivered in under one month, staffing a new Addis Ababa subsidiary on schedule.",
     situation:
-      'Kagool needed to staff its local Ethiopian subsidiary at a volume that breaks most staffing pipelines, with no room to lower the bar while doing it.',
+      "Kagool needed to staff its local Ethiopian subsidiary at a volume that breaks most staffing pipelines, with no room to lower the bar while doing it.",
     podShape:
-      'The vetting pipeline run at volume: sourcing, testing, and placing engineers and specialists into Kagool\'s delivery teams.',
+      "The vetting pipeline run at volume: sourcing, testing, and placing engineers and specialists into Kagool's delivery teams.",
     integration: [
-      'Sourcing and testing run by Zare, at the single-placement bar',
-      'Placements into Kagool\'s own delivery teams',
-      'Full roster inside one month',
+      "Sourcing and testing run by Zare, at the single-placement bar",
+      "Placements into Kagool's own delivery teams",
+      "Full roster inside one month"
     ],
     continuity:
-      'The vetting bar held: the same standard applied to one placement, applied more than eighty times. Throughput is a capability, not an accident.',
+      "The vetting bar held: the same standard applied to one placement, applied more than eighty times. Throughput is a capability, not an accident.",
     images: [
       {
-        src: '/case-studies/kagool-site.png',
+        src: "/case-studies/kagool-site.png",
         alt: "Kagool's website",
         caption:
-          'The client: a 200-person, three-continent Microsoft and SAP consultancy — the delivery organisation the Addis Ababa roster now serves.',
-        kind: 'context',
-      },
+          "The client: a 200-person, three-continent Microsoft and SAP consultancy — the delivery organisation the Addis Ababa roster now serves.",
+        kind: "context"
+      }
     ],
     outcomes: [
       {
-        value: '80+',
-        metric: 'Candidates delivered',
-        context: 'sourced, tested, and placed for a single client engagement.',
-        verified: true,
+        value: "80+",
+        metric: "Candidates delivered",
+        context: "sourced, tested, and placed for a single client engagement.",
+        verified: true
       },
       {
-        value: '<1 mo',
-        metric: 'Kickoff to full roster',
-        context: 'the subsidiary was staffed on schedule.',
-        verified: true,
-      },
-    ],
+        value: "<1 mo",
+        metric: "Kickoff to full roster",
+        context: "the subsidiary was staffed on schedule.",
+        verified: true
+      }
+    ]
   },
 
   {
-    kind: 'engagement',
-    slug: 'joveo-engineering-pod',
+    kind: "engagement",
+    slug: "joveo-engineering-pod",
     // Company Profile 2026, page 8 — one of three compact cards, not a
     // full spread. One paragraph, two stats, a tinted closing line.
     profile: {
-      format: 'card',
-      eyebrow: 'Joveo · California',
-      logos: [{ src: '/clients/joveo.svg', alt: 'Joveo' }],
-      headline: 'An engineering pod inside a US recruitment platform.',
-      body:
-        'Joveo needed engineering capacity across multiple skill levels without US ramp time and overhead. We sourced, vetted, and onboarded a multi-tier pod, interns through senior engineers, and handle performance, retention, and skills development so Joveo stays focused on product.',
+      format: "card",
+      eyebrow: "Joveo · California",
+      logos: [{ src: "/clients/joveo.svg", alt: "Joveo" }],
+      headline: "An engineering pod inside a US recruitment platform.",
+      body: "Joveo needed engineering capacity across multiple skill levels without US ramp time and overhead. We sourced, vetted, and onboarded a multi-tier pod, interns through senior engineers, and handle performance, retention, and skills development so Joveo stays focused on product.",
       footnote:
-        'A sustainable talent pipeline. Hiring time and cost cut, scaling with the roadmap.',
+        "A sustainable talent pipeline. Hiring time and cost cut, scaling with the roadmap."
     },
-    logo: { src: '/clients/joveo.svg', alt: 'Joveo' },
-    client: { named: true, name: 'Joveo' },
-    industry: 'Programmatic recruitment advertising',
-    location: 'California, USA',
+    logo: { src: "/clients/joveo.svg", alt: "Joveo" },
+    client: { named: true, name: "Joveo" },
+    industry: "Programmatic recruitment advertising",
+    location: "California, USA",
     featured: false,
-    duration: '12+ months',
+    duration: "12+ months",
     summary:
-      'A multi-tier engineering pod inside a US recruitment platform, working in the core codebase for over a year.',
+      "A multi-tier engineering pod inside a US recruitment platform, working in the core codebase for over a year.",
     situation:
-      'Joveo needed engineering capacity inside its own delivery organisation without the time and cost of hiring it in the United States, and without handing its core platform to a vendor at arm\'s length.',
+      "Joveo needed engineering capacity inside its own delivery organisation without the time and cost of hiring it in the United States, and without handing its core platform to a vendor at arm's length.",
     podShape:
-      'A multi-tier pod, interns through senior engineers, sized to the roadmap.',
+      "A multi-tier pod, interns through senior engineers, sized to the roadmap.",
     integration: [
-      'Working in the core platform codebase',
-      'Integrated from Sprint 1, with no training period',
-      'Performance, retention, and skills development handled by Zare',
+      "Working in the core platform codebase",
+      "Integrated from Sprint 1, with no training period",
+      "Performance, retention, and skills development handled by Zare"
     ],
     continuity:
-      'A sustainable talent pipeline: hiring time and cost cut, scaling with the roadmap while Joveo stays focused on product.',
+      "A sustainable talent pipeline: hiring time and cost cut, scaling with the roadmap while Joveo stays focused on product.",
     outcomes: [
       {
-        value: '3',
-        metric: 'Embedded engineers',
-        context: 'a dedicated pod inside the client delivery organisation.',
-        verified: true,
+        value: "3",
+        metric: "Embedded engineers",
+        context: "a dedicated pod inside the client delivery organisation.",
+        verified: true
       },
       {
-        value: 'Sprint 1',
-        metric: 'Immediate integration',
-        context: 'productive in the first sprint, with no training period.',
-        verified: true,
-      },
+        value: "Sprint 1",
+        metric: "Immediate integration",
+        context: "productive in the first sprint, with no training period.",
+        verified: true
+      }
     ],
     images: [
       {
-        src: '/case-studies/joveo-site.png',
-        alt:
-          "Joveo's agentic recruiting platform: the ATS landing page, with the TA teams it is used by",
+        src: "/case-studies/joveo-site.png",
+        alt: "Joveo's agentic recruiting platform: the ATS landing page, with the TA teams it is used by",
         caption:
           "The client's product world — the recruitment platform the embedded pod builds inside.",
-        kind: 'context',
-      },
-    ],
+        kind: "context"
+      }
+    ]
   },
 
   {
-    kind: 'engagement',
-    slug: 'exelia-embedded-designer',
+    kind: "engagement",
+    slug: "exelia-embedded-designer",
     // Company Profile 2026, page 8 — a compact card, not a spread.
     profile: {
-      format: 'card',
-      eyebrow: 'Exelia · Nicosia, Cyprus',
-      logos: [{ src: '/clients/exelia.png', alt: 'Exelia Technologies' }],
-      headline: 'A critical UI/UX skills gap, closed.',
-      body:
-        'Facing a limited local talent pool, Exelia needed specialized UI/UX skills on a fast-moving product team. A targeted global search placed a senior remote designer, vetted to high global standards and onboarded inside the trial period, now delivering across multiple product surfaces.',
-      footnote: '"He is a diamond." Their words.',
+      format: "card",
+      eyebrow: "Exelia · Nicosia, Cyprus",
+      logos: [{ src: "/clients/exelia.png", alt: "Exelia Technologies" }],
+      headline: "A critical UI/UX skills gap, closed.",
+      body: "Facing a limited local talent pool, Exelia needed specialized UI/UX skills on a fast-moving product team. A targeted global search placed a senior remote designer, vetted to high global standards and onboarded inside the trial period, now delivering across multiple product surfaces.",
+      footnote: '"He is a diamond." Their words.'
     },
-    logo: { src: '/clients/exelia.png', alt: 'Exelia Technologies' },
-    client: { named: true, name: 'Exelia Technologies' },
-    industry: 'Technology',
-    location: 'Nicosia, Cyprus',
+    logo: { src: "/clients/exelia.png", alt: "Exelia Technologies" },
+    client: { named: true, name: "Exelia Technologies" },
+    industry: "Technology",
+    location: "Nicosia, Cyprus",
     featured: false,
-    duration: 'Ongoing',
+    duration: "Ongoing",
     summary:
-      'A critical UI/UX skills gap closed with one senior designer, placed through a targeted global search.',
+      "A critical UI/UX skills gap closed with one senior designer, placed through a targeted global search.",
     situation:
-      'Facing a limited local talent pool, Exelia needed specialised UI/UX skills on a fast-moving product team — a gap the Cypriot market could not close quickly.',
+      "Facing a limited local talent pool, Exelia needed specialised UI/UX skills on a fast-moving product team — a gap the Cypriot market could not close quickly.",
     podShape:
-      'One senior UI/UX designer, vetted to global standards and onboarded inside the trial period.',
+      "One senior UI/UX designer, vetted to global standards and onboarded inside the trial period.",
     integration: [
-      'Embedded in a fast-moving product team',
-      'Onboarded inside the risk-free trial period',
-      'Delivering across multiple product surfaces',
+      "Embedded in a fast-moving product team",
+      "Onboarded inside the risk-free trial period",
+      "Delivering across multiple product surfaces"
     ],
     continuity:
-      'The client calls him part of the Exelia family — the outcome the trial period exists to produce.',
+      "The client calls him part of the Exelia family — the outcome the trial period exists to produce.",
     images: [
       {
-        src: '/case-studies/refs/exelia-site.png',
+        src: "/case-studies/refs/exelia-site.png",
         alt: "Exelia Technologies' website",
         caption:
           "The client's product world — the fast-moving team the designer works inside.",
-        kind: 'context',
-      },
+        kind: "context"
+      }
     ],
     outcomes: [
       {
-        value: '1',
-        metric: 'Senior UI/UX designer placed',
+        value: "1",
+        metric: "Senior UI/UX designer placed",
         context:
-          'through a targeted global search, vetted to global standards.',
-        verified: true,
+          "through a targeted global search, vetted to global standards.",
+        verified: true
       },
       {
-        value: 'Ongoing',
-        metric: 'Embedded engagement',
-        context: 'now delivering across multiple product surfaces.',
-        verified: true,
-      },
+        value: "Ongoing",
+        metric: "Embedded engagement",
+        context: "now delivering across multiple product surfaces.",
+        verified: true
+      }
     ],
     quote: {
-      text: 'We are all very impressed with his designs, his professionalism, and how well he manages relationships with our clients. He is a diamond and we are extremely happy to have him as part of the Exelia family.',
-      attribution: 'Exelia Technologies',
-      role: 'Technology · Nicosia, Cyprus',
-      source: 'Client feedback',
-    },
-  },
+      text: "We are all very impressed with his designs, his professionalism, and how well he manages relationships with our clients. He is a diamond and we are extremely happy to have him as part of the Exelia family.",
+      attribution: "Exelia Technologies",
+      role: "Technology · Nicosia, Cyprus",
+      source: "Client feedback"
+    }
+  }
 ];
 
 // ------------------------------------------------------------- other work
@@ -818,65 +832,68 @@ export const workReferences: WorkReference[] = [
   // site's earlier mix of screenshot cards and an "Eight clients" catch-all:
   // the profile names each engagement, so the site does too.
   {
-    client: 'KEFI Gold & Copper',
-    note: 'Saudi Arabia + Cyprus. Research and technology support, via Chesanalyst.',
-    logo: { src: '/clients/kefi-gold.png', alt: 'KEFI Gold & Copper' },
+    client: "KEFI Gold & Copper",
+    note: "Saudi Arabia + Cyprus. Research and technology support, via Chesanalyst.",
+    logo: { src: "/clients/kefi-gold.png", alt: "KEFI Gold & Copper" }
   },
   {
-    client: 'KeySquare Labs',
-    note: 'US. Custom .NET geotagging and field-data system.',
-    logo: { src: '/clients/keysquare.png', alt: 'KeySquare Labs' },
+    client: "KeySquare Labs",
+    note: "US. Custom .NET geotagging and field-data system.",
+    logo: { src: "/clients/keysquare.png", alt: "KeySquare Labs" }
   },
   {
-    client: '251 Marketing',
-    note: 'Ethiopia. Custom ERP and CRM for a marketing agency.',
-    logo: { src: '/clients/251-logo.png', alt: '251 Marketing' },
+    client: "251 Marketing",
+    note: "Ethiopia. Custom ERP and CRM for a marketing agency.",
+    logo: { src: "/clients/251-logo.png", alt: "251 Marketing" }
   },
   {
-    client: 'Africa Communications Media Group',
-    note: 'South Africa. Verified database of 200 pan-African media contacts.',
-    logo: { src: '/clients/acmg.png', alt: 'Africa Communications Media Group' },
+    client: "Africa Communications Media Group",
+    note: "South Africa. Verified database of 200 pan-African media contacts.",
+    logo: { src: "/clients/acmg.png", alt: "Africa Communications Media Group" }
   },
   {
-    client: 'AFIG Funds',
-    note: 'Washington DC. CRM selection, automated ESG data collection, and intelligence reporting for a pan-African private equity firm.',
-    logo: { src: '/clients/afig-funds.png', alt: 'AFIG Funds' },
+    client: "AFIG Funds",
+    note: "Washington DC. CRM selection, automated ESG data collection, and intelligence reporting for a pan-African private equity firm.",
+    logo: { src: "/clients/afig-funds.png", alt: "AFIG Funds" }
   },
   {
-    client: 'CRDLE',
+    client: "CRDLE",
     note: "US. Embedded customer service operation in the client's own tools, including two full-time support reps covering EST phone, email, and chat.",
-    logo: { src: '/clients/crdle.png', alt: 'CRDLE' },
+    logo: { src: "/clients/crdle.png", alt: "CRDLE" }
   },
   {
-    client: 'Medrafa',
-    note: 'US. Pharmaceutical operations dashboard with role-based access, built as a fixed-scope project.',
-    logo: { src: '/clients/medrafa.png', alt: 'Medrafa' },
+    client: "Medrafa",
+    note: "Ethiopia. Pharmaceutical operations dashboard with role-based access, built as a fixed-scope project.",
+    logo: { src: "/clients/medrafa.png", alt: "Medrafa" }
   },
   {
-    client: '10.13 Enterprise',
-    note: 'Washington DC. Embedded back-office specialist for BD administration and CRM operations.',
-    logo: { src: '/clients/10-13.png', alt: '10.13 Enterprise' },
+    client: "10.13 Enterprise",
+    note: "Washington DC. Embedded back-office specialist for BD administration and CRM operations.",
+    logo: { src: "/clients/10-13.png", alt: "10.13 Enterprise" }
   },
   {
-    client: 'HK Financial Advisory',
-    note: 'Virginia. Financial advisory website.',
-    logo: { src: '/clients/hk-financial.svg', alt: 'HK Financial Advisory' },
+    client: "HK Financial Advisory",
+    note: "Virginia. Financial advisory website.",
+    logo: { src: "/clients/hk-financial.svg", alt: "HK Financial Advisory" }
   },
   {
-    client: 'Signature Residence',
-    note: 'Ethiopia. Real estate website.',
-    logo: { src: '/clients/signature-residence.png', alt: 'Signature Residence' },
+    client: "Signature Residence",
+    note: "Ethiopia. Real estate website.",
+    logo: {
+      src: "/clients/signature-residence.png",
+      alt: "Signature Residence"
+    }
   },
   {
-    client: 'USP Transportation',
-    note: 'US. Transportation company website.',
-    logo: { src: '/clients/usp.webp', alt: 'USP Transportation' },
+    client: "USP Transportation",
+    note: "US. Transportation company website.",
+    logo: { src: "/clients/usp.webp", alt: "USP Transportation" }
   },
   {
-    client: 'Stratech Consulting',
-    note: 'Google for Jobs AI Research, SEO and Recruitment Support.',
-    logo: { src: '/clients/stratech.webp', alt: 'Stratech Consulting' },
-  },
+    client: "Stratech Consulting",
+    note: "Google for Jobs AI Research, SEO and Recruitment Support.",
+    logo: { src: "/clients/stratech.webp", alt: "Stratech Consulting" }
+  }
 ];
 
 // ------------------------------------------------------------------ helpers
