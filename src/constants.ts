@@ -5,6 +5,19 @@ export const logo = "/zare-logo.jpg";
 
 export const consultationLink = "https://calendly.com/emanuel-ypgh/30min";
 
+/**
+ * Site-wide switch for the Scale Challenge. Briefly false in the 2026-08
+ * leadership round; back on, with the entry points reworded to invite rather
+ * than name ('Try our Scale Challenge').
+ *
+ * While false: the header link and the footer row disappear, the sitemap
+ * stops listing the URL, and /scale-challenge answers 404 with a noindex
+ * head. Nothing is deleted either way — src/app/(site)/scale-challenge,
+ * src/lib/scale-challenge and src/content/scale-challenge.ts stay in the
+ * tree, so this one line is the whole hide/show.
+ */
+export const SCALE_CHALLENGE_ENABLED = true;
+
 export const email = "info@zareinnovations.com";
 export const careersEmail = "careers@zareinnovations.com";
 export const phone = "+1 703 395 5235";
