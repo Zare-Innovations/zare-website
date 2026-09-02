@@ -49,15 +49,16 @@ function OffsetBand() {
               {r.region}
             </dt>
 
+            {/* Client-name labels removed (2026-08 comment round): the
+                bar alone carries the distance; engagements are named in
+                the work section. This also removes what used to be the
+                page's one mobile overflow (the nowrap US East label). */}
             <dd className="flex items-center gap-4">
               <span
                 aria-hidden="true"
                 className="h-px bg-accent"
                 style={{ width: `${Math.max(width, 2)}%` }}
               />
-              <MonoLabel muted size="caption" className="whitespace-nowrap">
-                {r.evidence}
-              </MonoLabel>
             </dd>
 
             <dd className="font-mono text-body tabular-nums text-[var(--accent-text)] sm:text-right">
@@ -82,19 +83,20 @@ export function WorkingModel() {
     <Section tone="mist" id="working-model" label="How we work with your team">
       <Eyebrow>Working together</Eyebrow>
       <Heading level={2} className="mt-6 max-w-[15em]">
-        One engineering centre. Your working day.
+        One delivery centre. Your working day.
       </Heading>
 
       <p className="mt-6 max-w-[38em] text-body text-[var(--muted-color)]">
-        Our engineers work from one place, Addis Ababa, at UTC{ADDIS_UTC_OFFSET}
-        . Ethiopia does not observe daylight saving, so the distance between
-        your team and ours only changes when your clocks change, never when
-        ours do.
+        Our team works from one place, Addis Ababa, at UTC{ADDIS_UTC_OFFSET}.
+        Ethiopia does not observe daylight saving, so the distance between your
+        team and ours only changes when your clocks change, never when ours do.
       </p>
 
       <div className="mt-14 grid gap-14 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         <div>
-          <MonoLabel muted>Hours behind Addis · standard / daylight saving</MonoLabel>
+          <MonoLabel muted>
+            Hours behind Addis · standard / daylight saving
+          </MonoLabel>
           <div className="mt-6">
             <OffsetBand />
           </div>
@@ -104,7 +106,7 @@ export function WorkingModel() {
           <FactBlock title="How the work happens" facts={communicationModel} />
 
           <p className="mt-8 max-w-[30em] text-body-sm text-[var(--muted-color)]">
-            An embedded engineer is reachable the way your own team is
+            An embedded team member is reachable the way your own team is
             reachable. There is no account manager between you and the person
             writing the code.
           </p>
