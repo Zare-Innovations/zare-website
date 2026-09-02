@@ -23,7 +23,7 @@ import {
 import { deleteCookie } from 'cookies-next';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 const NEW_JOB_ROUTE = '/admin/job/new';
 
@@ -93,11 +93,9 @@ export default function Sidebar({
   const pathname = usePathname();
 
   const { data: profile } = useProfileQuery();
-  const displayName = useMemo(() => {
-    if (!profile?.name) return 'Admin';
-    return profile.name.replace(/^null\s+/i, '').trim() || 'Admin';
-  }, [profile?.name]);
-  const initials = useMemo(() => initialsFromName(profile?.name), [profile?.name]);
+  const displayName =
+    profile?.name?.replace(/^null\s+/i, '').trim() || 'Admin';
+  const initials = initialsFromName(profile?.name);
 
   const logout = () => {
     deleteCookie('access_token');

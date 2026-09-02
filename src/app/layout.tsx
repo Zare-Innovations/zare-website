@@ -2,24 +2,20 @@ import type { Metadata } from 'next';
 
 import './globals.css';
 
-// core styles are required for all packages
-import '@mantine/core/styles.css';
-import '@mantine/carousel/styles.css';
-import '@mantine/notifications/styles.css';
-import '@mantine/dates/styles.css';
-
-import RootStyleRegistry from './mantine';
-
 import localFont from 'next/font/local';
-import { Providers } from '@/store/provider';
 import { logo, ogImage, siteName, siteUrl } from '@/constants';
+
+// The root layout deliberately holds NO providers. Redux and Mantine belong to
+// the route groups that use them: `(marketing)/layout.tsx` and
+// `admin/layout.tsx`. Keeping them here forced every visitor to download the
+// admin panel's runtime. See docs/superpowers/specs — M0.
 
 const gotham = localFont({
   src: [
     {
       path: './fonts/Gotham-Light.otf',
       weight: '200',
-      style: 'light',
+      style: 'normal',
     },
     {
       path: './fonts/Gotham-Book.otf',
@@ -40,27 +36,25 @@ const gotham = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${siteName} | Revolutionize Your Business`,
+    // "Revolutionize" is on the banned list. The default title now states the
+    // category instead of asserting a transformation.
+    default: `${siteName} | Embedded Engineering Teams`,
     template: `%s | ${siteName}`,
   },
   description:
-    'Zare Innovations is a technology company based in Ethiopia and the USA, delivering custom software development, AI solutions, talent outsourcing, and data intelligence services to help businesses scale globally.',
+    'Zare Innovations embeds senior engineers into your team under US contracts, from our Addis Ababa engineering centre. Custom software, AI systems and managed operations. Delaware LLC, 5.0 on Clutch.',
   keywords: [
+    'embedded engineering teams',
+    'dedicated engineering team',
     'custom software development',
-    'AI solutions',
-    'talent outsourcing',
-    'Ethiopian BPO company',
-    'Offshore Talen',
-    'data intelligence',
+    'AI engineering',
+    'software development Ethiopia',
+    'engineering team Addis Ababa',
+    'Ethiopian software engineers',
     'Zare Innovations',
     'tech companies in Ethiopia',
-    'software companies in Ethiopia',
-    'software development Ethiopia',
     'IT company Addis Ababa',
-    'tech company USA',
-    'software outsourcing Ethiopia',
     'African tech company',
-    'Ethiopian software company',
   ],
   authors: [{ name: siteName }],
   creator: siteName,
@@ -109,12 +103,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${gotham.className} antialiased overflow-x-hidden`}
-      >
-        <Providers>
-        <RootStyleRegistry>{children}</RootStyleRegistry>
-        </Providers>
+      <body className={`${gotham.className} antialiased overflow-x-hidden`}>
+        {children}
       </body>
     </html>
   );
