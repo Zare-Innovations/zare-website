@@ -52,6 +52,9 @@ export function JobRichTextField({
     if (!editor) return;
     if (initialContent === lastSyncedRef.current) return;
     editor.commands.setContent(initialContent || '');
+    // Reading length back out of ProseMirror is the only way to resync the
+    // counter; setContent does not emit an update, so onUpdate will not fire.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLength(editor.getText().length);
     lastSyncedRef.current = initialContent;
   }, [editor, initialContent]);

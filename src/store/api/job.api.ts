@@ -1,5 +1,5 @@
-import { CollectionQuery } from '@/app/core-fe/models/query';
-import { encodeCollectionQuery } from '@/app/utility/query-builder';
+import { CollectionQuery } from '@/lib/query/types';
+import { encodeCollectionQuery } from '@/lib/query/query-builder';
 import { baseQuery } from '@/store/base-query';
 import { createApi } from '@reduxjs/toolkit/query/react';
 

@@ -50,6 +50,8 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
+    // Gates the form behind a client-only render to dodge a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -174,11 +176,15 @@ export default function LoginPage() {
             </Stack>
 
             <Box style={{ textAlign: 'center' }}>
-              <Link href="/admin/forgot-password" passHref>
-                <Anchor c="dimmed" size="sm" style={{ textDecoration: 'none' }}>
-                  Forgot Password?
-                </Anchor>
-              </Link>
+              <Anchor
+                component={Link}
+                href="/admin/forgot-password"
+                c="dimmed"
+                size="sm"
+                style={{ textDecoration: 'none' }}
+              >
+                Forgot Password?
+              </Anchor>
             </Box>
           </Stack>
         </Box>
