@@ -32,6 +32,7 @@ const groupIndex = (key: GroupKey | null) =>
 const SECTION_GROUP: Record<string, GroupKey> = {
   'tech-ai': 'what',
   embedded: 'what',
+  'how-we-deliver': 'what',
   'working-model': 'what',
   security: 'what',
   work: 'work',
@@ -59,8 +60,8 @@ const routeGroupOf = (pathname: string | null): GroupKey | null => {
  * whose content crossfades and whose height interpolates as the pointer
  * moves between triggers: the same object changing state, not menus
  * appearing. Work is a plain link to the case-study list, and the bar ends
- * in a pair of buttons: Build with Zare outlined, then the Scale Challenge
- * solid. Same height and shape, different weight — the filled one is where
+ * in a pair of buttons: Build with Zare solid, then the Scale Challenge
+ * outlined. Same height and shape, different weight — the filled one is where
  * the eye lands, and the challenge is what a cold visitor should click.
  * All copy comes from content/navigation.ts, which sources it from existing
  * page content.
@@ -444,30 +445,29 @@ export function Header({ solid = false }: { solid?: boolean } = {}) {
               </div>
             </div>
 
-            {/* Two buttons, same height and shape, different weight. Build
-                with Zare leads as the outlined one — it is the commercial
-                ask and it comes first; the Scale Challenge is solid, because
-                a filled button is the one the eye lands on and the challenge
-                is the thing we actually want a cold visitor to click. */}
+            {/* Two buttons, same height and shape, different weight. The
+                outlined Scale Challenge opens the pair; Build with Zare —
+                the first call to action — closes it FILLED, in the bar's
+                anchor position where the primary ask belongs. */}
             <div className="ml-8 flex shrink-0 items-center gap-3">
-              <Link
-                href={NAV_CTA.href}
-                className="inline-flex h-11 items-center rounded-md border border-accent px-5 text-[14px] font-bold text-accent no-underline transition-colors hover:bg-accent/10"
-              >
-                {NAV_CTA.label}
-              </Link>
-
               {NAV_CHALLENGE ? (
                 <Link
                   href={NAV_CHALLENGE.href}
                   aria-current={
                     pathname.startsWith(NAV_CHALLENGE.href) ? 'page' : undefined
                   }
-                  className="inline-flex h-11 items-center rounded-md bg-accent px-5 text-[14px] font-bold text-accent-contrast no-underline transition-colors hover:bg-accent-bright"
+                  className="inline-flex h-11 items-center rounded-md border border-accent px-5 text-[14px] font-bold text-accent no-underline transition-colors hover:bg-accent/10"
                 >
                   {NAV_CHALLENGE.label}
                 </Link>
               ) : null}
+
+              <Link
+                href={NAV_CTA.href}
+                className="inline-flex h-11 items-center rounded-md bg-accent px-5 text-[14px] font-bold text-accent-contrast no-underline transition-colors hover:bg-accent-bright"
+              >
+                {NAV_CTA.label}
+              </Link>
             </div>
           </nav>
 
@@ -607,16 +607,8 @@ export function Header({ solid = false }: { solid?: boolean } = {}) {
             </div>
 
             {/* The same pair as the desktop bar, stacked and full width:
-                outlined ask first, solid challenge second. */}
+                the outlined challenge first, the filled ask closing. */}
             <div className="mt-8 flex flex-col gap-3">
-              <Link
-                href={NAV_CTA.href}
-                onClick={() => setMenuOpen(false)}
-                className="inline-flex h-12 items-center justify-center rounded-md border border-accent px-6 font-bold text-accent no-underline"
-              >
-                {NAV_CTA.label}
-              </Link>
-
               {NAV_CHALLENGE ? (
                 <Link
                   href={NAV_CHALLENGE.href}
@@ -624,11 +616,19 @@ export function Header({ solid = false }: { solid?: boolean } = {}) {
                     pathname.startsWith(NAV_CHALLENGE.href) ? 'page' : undefined
                   }
                   onClick={() => setMenuOpen(false)}
-                  className="inline-flex h-12 items-center justify-center rounded-md bg-accent px-6 font-bold text-accent-contrast no-underline"
+                  className="inline-flex h-12 items-center justify-center rounded-md border border-accent px-6 font-bold text-accent no-underline"
                 >
                   {NAV_CHALLENGE.label}
                 </Link>
               ) : null}
+
+              <Link
+                href={NAV_CTA.href}
+                onClick={() => setMenuOpen(false)}
+                className="inline-flex h-12 items-center justify-center rounded-md bg-accent px-6 font-bold text-accent-contrast no-underline"
+              >
+                {NAV_CTA.label}
+              </Link>
             </div>
           </div>
         </nav>
