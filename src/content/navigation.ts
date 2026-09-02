@@ -60,7 +60,9 @@ const whatWeDo: NavGroup = {
       title: 'How we work',
       // services.ts embedded definition, the sentence that defines the model.
       subtitle: 'Your Slack, your standups, your codebase, your roadmap.',
-      href: '/#working-model',
+      // The delivery story lives in #how-we-deliver (three tracks, the
+      // seven-week timeline); #working-model is the timezone band.
+      href: '/#how-we-deliver',
     },
     {
       title: 'Security & IP',
@@ -106,7 +108,7 @@ export const NAV_WORK = {
   href: '/work',
 } as const;
 
-/** The Scale Challenge — the SOLID half of the header's button pair, and
+/** The Scale Challenge — the OUTLINED half of the header's button pair,
  *  phrased as an invitation rather than a title: 'Scale Challenge' names a
  *  page, 'Try our Scale Challenge' asks for the click. Null while the
  *  challenge is hidden, which is what removes the button from both the
@@ -116,9 +118,9 @@ export const NAV_CHALLENGE: { label: string; href: string } | null =
     ? { label: 'Try our Scale Challenge', href: '/scale-challenge' }
     : null;
 
-/** The commercial ask, and the OUTLINED half of the pair — first in the
- *  bar, quieter in weight. 'Build with Zare' rather than 'Contact' because
- *  the button should name the outcome, not the form. */
+/** The commercial ask, and the FILLED half of the pair — the first call
+ *  to action carries the weight. 'Build with Zare' rather than 'Contact'
+ *  because the button should name the outcome, not the form. */
 export const NAV_CTA: { label: string; href: string } = {
   label: 'Build with Zare',
   href: '/contact',
