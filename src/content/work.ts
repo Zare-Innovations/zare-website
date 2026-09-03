@@ -677,7 +677,7 @@ export const caseStudies: CaseStudy[] = [
       "The vetting bar held: the same standard applied to one placement, applied more than eighty times. Throughput is a capability, not an accident.",
     images: [
       {
-        src: "/case-studies/kagool-site.png",
+        src: "/case-studies/kagol-site.png",
         alt: "Kagool's website",
         caption:
           "The client: a 200-person, three-continent Microsoft and SAP consultancy — the delivery organisation the Addis Ababa roster now serves.",
