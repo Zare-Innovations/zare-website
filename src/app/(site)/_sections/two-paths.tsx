@@ -12,6 +12,7 @@ import { Heading } from '@/components/typography/heading';
 import { Eyebrow } from '@/components/typography/eyebrow';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { Reveal } from '@/components/motion/reveal';
+import { cn } from '@/lib/utils';
 import {
   servicePaths,
   type ComparisonRow,
@@ -49,7 +50,9 @@ const HIGHLIGHT_ICONS = [IconReceipt2, IconShieldCheck, IconLock] as const;
 function SubPathPanel({ sub }: { sub: SubPath }) {
   const TagIcon = SUBPATH_ICONS[sub.tag.charAt(0) as keyof typeof SUBPATH_ICONS];
   return (
-    <article className="flex flex-col gap-4 border border-[var(--rule-color)] bg-surface-paper p-7">
+    // p-6 below sm: at 24px gutters the 28px inset left 271px, and the
+    // "B · Business Operations" tag broke onto two lines.
+    <article className="flex flex-col gap-4 border border-[var(--rule-color)] bg-surface-paper p-6 sm:p-7">
       <span className="flex items-center gap-3">
         {TagIcon ? (
           <TagIcon
@@ -81,7 +84,7 @@ function PathSection({ path, tone }: { path: ServicePath; tone: 'deep' | 'mist' 
       atmosphere={tone === 'deep' ? 'rings' : undefined}
     >
       <div className="flex flex-col gap-10">
-        <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
           <div className="flex flex-col items-start gap-6">
             <Eyebrow>
               {path.index} · {path.name}
@@ -113,7 +116,16 @@ function PathSection({ path, tone }: { path: ServicePath; tone: 'deep' | 'mist' 
             </Link>
           </div>
 
-          <div className="flex flex-col gap-8">
+          {/* Stacked under the CTA on small screens, the capability list
+              needs its own rule or it reads as a footnote to the button.
+              The highlights list below carries its own rule already. */}
+          <div
+            className={cn(
+              'flex flex-col gap-8',
+              path.capabilities &&
+                'border-t border-[var(--rule-color)] pt-8 lg:border-t-0 lg:pt-0',
+            )}
+          >
             {path.capabilities ? (
               <CapabilityList items={path.capabilities} />
             ) : null}
@@ -180,7 +192,12 @@ function ComparisonTable({ rows }: { rows: readonly ComparisonRow[] }) {
         role="table"
         aria-label="Hiring an in-house US engineer compared with a Zare embedded placement"
       >
-        <div role="row" className="grid grid-cols-3 bg-surface-mist">
+        {/* Three columns need ~480px to breathe. Below sm the header row
+            goes and each measure becomes its own block: the label across
+            the top, the two answers side by side beneath it, each carrying
+            its column name inline. Same argument, twice the width per
+            cell. */}
+        <div role="row" className="hidden grid-cols-3 bg-surface-mist sm:grid">
           <span role="columnheader" className="p-4 md:p-5" />
           <span
             role="columnheader"
@@ -199,21 +216,30 @@ function ComparisonTable({ rows }: { rows: readonly ComparisonRow[] }) {
           <div
             role="row"
             key={row.measure}
-            className="grid grid-cols-3 border-t border-[var(--rule-color)]"
+            className="grid grid-cols-2 border-t border-[var(--rule-color)] sm:grid-cols-3"
           >
             <span
               role="rowheader"
-              className="p-4 font-mono text-caption text-[var(--muted-color)] md:p-5"
+              className="col-span-2 px-4 pb-1 pt-4 font-mono text-caption text-[var(--muted-color)] sm:col-span-1 sm:p-4 md:p-5"
             >
               {row.measure}
             </span>
-            <span role="cell" className="p-4 text-body-sm text-[var(--muted-color)] md:p-5">
+            <span
+              role="cell"
+              className="px-4 pb-4 pt-2 text-body-sm text-[var(--muted-color)] sm:p-4 md:p-5"
+            >
+              <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-[0.12em] sm:hidden">
+                In-house US hire
+              </span>
               {row.inHouse}
             </span>
             <span
               role="cell"
-              className="p-4 font-display text-body-sm font-semibold text-[var(--heading-color)] md:p-5"
+              className="px-4 pb-4 pt-2 font-display text-body-sm font-semibold text-[var(--heading-color)] sm:p-4 md:p-5"
             >
+              <span className="mb-1.5 block font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--accent-text)] sm:hidden">
+                Zare embedded
+              </span>
               {row.zare}
             </span>
           </div>
