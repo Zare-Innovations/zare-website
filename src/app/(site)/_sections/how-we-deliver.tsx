@@ -42,6 +42,83 @@ import {
 const TRACK_ICONS = [IconSettings, IconCopy, IconUsers] as const;
 const LANE_ICONS = [IconTools, IconUserCheck] as const;
 
+/**
+ * The timeline below md. The four-phase grid needs 860px and a phone
+ * has 335: scrolled sideways it showed one phase and clipped the decide
+ * marker, which is the one thing the timeline exists to say. Read
+ * vertically instead — each phase with both lanes beneath it, the marker
+ * closing Prove — so "you commit at the end of phase two" survives.
+ */
+function MobileTimeline() {
+  return (
+    <ol className="mt-10 flex flex-col md:hidden">
+      {deliverPhases.map((phase, pi) => (
+        <li
+          key={phase.n}
+          className="border-t border-[var(--rule-color)] py-8 first:border-t-0 first:pt-0"
+        >
+          <div className="flex items-center gap-3">
+            <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-surface-navy font-mono text-[13px] font-bold text-on-dark-strong">
+              {phase.n}
+            </span>
+            <span className="font-display text-[22px] font-bold leading-none text-[var(--heading-color)]">
+              {phase.name}
+            </span>
+            <span className="ml-auto font-mono text-caption text-[var(--muted-color)]">
+              {phase.when}
+            </span>
+          </div>
+
+          <div className="mt-5 flex flex-col gap-3">
+            {deliverLanes.map((lane, li) => {
+              const LaneIcon = LANE_ICONS[li];
+              return (
+                <div
+                  key={lane.label}
+                  className={cn(
+                    'border-l-[3px] px-4 py-4',
+                    lane.accent
+                      ? 'border-accent bg-accent/[0.06]'
+                      : 'border-surface-navy bg-surface-mist',
+                  )}
+                >
+                  <span className="flex items-center gap-2">
+                    <LaneIcon
+                      size={16}
+                      stroke={1.8}
+                      aria-hidden="true"
+                      className={cn(
+                        'shrink-0',
+                        lane.accent
+                          ? 'text-[var(--accent-text)]'
+                          : 'text-[var(--heading-color)]',
+                      )}
+                    />
+                    <span className="font-mono text-label uppercase leading-snug text-[var(--heading-color)]">
+                      {lane.label}
+                    </span>
+                  </span>
+                  <p className="mt-2 text-body-sm leading-relaxed text-[var(--heading-color)]">
+                    {lane.cells[pi]}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          {pi === DECIDE_PHASE ? (
+            <div className="mt-5 border-t-2 border-accent pt-3">
+              <MonoLabel size="caption" className="text-[var(--accent-text)]">
+                ↑ You decide here
+              </MonoLabel>
+            </div>
+          ) : null}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export function HowWeDeliver() {
   return (
     <Section tone="paper" id="how-we-deliver" label="How we deliver">
@@ -138,8 +215,11 @@ export function HowWeDeliver() {
           that matches your engagement.
         </p>
 
-        {/* The grid is the design; below md it scrolls sideways whole. */}
-        <div className="mt-12 overflow-x-auto">
+        <MobileTimeline />
+
+        {/* The grid is the design; below md it gives way to the vertical
+            sequence above rather than scrolling sideways. */}
+        <div className="mt-12 hidden overflow-x-auto md:block">
           <div className="min-w-[860px]">
             <div className="grid grid-cols-[128px_repeat(4,minmax(0,1fr))]">
               {/* phase headers */}

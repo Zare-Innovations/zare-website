@@ -142,9 +142,14 @@
   /* --- spacing ---------------------------------------------------- */
   --spacing-section: 104px;
   --spacing-section-compact: 88px;
-  --spacing-section-mobile: 60px;
+  /* 80, not 60: at 60 the phone page read as one continuous column with
+     nothing marking where a section ended. Premium mobile marketing sites
+     run 80-96 between bands; 80 keeps the desktop ratio honest. */
+  --spacing-section-mobile: 80px;
   --spacing-gutter: 56px;
-  --spacing-gutter-mobile: 20px;
+  /* 24 on phones (was 20). The extra 4px each side is the cheapest
+     negative space on the page — every band, rule and card edge gains it. */
+  --spacing-gutter-mobile: 24px;
   /* The header's one pair of dimensions. Consumed by the bar itself, every
      page's top offset, the mobile menu, and scroll-padding — change here,
      change everywhere. 64/72 sits in the premium-standard band (Linear,
