@@ -59,6 +59,23 @@ const HANDOFF: readonly [number, number] = [0.8, 1];
 /** The desc block latches in past this much of the reveal window. */
 const DESC_AT = 0.4;
 
+/* ---------------- phones ----------------
+   Below this width the resting copy stack is taller than one small
+   viewport, so it cannot part sideways out of a clipped rest state. The
+   phone narrative replaces the cards' exit with two moves:
+
+     slide   the whole copy slides UP by its overhang (--hero-overflow,
+             measured by the driver), so the cards are read in full
+     exit    the whole copy then lifts and fades on --hero-head, ending
+             exactly where state 2 hides it
+
+   Everything after that — the write, the reveal, the desc block (which
+   tucks to the bottom over its own scrim in CSS), the hand-off — is the
+   desktop narrative unchanged. */
+const NARROW_MAX = 768;
+const SLIDE: readonly [number, number] = [0.04, 0.18];
+const COPY_EXIT: readonly [number, number] = [0.18, 0.32];
+
 /** Upper bound of each state, published as `data-hero-state`. */
 const STATE_END = [0.06, 0.32, 0.52, 0.58, 0.74, 1];
 
@@ -79,14 +96,19 @@ const span = (v: number, from: number, to: number) =>
  * Gates, in order:
  *  - reduced motion   → nothing is imported; the static gradient is the
  *                       experience, one viewport, released from mount.
- *  - coarse pointer   → the element mounts and forms on its OWN clock;
- *                       no pin, no scrubbing, released from mount.
- *                       Pointer capability, not viewport width, decides.
- *  - fine pointer     → the full scroll narrative. `data-scroll-ready`
- *                       (and the pinned height) is granted only when the
- *                       engine actually has a renderer and its assets —
- *                       a fallback gradient never earns the pin, and a
- *                       renderer dying later revokes it.
+ *  - everything else  → the full scroll narrative, phones included.
+ *                       `data-scroll-ready` (and the pinned height) is
+ *                       granted only when the engine actually has a
+ *                       renderer and its assets — a fallback gradient
+ *                       never earns the pin, and a renderer dying later
+ *                       revokes it.
+ *
+ * Phones used to be gated out (coarse pointer, or under 768px) and left
+ * to the engine's own clock. That formed the globe behind the resting
+ * copy within seconds of load and never latched the desc block, which
+ * only the scroll driver can do — so a phone never saw the descriptive
+ * block at all. The narrative now runs everywhere; the copy's overhang
+ * on a short viewport is handled by the slide (see SLIDE above).
  */
 export function GlobeHeroCanvas({
   speed = 1.4,
@@ -143,21 +165,7 @@ export function GlobeHeroCanvas({
     if (!host) return;
 
     const desc = host.querySelector<HTMLElement>('[data-hero-desc]');
-
-    // Coarse pointers and phone-width viewports never scrub. The element
-    // still mounts (the globe writes itself on the engine's own clock
-    // behind the static copy) but the pin, the exits and the scroll
-    // clock are skipped — the hero is never pinned there, so it is
-    // truthfully released. The width clause matches the ENGINE's own
-    // coarse heuristic: under 768px the pinned 100svh section clips the
-    // stacked copy even when the pointer is fine (a narrow desktop
-    // window), because the stack is taller than one small viewport.
-    if (
-      !window.matchMedia('(pointer: fine)').matches ||
-      window.innerWidth < 768
-    ) {
-      return;
-    }
+    const copy = host.querySelector<HTMLElement>('[data-hero-copy]');
 
     /* ---------------- released contract ---------------- */
     let released = true; // server-rendered default
@@ -198,16 +206,26 @@ export function GlobeHeroCanvas({
       host.style.removeProperty('height');
       host.style.removeProperty('--hero-cards');
       host.style.removeProperty('--hero-head');
+      host.style.removeProperty('--hero-slide');
+      host.style.removeProperty('--hero-overflow');
       setReleased(true);
     };
 
     /* ---------------- scroll clock ---------------- */
     let top = 0;
     let range = 1;
+    let narrow = false;
     const measure = () => {
       const rect = host.getBoundingClientRect();
       top = rect.top + window.scrollY;
       range = Math.max(1, host.offsetHeight - window.innerHeight);
+      // Re-read on every measure (so resize flips modes live) — the phone
+      // narrative needs to know how far the copy stack overhangs the
+      // pinned viewport. Zero on a viewport tall enough to hold it.
+      narrow = window.innerWidth < NARROW_MAX;
+      const overflow =
+        narrow && copy ? Math.max(0, copy.scrollHeight - copy.clientHeight) : 0;
+      host.style.setProperty('--hero-overflow', `${Math.round(overflow)}px`);
     };
     const readScroll = () => clamp01((window.scrollY - top) / range);
 
@@ -229,13 +247,25 @@ export function GlobeHeroCanvas({
         desc?.classList.toggle('is-in', descIn);
       }
 
-      const cards = span(p, CARDS_EXIT[0], CARDS_EXIT[1]);
-      host.style.setProperty('--hero-cards', String(cards));
-      host.style.setProperty('--hero-head', String(span(p, HEAD_EXIT[0], HEAD_EXIT[1])));
+      let cards = 0;
+      if (narrow) {
+        // Phone: no sideways exit. The copy slides up by its overhang,
+        // then the whole stack lifts and fades on --hero-head.
+        host.style.setProperty('--hero-slide', String(span(p, SLIDE[0], SLIDE[1])));
+        host.style.setProperty('--hero-cards', '0');
+        host.style.setProperty('--hero-head', String(span(p, COPY_EXIT[0], COPY_EXIT[1])));
+      } else {
+        host.style.removeProperty('--hero-slide');
+        cards = span(p, CARDS_EXIT[0], CARDS_EXIT[1]);
+        host.style.setProperty('--hero-cards', String(cards));
+        host.style.setProperty('--hero-head', String(span(p, HEAD_EXIT[0], HEAD_EXIT[1])));
+      }
 
       // The instant the cards' exit completes they also leave the tab
-      // order (CSS keys visibility on this attribute).
-      const cardsGone = cards >= 1;
+      // order (CSS keys visibility on this attribute). On phones the
+      // cards leave with the copy, and state 2 takes them out of the
+      // tree at the end of COPY_EXIT instead.
+      const cardsGone = !narrow && cards >= 1;
       if (cardsGone !== lastCardsGone) {
         lastCardsGone = cardsGone;
         if (cardsGone) host.dataset.cardsGone = 'true';
