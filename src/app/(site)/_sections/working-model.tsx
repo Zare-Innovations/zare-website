@@ -43,7 +43,7 @@ function OffsetBand() {
           <Reveal
             key={r.region}
             delay={i * 60}
-            className="grid items-center gap-2 border-t border-[var(--rule-color)] py-5 sm:grid-cols-[150px_1fr_auto] sm:gap-6"
+            className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 border-t border-[var(--rule-color)] py-5 sm:grid-cols-[150px_1fr_auto] sm:gap-6"
           >
             <dt className="font-display text-body font-semibold text-[var(--heading-color)]">
               {r.region}
@@ -52,16 +52,21 @@ function OffsetBand() {
             {/* Client-name labels removed (2026-08 comment round): the
                 bar alone carries the distance; engagements are named in
                 the work section. This also removes what used to be the
-                page's one mobile overflow (the nowrap US East label). */}
-            <dd className="flex items-center gap-4">
+                page's one mobile overflow (the nowrap US East label).
+
+                On phones the region and its offset share a line and the
+                bar drops beneath them, full width, so its length still
+                reads as distance. Stacked between the two it looked like
+                an underline of arbitrary length. */}
+            <dd className="order-3 col-span-2 flex items-center sm:order-none sm:col-span-1">
               <span
                 aria-hidden="true"
-                className="h-px bg-accent"
+                className="h-0.5 bg-accent sm:h-px"
                 style={{ width: `${Math.max(width, 2)}%` }}
               />
             </dd>
 
-            <dd className="font-mono text-body tabular-nums text-[var(--accent-text)] sm:text-right">
+            <dd className="text-right font-mono text-body tabular-nums text-[var(--accent-text)]">
               {formatOffset(r.hoursBehind, r.hoursBehindDst)}
             </dd>
           </Reveal>

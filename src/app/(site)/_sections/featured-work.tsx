@@ -43,9 +43,16 @@ export function FeaturedWork() {
 
       {/* The profile's full case spread, one per row — the same treatment
           the showcased cases get on /work. */}
-      <div className="mt-14 flex flex-col gap-20">
+      {/* Stacked on a phone, one case ends and the next begins with
+          nothing but a gap; a hairline marks the break there. Wide, the
+          80px gap is the break. */}
+      <div className="mt-14 flex flex-col gap-14 md:gap-20">
         {cases.map((c, i) => (
-          <Reveal key={c.slug} delay={i * 90}>
+          <Reveal
+            key={c.slug}
+            delay={i * 90}
+            className="border-t border-[var(--rule-color)] pt-14 first:border-t-0 first:pt-0 md:border-t-0 md:pt-0"
+          >
             <CaseSpread caseStudy={c} />
           </Reveal>
         ))}

@@ -40,7 +40,7 @@ export function Testimonials() {
                 role={t.context}
                 source={t.source}
                 className={cn(
-                  'h-full p-8',
+                  'h-full p-6 md:p-8',
                   lead ? highlightSurface : panelSurface,
                 )}
               />

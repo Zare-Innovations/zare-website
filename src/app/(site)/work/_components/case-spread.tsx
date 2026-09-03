@@ -114,8 +114,11 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
 
         {/* ------------------------------ the argument, beside the screen */}
         <div className="mt-8 grid gap-9 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:items-stretch">
+          {/* The heavy rules are the profile's; on a phone they took 34px
+              of a 327px measure, so they thin to 4px and 20px of inset
+              below sm. */}
           <div className="flex flex-col gap-6">
-            <div className="border-l-[6px] border-[var(--heading-color)] pl-7">
+            <div className="border-l-4 border-[var(--heading-color)] pl-5 sm:border-l-[6px] sm:pl-7">
               <MonoLabel muted className="block tracking-[0.12em]">
                 The problem
               </MonoLabel>
@@ -124,7 +127,7 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
               </p>
             </div>
 
-            <div className="border-l-[6px] border-accent pl-7">
+            <div className="border-l-4 border-accent pl-5 sm:border-l-[6px] sm:pl-7">
               <MonoLabel className="block tracking-[0.12em] text-[var(--accent-text)]">
                 {builtLabel}
               </MonoLabel>
@@ -150,7 +153,10 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
             </div>
           </div>
 
-          <div className="relative min-h-[260px] border-2 border-[var(--heading-color)] bg-white lg:min-h-full">
+          {/* Stacked, the screen takes a 16:10 frame sized by the column
+              rather than a fixed 260px box; beside the copy at lg it
+              stretches to the row as before. */}
+          <div className="relative aspect-[16/10] border-2 border-[var(--heading-color)] bg-white lg:aspect-auto lg:min-h-full">
             {cover ? (
               <Image
                 src={cover.src}
@@ -169,35 +175,40 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
           </div>
         </div>
 
-        {/* The numbers band. One column until lg, then ONE COLUMN PER STAT —
+        {/* The numbers band. Two-up until lg, then ONE COLUMN PER STAT —
             not a fixed four. Fixed four left a case with two or three
             outcomes trailing empty cells, and an empty cell inside a ruled
             band reads as a number that failed to load rather than as a
             case that has three things to say.
 
-            No intermediate 2-up on purpose: a wrapping grid needs
-            per-position border resets to avoid drawing a rule against the
-            band's own edge, whereas going straight from stacked to
-            n-across means each cell needs exactly one rule — top when
-            stacked, left when in a row. */}
+            Two-up rather than stacked below lg: four stacked cells were
+            434px of a phone's 1,400px case — a third of the spread spent
+            on the smallest content. The per-position rules a 2-up needs
+            are computed here (top rule from the second row, left rule on
+            the right column; an odd last cell spans the width) so no rule
+            is ever drawn against the band's own edge. */}
         {stats.length > 0 ? (
           <div
-            className={`mt-8 grid grid-cols-1 border-2 border-[var(--heading-color)] ${BAND_COLUMNS[stats.length]}`}
+            className={`mt-8 grid grid-cols-2 border-2 border-[var(--heading-color)] ${BAND_COLUMNS[stats.length]}`}
           >
             {stats.map((s, i) => {
-              const last = i === stats.length - 1 && stats.length >= 3;
+              const n = stats.length;
+              const last = i === n - 1 && n >= 3;
+              const spans = n % 2 === 1 && i === n - 1;
               return (
                 <div
                   key={s.metric}
                   className={[
-                    'px-6 py-4',
-                    'border-t-2 border-[var(--heading-color)] first:border-t-0',
+                    'border-[var(--heading-color)] px-4 py-4 lg:px-6',
+                    i >= 2 ? 'border-t-2' : '',
+                    i % 2 === 1 ? 'border-l-2' : '',
+                    spans ? 'col-span-2 lg:col-span-1' : '',
                     'lg:border-t-0 lg:border-l-2 lg:first:border-l-0',
                     last ? 'bg-accent' : '',
                   ].join(' ')}
                 >
                   <span
-                    className={`block font-display text-[38px] font-bold leading-none tabular-nums ${
+                    className={`block font-display text-[32px] font-bold leading-none tabular-nums lg:text-[38px] ${
                       last ? 'text-accent-contrast' : 'text-[var(--heading-color)]'
                     }`}
                   >
