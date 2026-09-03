@@ -29,10 +29,15 @@ export function QuoteBlock({
 }: QuoteBlockProps) {
   return (
     <figure className={cn('flex flex-col gap-5', className)}>
+      {/* Inline quotes drop to 17px medium below md: at 20px semibold a
+          long quote in a phone-width card was a 440px block of bold
+          type, and four of them in a row read as shouting. */}
       <blockquote
         className={cn(
           'font-display text-[var(--heading-color,currentColor)]',
-          size === 'display' ? 'text-display-3' : 'text-heading leading-snug',
+          size === 'display'
+            ? 'text-display-3'
+            : 'text-[17px] font-medium leading-[1.55] md:text-heading md:font-semibold md:leading-snug',
         )}
       >
         <span aria-hidden="true" className="text-[var(--accent-text)]">
