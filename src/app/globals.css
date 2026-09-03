@@ -768,6 +768,28 @@ html {
   translate: 0 calc(var(--hero-head, 0) * -48px);
 }
 
+/* Phones — the resting copy stack is taller than one small viewport, so
+   it cannot part sideways out of a clipped rest state. The globe driver
+   holds --hero-cards at 0 there (the sideways rules above go inert),
+   measures the stack's overhang into --hero-overflow, and drives two
+   moves instead: the whole copy slides UP by that overhang across
+   --hero-slide, so the cards are read in full, and then the whole copy
+   lifts and fades on --hero-head — the same property the headline
+   already exits on, so the head and the cards leave together.
+
+   `translate` only, never `transform`, on these elements — see the
+   Lightning CSS note on [data-hero-msg]. */
+@media (max-width: 767px) {
+  [data-hero-scroll][data-scroll-ready='true'] [data-hero-copy] {
+    translate: 0 calc(var(--hero-slide, 0) * -1 * var(--hero-overflow, 0px));
+  }
+
+  [data-hero-scroll][data-scroll-ready='true'] [data-hero-cards] {
+    opacity: calc(1 - var(--hero-head, 0));
+    translate: 0 calc(var(--hero-head, 0) * -48px);
+  }
+}
+
 /* Once the cards are off screen they must stop being focusable, not merely
    become invisible. visibility also removes them from the accessibility
    tree, and it reverses cleanly when the visitor scrolls back up. */
