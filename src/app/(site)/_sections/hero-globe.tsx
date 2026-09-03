@@ -34,8 +34,10 @@ import { GlobeHeroCanvas } from '@/components/three/globe-hero-canvas';
  *
  * 1. The copy NEVER waits for the animation. State 0 is server-rendered
  *    at full opacity over a static gradient; every degraded path (reduced
- *    motion, no WebGL, failed assets, coarse pointer) is a single
- *    unpinned viewport of it.
+ *    motion, no WebGL, failed assets) is a single unpinned viewport of
+ *    it. Phones are NOT a degraded path: they run the same narrative,
+ *    with the copy sliding up to reveal its overhang before it exits
+ *    (see the phone block in globe-hero-canvas.tsx and globals.css).
  * 2. The sequence is fully reversible — everything is a pure function of
  *    scroll position.
  * 3. The cards leave and do not return. `TwoPaths` offers the same choice
@@ -126,8 +128,11 @@ export function HeroGlobe() {
         </div>
 
         {/* Top padding is fluid against VIEWPORT HEIGHT, not width — see
-            hero.tsx for the full rationale. */}
+            hero.tsx for the full rationale. `data-hero-copy` is the
+            phone slide's handle: the driver measures this block's
+            overhang and CSS translates it. */}
         <Container className="relative z-[4] flex flex-1 flex-col pb-12 pt-[clamp(104px,13vh,168px)]">
+          <div data-hero-copy className="flex flex-1 flex-col">
           <div
             data-hero-head
             className="flex flex-1 flex-col items-center justify-center gap-5 text-center"
@@ -226,6 +231,7 @@ export function HeroGlobe() {
             >
               Explore our work →
             </Link>
+          </div>
           </div>
         </Container>
       </section>
