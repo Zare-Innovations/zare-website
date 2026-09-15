@@ -1,9 +1,12 @@
+import Image from 'next/image';
+
 import { Section } from '@/components/layout/section';
 import { Heading } from '@/components/typography/heading';
 import { Eyebrow } from '@/components/typography/eyebrow';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { Reveal } from '@/components/motion/reveal';
 import { cn } from '@/lib/utils';
+import { officePhotos } from '@/content/office';
 import {
   IconSettings,
   IconCopy,
@@ -204,16 +207,32 @@ export function HowWeDeliver() {
 
       {/* -------------------------------------------- the shared timeline */}
       <div className="mt-16">
-        <MonoLabel className="text-[var(--accent-text)]">
-          The first seven weeks
-        </MonoLabel>
-        <Heading level={3} size="display-2" className="mt-5 max-w-[16em]">
-          Same four phases, whichever way you start.
-        </Heading>
-        <p className="mt-5 max-w-[54ch] text-body text-[var(--muted-color)]">
-          You commit at the end of phase two, not phase one. Follow the lane
-          that matches your engagement.
-        </p>
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
+          <div>
+            <MonoLabel className="text-[var(--accent-text)]">
+              The first seven weeks
+            </MonoLabel>
+            <Heading level={3} size="display-2" className="mt-5 max-w-[16em]">
+              Same four phases, whichever way you start.
+            </Heading>
+            <p className="mt-5 max-w-[54ch] text-body text-[var(--muted-color)]">
+              You commit at the end of phase two, not phase one. Follow the
+              lane that matches your engagement.
+            </p>
+          </div>
+
+          {/* Phase one is a conversation at a whiteboard; here is one. */}
+          <Reveal variant="clip">
+            <Image
+              src={officePhotos.whiteboardSession.src}
+              alt={officePhotos.whiteboardSession.alt}
+              width={1800}
+              height={1200}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
+            />
+          </Reveal>
+        </div>
 
         <MobileTimeline />
 
