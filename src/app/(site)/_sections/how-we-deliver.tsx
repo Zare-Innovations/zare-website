@@ -226,8 +226,7 @@ export function HowWeDeliver() {
             <Image
               src={officePhotos.whiteboardSession.src}
               alt={officePhotos.whiteboardSession.alt}
-              width={1800}
-              height={1200}
+              placeholder="blur"
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
             />
