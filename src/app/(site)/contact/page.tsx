@@ -150,8 +150,7 @@ export default async function ContactPage({ searchParams }: Props) {
                 <Image
                   src={officePhotos.boardroomPresentation.src}
                   alt={officePhotos.boardroomPresentation.alt}
-                  width={1800}
-                  height={1200}
+                  placeholder="blur"
                   sizes="(min-width: 1024px) 40vw, 100vw"
                   className="mt-8 aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
                 />
