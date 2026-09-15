@@ -10,8 +10,10 @@ import coffeeCorner from '../../public/office/coffee-corner.webp';
 import deskLaughter from '../../public/office/desk-laughter.webp';
 import coffeeCeremonyPour from '../../public/office/coffee-ceremony-pour.webp';
 import coffeeCeremonyTasting from '../../public/office/coffee-ceremony-tasting.webp';
-import operationsCall from '../../public/office/operations-call.webp';
+import operationsStation from '../../public/office/operations-station.webp';
 import operationsDesk from '../../public/office/operations-desk.webp';
+import boardroomScreen from '../../public/office/boardroom-screen.webp';
+import engineeringReview from '../../public/office/engineering-review.webp';
 
 /**
  * Photography from the September 2026 delivery-centre shoot (Addis Ababa).
@@ -89,10 +91,22 @@ export const officePhotos = {
     src: coffeeCeremonyTasting,
     alt: 'Two Zare team members tasting coffee during the office coffee ceremony',
   },
-  /** Operations specialist mid-call, headset on, at the logo wall. */
-  operationsCall: {
-    src: operationsCall,
-    alt: 'A Zare operations specialist on a client call, wearing a headset',
+  /** Operations specialist at her station under the logo wall — the frame
+   *  leadership picked in the 2026-09 comment round (replaces the earlier
+   *  headset-call frame). */
+  operationsStation: {
+    src: operationsStation,
+    alt: 'A Zare operations specialist working at her station beneath the company logo wall',
+  },
+  /** Boardroom walkthrough: presenter at the wall screen, team following. */
+  boardroomScreen: {
+    src: boardroomScreen,
+    alt: 'A Zare team member walking colleagues through delivered work on the meeting-room screen',
+  },
+  /** Standing code review beside the desk, work on both screens. */
+  engineeringReview: {
+    src: engineeringReview,
+    alt: 'Two Zare engineers reviewing work in progress at a workstation',
   },
   /** Operations specialist at her desk, headset on. */
   operationsDesk: {
