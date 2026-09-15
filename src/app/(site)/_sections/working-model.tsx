@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import { Section } from '@/components/layout/section';
 import { Heading } from '@/components/typography/heading';
 import { Eyebrow } from '@/components/typography/eyebrow';
@@ -9,6 +11,7 @@ import {
   clientRegions,
   communicationModel,
 } from '@/content/working-model';
+import { officePhotos } from '@/content/office';
 
 /**
  * The offset band.
@@ -117,6 +120,22 @@ export function WorkingModel() {
           </p>
         </div>
       </div>
+
+      {/* The room the section keeps talking about. One wide, quiet frame —
+          evidence that "one delivery centre" is a place, not a phrase. */}
+      <Reveal variant="clip" className="mt-14">
+        <Image
+          src={officePhotos.workspaceCalm.src}
+          alt={officePhotos.workspaceCalm.alt}
+          width={1800}
+          height={1200}
+          sizes="(min-width: 1400px) 1288px, 100vw"
+          className="aspect-[21/9] w-full border border-[var(--rule-color)] object-cover"
+        />
+        <MonoLabel muted size="caption" className="mt-4 block">
+          The delivery centre, Addis Ababa · UTC{ADDIS_UTC_OFFSET}
+        </MonoLabel>
+      </Reveal>
     </Section>
   );
 }
