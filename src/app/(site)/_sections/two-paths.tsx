@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   IconTerminal2,
   IconHeadset,
@@ -19,6 +20,15 @@ import {
   type ServicePath,
   type SubPath,
 } from '@/content/services';
+import { officePhotos, type OfficePhoto } from '@/content/office';
+
+/** Each embedded sub-path opens on a photograph of that work actually
+ *  happening: engineers at code for Technology Talent, the headset desk
+ *  for Business Operations. Keyed like SUBPATH_ICONS, by the tag letter. */
+const SUBPATH_PHOTOS: Record<string, OfficePhoto> = {
+  A: officePhotos.engineeringPair,
+  B: officePhotos.operationsCall,
+};
 
 function CapabilityList({ items }: { items: readonly string[] }) {
   return (
@@ -49,10 +59,23 @@ const HIGHLIGHT_ICONS = [IconReceipt2, IconShieldCheck, IconLock] as const;
 
 function SubPathPanel({ sub }: { sub: SubPath }) {
   const TagIcon = SUBPATH_ICONS[sub.tag.charAt(0) as keyof typeof SUBPATH_ICONS];
+  const photo = SUBPATH_PHOTOS[sub.tag.charAt(0)];
   return (
     // p-6 below sm: at 24px gutters the 28px inset left 271px, and the
     // "B · Business Operations" tag broke onto two lines.
     <article className="flex flex-col gap-4 border border-[var(--rule-color)] bg-surface-paper p-6 sm:p-7">
+      {photo ? (
+        // Bleeds to the panel edges: the photo is the panel's opening
+        // statement, not an illustration inside it.
+        <Image
+          src={photo.src}
+          alt={photo.alt}
+          width={1800}
+          height={1200}
+          sizes="(min-width: 768px) 50vw, 100vw"
+          className="-mx-6 -mt-6 aspect-[16/9] w-[calc(100%+3rem)] max-w-none border-b border-[var(--rule-color)] object-cover sm:-mx-7 sm:-mt-7 sm:w-[calc(100%+3.5rem)]"
+        />
+      ) : null}
       <span className="flex items-center gap-3">
         {TagIcon ? (
           <TagIcon

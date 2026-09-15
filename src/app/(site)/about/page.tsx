@@ -29,6 +29,7 @@ import {
   pillars,
 } from '@/content/about';
 import { founder, leadership } from '@/content/people';
+import { officePhotos } from '@/content/office';
 import { OPENING_OFFER } from '@/content/contact';
 
 export const metadata: Metadata = {
@@ -104,6 +105,48 @@ export default function AboutPage() {
                 ))}
               </ul>
             </div>
+          </div>
+
+          {/* The narrative above claims one delivery centre; these are its
+              photographs. The wide frame is the room, the pair beneath it
+              the two things that actually happen there: the work, and the
+              ceremony that is unmistakably Addis. */}
+          <div className="mt-16">
+            <Reveal variant="clip">
+              <Image
+                src={officePhotos.workspaceWide.src}
+                alt={officePhotos.workspaceWide.alt}
+                width={1800}
+                height={1200}
+                sizes="(min-width: 1400px) 1288px, 100vw"
+                className="aspect-[21/9] w-full border border-[var(--rule-color)] object-cover"
+              />
+            </Reveal>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2">
+              <Reveal variant="clip" delay={90}>
+                <Image
+                  src={officePhotos.engineeringCode.src}
+                  alt={officePhotos.engineeringCode.alt}
+                  width={1800}
+                  height={1200}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="aspect-[3/2] w-full border border-[var(--rule-color)] object-cover"
+                />
+              </Reveal>
+              <Reveal variant="clip" delay={180}>
+                <Image
+                  src={officePhotos.coffeeCeremonyPour.src}
+                  alt={officePhotos.coffeeCeremonyPour.alt}
+                  width={1800}
+                  height={1200}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="aspect-[3/2] w-full border border-[var(--rule-color)] object-cover"
+                />
+              </Reveal>
+            </div>
+            <MonoLabel muted size="caption" className="mt-4 block">
+              The delivery centre · Addis Ababa
+            </MonoLabel>
           </div>
         </Section>
 
