@@ -35,8 +35,6 @@ export const metadata: Metadata = {
 
 export default async function CareersPreviewPage() {
   const roles = await getOpenRoles();
-  console.log("OPEN ROLES:");
-  console.log(roles);
 
   return (
     <>
