@@ -23,11 +23,19 @@ import {
 import { officePhotos, type OfficePhoto } from '@/content/office';
 
 /** Each embedded sub-path opens on a photograph of that work actually
- *  happening: engineers at code for Technology Talent, the headset desk
- *  for Business Operations. Keyed like SUBPATH_ICONS, by the tag letter. */
+ *  happening: engineers at code for Technology Talent, the operations
+ *  station for Business Operations. Keyed like SUBPATH_ICONS, by the tag
+ *  letter. */
 const SUBPATH_PHOTOS: Record<string, OfficePhoto> = {
   A: officePhotos.engineeringPair,
-  B: officePhotos.operationsCall,
+  B: officePhotos.operationsStation,
+};
+
+/** Section 01 carries one photograph in its capability column — the build
+ *  engine reviewing work in progress. Section 02's photos live on its
+ *  sub-path panels instead, so it deliberately has no entry here. */
+const PATH_PHOTOS: Record<string, OfficePhoto> = {
+  'tech-ai': officePhotos.engineeringReview,
 };
 
 function CapabilityList({ items }: { items: readonly string[] }) {
@@ -150,6 +158,18 @@ function PathSection({ path, tone }: { path: ServicePath; tone: 'deep' | 'mist' 
           >
             {path.capabilities ? (
               <CapabilityList items={path.capabilities} />
+            ) : null}
+
+            {PATH_PHOTOS[path.id] ? (
+              <Reveal variant="clip">
+                <Image
+                  src={PATH_PHOTOS[path.id].src}
+                  alt={PATH_PHOTOS[path.id].alt}
+                  placeholder="blur"
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  className="aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
+                />
+              </Reveal>
             ) : null}
 
             {/* Commercial de-risking at display weight, not as bullets.
