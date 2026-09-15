@@ -127,8 +127,7 @@ export function WorkingModel() {
         <Image
           src={officePhotos.workspaceCalm.src}
           alt={officePhotos.workspaceCalm.alt}
-          width={1800}
-          height={1200}
+          placeholder="blur"
           sizes="(min-width: 1400px) 1288px, 100vw"
           className="aspect-[21/9] w-full border border-[var(--rule-color)] object-cover"
         />
