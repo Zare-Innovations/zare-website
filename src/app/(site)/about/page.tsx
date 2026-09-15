@@ -116,8 +116,7 @@ export default function AboutPage() {
               <Image
                 src={officePhotos.workspaceWide.src}
                 alt={officePhotos.workspaceWide.alt}
-                width={1800}
-                height={1200}
+                placeholder="blur"
                 sizes="(min-width: 1400px) 1288px, 100vw"
                 className="aspect-[21/9] w-full border border-[var(--rule-color)] object-cover"
               />
@@ -127,8 +126,7 @@ export default function AboutPage() {
                 <Image
                   src={officePhotos.engineeringCode.src}
                   alt={officePhotos.engineeringCode.alt}
-                  width={1800}
-                  height={1200}
+                  placeholder="blur"
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="aspect-[3/2] w-full border border-[var(--rule-color)] object-cover"
                 />
@@ -137,8 +135,7 @@ export default function AboutPage() {
                 <Image
                   src={officePhotos.coffeeCeremonyPour.src}
                   alt={officePhotos.coffeeCeremonyPour.alt}
-                  width={1800}
-                  height={1200}
+                  placeholder="blur"
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="aspect-[3/2] w-full border border-[var(--rule-color)] object-cover"
                 />

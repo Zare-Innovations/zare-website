@@ -70,8 +70,7 @@ function SubPathPanel({ sub }: { sub: SubPath }) {
         <Image
           src={photo.src}
           alt={photo.alt}
-          width={1800}
-          height={1200}
+          placeholder="blur"
           sizes="(min-width: 768px) 50vw, 100vw"
           className="-mx-6 -mt-6 aspect-[16/9] w-[calc(100%+3rem)] max-w-none border-b border-[var(--rule-color)] object-cover sm:-mx-7 sm:-mt-7 sm:w-[calc(100%+3.5rem)]"
         />
