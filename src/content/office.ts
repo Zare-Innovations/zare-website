@@ -13,7 +13,6 @@ import coffeeCeremonyTasting from '../../public/office/coffee-ceremony-tasting.w
 import operationsStation from '../../public/office/operations-station.webp';
 import operationsDesk from '../../public/office/operations-desk.webp';
 import boardroomScreen from '../../public/office/boardroom-screen.webp';
-import engineeringReview from '../../public/office/engineering-review.webp';
 
 /**
  * Photography from the September 2026 delivery-centre shoot (Addis Ababa).
@@ -102,11 +101,6 @@ export const officePhotos = {
   boardroomScreen: {
     src: boardroomScreen,
     alt: 'A Zare team member walking colleagues through delivered work on the meeting-room screen',
-  },
-  /** Standing code review beside the desk, work on both screens. */
-  engineeringReview: {
-    src: engineeringReview,
-    alt: 'Two Zare engineers reviewing work in progress at a workstation',
   },
   /** Operations specialist at her desk, headset on. */
   operationsDesk: {

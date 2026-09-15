@@ -31,13 +31,6 @@ const SUBPATH_PHOTOS: Record<string, OfficePhoto> = {
   B: officePhotos.operationsStation,
 };
 
-/** Section 01 carries one photograph in its capability column — the build
- *  engine reviewing work in progress. Section 02's photos live on its
- *  sub-path panels instead, so it deliberately has no entry here. */
-const PATH_PHOTOS: Record<string, OfficePhoto> = {
-  'tech-ai': officePhotos.engineeringReview,
-};
-
 function CapabilityList({ items }: { items: readonly string[] }) {
   return (
     // body-sm, not caption: these lists are scanned as content (the
@@ -156,20 +149,12 @@ function PathSection({ path, tone }: { path: ServicePath; tone: 'deep' | 'mist' 
                 'border-t border-[var(--rule-color)] pt-8 lg:border-t-0 lg:pt-0',
             )}
           >
+            {/* No photo in this column on purpose: the code-desk scene
+                already opens the Technology Talent panel one section down,
+                and two frames of the same desk on one page read as
+                repetition, not evidence (2026-09 duplicate-image audit). */}
             {path.capabilities ? (
               <CapabilityList items={path.capabilities} />
-            ) : null}
-
-            {PATH_PHOTOS[path.id] ? (
-              <Reveal variant="clip">
-                <Image
-                  src={PATH_PHOTOS[path.id].src}
-                  alt={PATH_PHOTOS[path.id].alt}
-                  placeholder="blur"
-                  sizes="(min-width: 1024px) 45vw, 100vw"
-                  className="aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
-                />
-              </Reveal>
             ) : null}
 
             {/* Commercial de-risking at display weight, not as bullets.
