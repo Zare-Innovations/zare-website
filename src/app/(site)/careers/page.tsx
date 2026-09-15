@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -12,7 +13,17 @@ import { Reveal } from '@/components/motion/reveal';
 import { getOpenRoles } from '@/lib/roles';
 import { careersEmail, siteUrl } from '@/constants';
 import { vettingSteps } from '@/content/delivery';
+import { officePhotos } from '@/content/office';
 import { RoleCard } from './_components/role-card';
+
+/** The culture strip, in narrative order: the lounge conversation, the
+ *  desk you actually work at, the ceremony, the operations floor. */
+const CULTURE_PHOTOS = [
+  officePhotos.coffeeCorner,
+  officePhotos.deskLaughter,
+  officePhotos.coffeeCeremonyTasting,
+  officePhotos.operationsDesk,
+] as const;
 
 // Detail pages and the whole application flow remain on (marketing)/careers/[id].
 export const metadata: Metadata = {
@@ -80,6 +91,26 @@ export default async function CareersPreviewPage() {
               />
             </div>
           </div>
+
+          {/* Life at the centre, photographed rather than described: the
+              lounge, the desks, the coffee ceremony, the operations floor. */}
+          <div className="mt-16 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+            {CULTURE_PHOTOS.map((photo, i) => (
+              <Reveal key={photo.src} variant="clip" delay={i * 80}>
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  width={1800}
+                  height={1200}
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  className="aspect-[4/3] w-full border border-[var(--rule-color)] object-cover"
+                />
+              </Reveal>
+            ))}
+          </div>
+          <MonoLabel muted size="caption" className="mt-4 block">
+            The delivery centre · Addis Ababa
+          </MonoLabel>
         </Section>
 
         {/* Vetting shown to candidates, not clients: the same eight steps read
