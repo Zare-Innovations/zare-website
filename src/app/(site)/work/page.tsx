@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
 import { Section } from '@/components/layout/section';
 import { Heading } from '@/components/typography/heading';
@@ -8,6 +9,7 @@ import { Footer } from '@/components/layout/footer';
 import { Reveal } from '@/components/motion/reveal';
 import { siteUrl } from '@/constants';
 import { publishedCases, workReferences } from '@/content/work';
+import { officePhotos } from '@/content/office';
 import { CaseSpread } from './_components/case-spread';
 import { FeaturedCase } from './_components/featured-case';
 import { SelectedWorkCard } from './_components/selected-work-card';
@@ -53,15 +55,31 @@ export default function WorkPage() {
 
       <main id="main" className="pt-header-h md:pt-header-h-md">
         <Section tone="ink" label="Engineering work">
-          <Eyebrow>Our work</Eyebrow>
-          <Heading level={1} size="display-1" className="mt-6 max-w-[15em]">
-            Systems we built, and teams that stayed.
-          </Heading>
-          <p className="mt-6 max-w-[36em] text-body text-on-dark-muted">
-            Each of these is a real engagement with a named client. Where a
-            figure is not yet verified or a client has not cleared publication,
-            we say so rather than rounding it into a claim.
-          </p>
+          <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+            <div>
+              <Eyebrow>Our work</Eyebrow>
+              <Heading level={1} size="display-1" className="mt-6 max-w-[15em]">
+                Systems we built, and teams that stayed.
+              </Heading>
+              <p className="mt-6 max-w-[36em] text-body text-on-dark-muted">
+                Each of these is a real engagement with a named client. Where a
+                figure is not yet verified or a client has not cleared
+                publication, we say so rather than rounding it into a claim.
+              </p>
+            </div>
+
+            {/* The page's own subject, photographed: delivered work being
+                walked through on the boardroom screen. */}
+            <Reveal variant="clip">
+              <Image
+                src={officePhotos.boardroomScreen.src}
+                alt={officePhotos.boardroomScreen.alt}
+                placeholder="blur"
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="aspect-[16/10] w-full border border-[var(--rule-color)] object-cover"
+              />
+            </Reveal>
+          </div>
         </Section>
 
         <Section tone="paper" label="Featured work">
