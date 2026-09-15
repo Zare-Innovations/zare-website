@@ -9,8 +9,13 @@ const nextConfig: NextConfig = {
   output: "standalone",
 
   images: {
-    // AVIF first, WebP fallback. Next picks per Accept header.
-    formats: ["image/avif", "image/webp"],
+    // WebP only, deliberately no AVIF. The optimizer encodes on demand and
+    // its cache does not survive a redeploy, so first viewers pay the encode
+    // cost — and a cold AVIF encode measures ~3x a WebP one (0.74s vs 0.23s
+    // per variant on a dev machine; several seconds each on the production
+    // box, which is what made the /about photo band sit empty). Every photo
+    // source is already WebP; AVIF's ~20% size win is not worth the stall.
+    formats: ["image/webp"],
     // Trimmed from the defaults to the widths this layout actually requests,
     // so the optimizer generates fewer variants per source image.
     deviceSizes: [640, 828, 1080, 1200, 1920],
