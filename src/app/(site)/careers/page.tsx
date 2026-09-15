@@ -94,12 +94,11 @@ export default async function CareersPreviewPage() {
               lounge, the desks, the coffee ceremony, the operations floor. */}
           <div className="mt-16 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
             {CULTURE_PHOTOS.map((photo, i) => (
-              <Reveal key={photo.src} variant="clip" delay={i * 80}>
+              <Reveal key={photo.src.src} variant="clip" delay={i * 80}>
                 <Image
                   src={photo.src}
                   alt={photo.alt}
-                  width={1800}
-                  height={1200}
+                  placeholder="blur"
                   sizes="(min-width: 1024px) 25vw, 50vw"
                   className="aspect-[4/3] w-full border border-[var(--rule-color)] object-cover"
                 />
