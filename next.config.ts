@@ -35,6 +35,18 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  async headers() {
+    return [
+      // The staff portal stays out of search indexes even if a link to it
+      // leaks. Belt and braces with its robots metadata and robots.ts.
+      // `:path*` matches zero segments too, so /portal itself is covered.
+      {
+        source: '/portal/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+    ];
+  },
+
   async redirects() {
     return [
       // /our-work was the live, indexed portfolio route. /work replaced it at
