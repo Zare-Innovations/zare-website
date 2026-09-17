@@ -167,6 +167,30 @@
      dissolving up. An ease-out would land it too eagerly. */
   --ease-resolve: cubic-bezier(0.7, 0, 0.2, 1);
 
+  /* ==================================================================
+     ZARE BENCH — the staff portal at /portal
+     Its own namespace so it can never collide with the site's tokens
+     ("ink" here is a TEXT colour; the site's --color-ink is a surface).
+     Ink, deep and navy come from the site's surfaces, with the two steps
+     between them interpolated; teal, depth blue and text-on-teal reuse
+     the site's accent tokens directly. Every text colour clears WCAG AA
+     on every bench surface (faint on surface-3 is the tightest: 4.67:1).
+     Styles and motion for these screens: src/bench/bench.css.
+     ================================================================== */
+  --color-bench-ground: #020f18;
+  --color-bench-surface: #061a27;
+  --color-bench-surface-2: #0a2333;
+  --color-bench-surface-3: #0f2d40;
+  --color-bench-line: #12303f;
+  --color-bench-line-bright: #1d4556;
+  --color-bench-ink: #e8f2f5;
+  --color-bench-ink-dim: #a9bec7;
+  --color-bench-ink-faint: #7f97a3;
+  /* Health: meaning, not decoration. Green covered, amber short, red critical. */
+  --color-bench-healthy: #34d399;
+  --color-bench-warning: #fbbf24;
+  --color-bench-critical: #f87171;
+
   @keyframes blink {
     50% {
       opacity: 0;
