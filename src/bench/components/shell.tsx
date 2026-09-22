@@ -24,6 +24,7 @@ import {
   useCallQueue,
   useCallStats,
   useCurrentUser,
+  useHydrated,
   useSession,
   useUsers,
   type Role,
@@ -98,6 +99,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
   // entirely. A real database makes this unnecessary — the server would hold
   // the truth and this gate comes out with it.
   const mounted = useMounted();
+  // API mode: the snapshot starts empty and fills from landing-api; the
+  // shell holds its skeleton until that first fetch lands. Always true in
+  // demo mode, so nothing changes there.
+  const hydrated = useHydrated();
 
   // Signed out: every page sends you to sign in, remembering where you were
   // going. In the real build this is middleware checking the Supabase
@@ -108,13 +113,13 @@ export function Shell({ children }: { children: React.ReactNode }) {
     }
   }, [mounted, signedIn, isSignIn, pathname, router]);
 
-  const nav = NAV.filter((n) => n.roles.includes(user.role));
+  const nav = NAV.filter((n) => n.roles.includes(user?.role ?? 'recruiter'));
   // Candidates cooling down after no answer are in the queue but not due.
   const dueNow = queue.filter((i) => !i.retry_at).length;
 
   // The sign-in page is its own full-screen layout: no sidebar, no counters.
   if (isSignIn) return <>{children}</>;
-  if (!mounted) return <ShellSkeleton />;
+  if (!mounted || !hydrated) return <ShellSkeleton />;
   // Redirecting. Render nothing that belongs to a signed-in user.
   if (!signedIn) return <div className="min-h-screen bg-bench-ground" />;
 
