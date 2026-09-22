@@ -71,7 +71,17 @@ import {
   type AssessmentErrors,
   type AssessmentInput,
 } from './logic';
-import { getSnapshot, mutate, newId, resetDemo, subscribe, type Snapshot } from './store';
+import {
+  getSnapshot,
+  isHydrated,
+  mutate,
+  newId,
+  resetDemo,
+  subscribe,
+  whenHydrated,
+  type Snapshot,
+} from './store';
+import { API_MODE } from './api';
 import { WEEK_MS } from '@/bench/dates';
 import { DEMO_MODE } from '@/bench/demo';
 import { buildShortlistExport, findLeaks, type ExportDocument } from '@/bench/export/shortlist';
@@ -172,6 +182,16 @@ export {
   MIN_OVERRIDE_REASON,
 } from './logic';
 export { resetDemo };
+export { API_MODE } from './api';
+
+/**
+ * False until the snapshot has loaded from the API. Always true in demo
+ * mode. The shell holds its loading state on this, so screens never see a
+ * half-empty bench.
+ */
+export function useHydrated(): boolean {
+  return useSyncExternalStore(subscribe, isHydrated, () => !API_MODE);
+}
 // Job metadata and schedules are pure; re-exported so screens keep a single
 // import path.
 export { JOBS, nextRun, type JobMeta } from '@/bench/jobs';
@@ -1715,8 +1735,12 @@ export async function signInWithPassword(
   email: string,
   password: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  // Demo sign-in checks no password, so it exists only in demo mode.
-  if (!DEMO_MODE) return { ok: false, error: 'Sign-in is not available yet.' };
+  // Demo sign-in checks no password, so it exists only in demo mode — and,
+  // for now, in API mode, where the staff list comes from the database but
+  // the password is still unchecked. TODO: replace with /api/accounts
+  // sign-in before this leaves local testing.
+  if (!DEMO_MODE && !API_MODE) return { ok: false, error: 'Sign-in is not available yet.' };
+  if (API_MODE && !isHydrated()) await whenHydrated();
   const address = email.trim().toLowerCase();
   if (!address.endsWith(`@${STAFF_EMAIL_DOMAIN}`)) {
     return { ok: false, error: `Use your @${STAFF_EMAIL_DOMAIN} email address.` };

@@ -19,6 +19,7 @@ import {
   seedUsers,
   USER_RECRUITER_1,
 } from './seed';
+import { API_MODE, fetchCollections, syncDiff } from './api';
 import type {
   Archetype,
   CallLog,
@@ -106,7 +107,69 @@ function build(now: number): Snapshot {
 let snapshot: Snapshot | null = null;
 const listeners = new Set<() => void>();
 
+/* ------------------------------------------------------------------
+   API mode (NEXT_PUBLIC_BENCH_DEMO_MODE=false): the seed never runs.
+   The snapshot starts empty, hydrates once from the bench endpoints,
+   and every mutation is mirrored back by api.syncDiff. The session
+   (who is signed in) stays local either way.
+   ------------------------------------------------------------------ */
+
+let hydrated = !API_MODE;
+let resolveHydrated: (() => void) | null = null;
+const hydratedPromise: Promise<void> = API_MODE
+  ? new Promise((r) => {
+      resolveHydrated = r;
+    })
+  : Promise.resolve();
+
+export const isHydrated = () => hydrated;
+export const whenHydrated = () => hydratedPromise;
+
+function emptySnapshot(session: Pick<Snapshot, 'currentUserId' | 'signedIn'> | null): Snapshot {
+  return {
+    users: [],
+    archetypes: [],
+    candidates: [],
+    calls: [],
+    requests: [],
+    shortlists: [],
+    shortlistCandidates: [],
+    placements: [],
+    jobRuns: [],
+    currentUserId: session?.currentUserId ?? '',
+    signedIn: session?.signedIn ?? false,
+    seededAt: Date.now(),
+  };
+}
+
+let hydrateStarted = false;
+
+export function hydrateFromApi(): void {
+  if (!API_MODE || hydrateStarted || typeof window === 'undefined') return;
+  hydrateStarted = true;
+  fetchCollections()
+    .then((tables) => {
+      const s = getSnapshot();
+      snapshot = { ...s, ...tables };
+      hydrated = true;
+      resolveHydrated?.();
+      persist();
+      listeners.forEach((l) => l());
+    })
+    .catch((err) => {
+      // Left unhydrated on purpose: the shell keeps showing its loading
+      // state, and the console says exactly what to start (the API).
+      hydrateStarted = false;
+      console.error('[bench api] hydrate failed — is landing-api running?', err);
+    });
+}
+
 function load(): Snapshot {
+  if (API_MODE) {
+    const session = typeof window === 'undefined' ? null : loadSession();
+    if (typeof window !== 'undefined') hydrateFromApi();
+    return emptySnapshot(session);
+  }
   if (typeof window === 'undefined') {
     // Server render: always a fresh seed. Nothing is mutated server-side, so
     // there is no state to lose — the client rehydrates immediately.
@@ -128,7 +191,11 @@ function load(): Snapshot {
 function persist() {
   if (typeof window === 'undefined' || !snapshot) return;
   try {
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    // In API mode the server owns the data; only the session is kept local,
+    // so a reload always re-reads the truth instead of a stale copy.
+    if (!API_MODE) {
+      window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    }
     window.sessionStorage.setItem(
       SESSION_KEY,
       JSON.stringify({ currentUserId: snapshot.currentUserId, signedIn: snapshot.signedIn }),
@@ -146,6 +213,8 @@ export function getSnapshot(): Snapshot {
 /** Apply a mutation, persist it, and wake every subscriber. */
 export function mutate(fn: (s: Snapshot) => void): void {
   const s = getSnapshot();
+  // The pre-mutation copy is what the API diff runs against.
+  const prev = API_MODE ? structuredClone(s) : null;
   fn(s);
   // Replace, never keep, the mutated snapshot. useSyncExternalStore compares
   // by reference: a user record edited in place is the same object, so a
@@ -154,6 +223,7 @@ export function mutate(fn: (s: Snapshot) => void): void {
   // also lets the derived cache, keyed on the snapshot, drop stale entries.
   snapshot = structuredClone(s);
   persist();
+  if (prev) syncDiff(prev, snapshot);
   listeners.forEach((l) => l());
 }
 
@@ -164,6 +234,12 @@ export function subscribe(listener: () => void): () => void {
 
 /** Back to the seeded state. Wired to a button in settings for demo resets. */
 export function resetDemo(): void {
+  if (API_MODE) {
+    // The server owns the data; "reset" just re-reads it.
+    hydrateStarted = false;
+    hydrateFromApi();
+    return;
+  }
   // Data goes back to the seed; whoever is signed in stays signed in.
   const session = snapshot ? { currentUserId: snapshot.currentUserId, signedIn: snapshot.signedIn } : null;
   snapshot = { ...build(Date.now()), ...session };
@@ -176,5 +252,7 @@ export function newId(prefix: string): string {
     typeof crypto !== 'undefined' && 'randomUUID' in crypto
       ? crypto.randomUUID()
       : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-  return `${prefix}-${uuid}`;
+  // The API's tables use uuid primary keys, so the demo's readable
+  // prefixes only exist in demo mode.
+  return API_MODE ? uuid : `${prefix}-${uuid}`;
 }
