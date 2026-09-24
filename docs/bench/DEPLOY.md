@@ -1,14 +1,19 @@
 # Password-locking /portal on the server
 
+> **No longer required.** The portal now signs in through the landing-api
+> (`/api/accounts/sign-in`) and every bench endpoint requires the bearer
+> token, so the app carries its own lock. The nginx lock below is kept as
+> an OPTIONAL extra layer — set it up only if you want the portal invisible
+> to anyone without the shared password on top of their own account.
+
 The staff portal ships inside the website: `/portal` is part of the same
 Next.js app, image and container, and deploys with it. Nothing about the
 build, `Dockerfile`, `docker-compose.yaml` or `deploy.sh` changes.
 
-What this document adds is a **temporary password lock**. The portal is still
-the demo build, so until real staff sign-in exists nginx asks for a username
-and password before any `/portal` page is served. It is a change to the
-server's nginx configuration only, made by whoever has SSH access. About 15
-minutes.
+What this document adds is a **temporary password lock**: nginx asks for a
+username and password before any `/portal` page is served. It is a change
+to the server's nginx configuration only, made by whoever has SSH access.
+About 15 minutes.
 
 ```
 browser ──https──▶ nginx
