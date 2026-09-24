@@ -19,7 +19,7 @@ import {
   seedUsers,
   USER_RECRUITER_1,
 } from './seed';
-import { API_MODE, fetchCollections, syncDiff } from './api';
+import { API_MODE, clearToken, fetchCollections, getToken, syncDiff } from './api';
 import type {
   Archetype,
   CallLog,
@@ -144,30 +144,44 @@ function emptySnapshot(session: Pick<Snapshot, 'currentUserId' | 'signedIn'> | n
 
 let hydrateStarted = false;
 
-export function hydrateFromApi(): void {
-  if (!API_MODE || hydrateStarted || typeof window === 'undefined') return;
+export async function hydrateFromApi(force = false): Promise<void> {
+  if (!API_MODE || typeof window === 'undefined') return;
+  if (hydrateStarted && !force) return;
+  // Nothing to fetch without a session: the shell redirects to sign-in,
+  // and signing in hydrates.
+  if (!getToken()) return;
   hydrateStarted = true;
-  fetchCollections()
-    .then((tables) => {
+  try {
+    const tables = await fetchCollections();
+    const s = getSnapshot();
+    snapshot = { ...s, ...tables };
+    hydrated = true;
+    resolveHydrated?.();
+    persist();
+    listeners.forEach((l) => l());
+  } catch (err) {
+    hydrateStarted = false;
+    if (String(err).includes('-> 401')) {
+      // The stored token expired or was revoked: back to sign-in.
+      clearToken();
       const s = getSnapshot();
-      snapshot = { ...s, ...tables };
-      hydrated = true;
-      resolveHydrated?.();
+      s.signedIn = false;
+      snapshot = structuredClone(s);
       persist();
       listeners.forEach((l) => l());
-    })
-    .catch((err) => {
-      // Left unhydrated on purpose: the shell keeps showing its loading
-      // state, and the console says exactly what to start (the API).
-      hydrateStarted = false;
-      console.error('[bench api] hydrate failed — is landing-api running?', err);
-    });
+      return;
+    }
+    // Left unhydrated on purpose: the shell keeps showing its loading
+    // state, and the console says exactly what to start (the API).
+    console.error('[bench api] hydrate failed — is landing-api running?', err);
+    throw err;
+  }
 }
 
 function load(): Snapshot {
   if (API_MODE) {
     const session = typeof window === 'undefined' ? null : loadSession();
-    if (typeof window !== 'undefined') hydrateFromApi();
+    if (typeof window !== 'undefined') void hydrateFromApi();
     return emptySnapshot(session);
   }
   if (typeof window === 'undefined') {
@@ -236,8 +250,7 @@ export function subscribe(listener: () => void): () => void {
 export function resetDemo(): void {
   if (API_MODE) {
     // The server owns the data; "reset" just re-reads it.
-    hydrateStarted = false;
-    hydrateFromApi();
+    void hydrateFromApi(true);
     return;
   }
   // Data goes back to the seed; whoever is signed in stays signed in.
