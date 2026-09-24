@@ -73,15 +73,21 @@ import {
 } from './logic';
 import {
   getSnapshot,
+  hydrateFromApi,
   isHydrated,
   mutate,
   newId,
   resetDemo,
   subscribe,
-  whenHydrated,
   type Snapshot,
 } from './store';
-import { API_MODE } from './api';
+import {
+  API_MODE,
+  clearToken as clearApiToken,
+  ensureBenchUser,
+  setToken as setApiToken,
+  signInApi,
+} from './api';
 import { WEEK_MS } from '@/bench/dates';
 import { DEMO_MODE } from '@/bench/demo';
 import { buildShortlistExport, findLeaks, type ExportDocument } from '@/bench/export/shortlist';
@@ -1735,12 +1741,34 @@ export async function signInWithPassword(
   email: string,
   password: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  // Demo sign-in checks no password, so it exists only in demo mode — and,
-  // for now, in API mode, where the staff list comes from the database but
-  // the password is still unchecked. TODO: replace with /api/accounts
-  // sign-in before this leaves local testing.
-  if (!DEMO_MODE && !API_MODE) return { ok: false, error: 'Sign-in is not available yet.' };
-  if (API_MODE && !isHydrated()) await whenHydrated();
+  // Real sign-in: the accounts API checks the password and issues the
+  // bearer token every bench request carries. The first sign-in creates
+  // this person's bench user record.
+  if (API_MODE) {
+    const address = email.trim().toLowerCase();
+    if (!address) return { ok: false, error: 'Enter your email address.' };
+    if (!password) return { ok: false, error: 'Enter your password.' };
+    try {
+      setApiToken(await signInApi(address, password));
+    } catch {
+      return { ok: false, error: 'That email and password do not match a staff account.' };
+    }
+    try {
+      const me = await ensureBenchUser(address);
+      await hydrateFromApi(true);
+      mutate((s) => {
+        if (!s.users.some((u) => u.id === me.id)) s.users.push(me);
+        s.currentUserId = me.id;
+        s.signedIn = true;
+      });
+      return { ok: true };
+    } catch {
+      clearApiToken();
+      return { ok: false, error: 'Signed in, but the bench could not be loaded. Try again.' };
+    }
+  }
+  // Demo sign-in checks no password, so it exists only in demo mode.
+  if (!DEMO_MODE) return { ok: false, error: 'Sign-in is not available yet.' };
   const address = email.trim().toLowerCase();
   if (!address.endsWith(`@${STAFF_EMAIL_DOMAIN}`)) {
     return { ok: false, error: `Use your @${STAFF_EMAIL_DOMAIN} email address.` };
@@ -1768,6 +1796,7 @@ export async function signInAs(userId: string): Promise<void> {
 }
 
 export async function signOut(): Promise<void> {
+  if (API_MODE) clearApiToken();
   mutate((s) => {
     s.signedIn = false;
   });

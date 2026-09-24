@@ -16,12 +16,91 @@
  */
 
 import type { Snapshot } from './store';
+import type { User } from './types';
 
+/**
+ * The API is the default. The in-memory demo store exists only for the
+ * unit tests (vitest sets NEXT_PUBLIC_BENCH_DEMO_MODE=true) — deployment
+ * needs no flag at all.
+ */
 export const API_MODE =
-  process.env.NEXT_PUBLIC_BENCH_DEMO_MODE === 'false';
+  process.env.NEXT_PUBLIC_BENCH_DEMO_MODE !== 'true';
 
 const API_BASE =
   (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3580') + '/api';
+
+/* ------------------------------------------------------------------
+   The session token. Sign-in goes through /api/accounts like the admin;
+   every bench request carries the bearer token. sessionStorage, so a
+   fresh browser starts at the sign-in page.
+   ------------------------------------------------------------------ */
+
+const TOKEN_KEY = 'zare-bench-token';
+
+export function getToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.sessionStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setToken(token: string): void {
+  try {
+    window.sessionStorage.setItem(TOKEN_KEY, token);
+  } catch {
+    // In-memory session only; sign-in still works for the tab's lifetime.
+  }
+}
+
+export function clearToken(): void {
+  try {
+    window.sessionStorage.removeItem(TOKEN_KEY);
+  } catch {
+    // Nothing to clear.
+  }
+}
+
+/** POST /api/accounts/sign-in. Resolves to the access token. */
+export async function signInApi(email: string, password: string): Promise<string> {
+  const res = await fetch(`${API_BASE}/accounts/sign-in`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!res.ok) throw new Error(`sign-in -> ${res.status}`);
+  const data = (await res.json()) as { access_token?: string };
+  if (!data.access_token) throw new Error('sign-in -> no token in response');
+  return data.access_token;
+}
+
+/**
+ * The signed-in person's bench_users row, created on first sign-in.
+ * Everyone starts as a recruiter; roles are changed on the user record.
+ */
+export async function ensureBenchUser(email: string): Promise<User> {
+  const q = `?q=${encodeURIComponent('t=10000')}`;
+  const data = await request('GET', `bench/user${q}`);
+  const rows = (data?.items ?? []) as Record<string, unknown>[];
+  const existing = rows.find(
+    (r) => String(r.email).toLowerCase() === email.toLowerCase(),
+  );
+  if (existing) return fromApi('users', existing) as unknown as User;
+
+  const name = email
+    .split('@')[0]
+    .split(/[._-]/)
+    .filter(Boolean)
+    .map((p) => p[0].toUpperCase() + p.slice(1))
+    .join(' ');
+  const created = await request('POST', 'bench/user', {
+    fullName: name || email,
+    email,
+    role: 'recruiter',
+  });
+  return fromApi('users', created) as unknown as User;
+}
 
 /** Everything the diff sync mirrors, in create order (deletes run reversed). */
 const COLLECTIONS = [
@@ -78,9 +157,13 @@ function toApi(row: Record<string, unknown>) {
 }
 
 async function request(method: string, path: string, body?: unknown) {
+  const token = getToken();
+  const headers: Record<string, string> = {};
+  if (body) headers['Content-Type'] = 'application/json';
+  if (token) headers['Authorization'] = `Bearer ${token}`;
   const res = await fetch(`${API_BASE}/${path}`, {
     method,
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) {
