@@ -50,21 +50,6 @@ export function UsersTable({
         </Text>
       </Table.Td>
       <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {user.phone || '—'}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {user.role || '—'}
-        </Text>
-      </Table.Td>
-      <Table.Td>
-        <Text size="sm" c="#0a293b">
-          {user.organizationName || '—'}
-        </Text>
-      </Table.Td>
-      <Table.Td>
         <span
           className={`inline-block px-2 py-0.5 rounded-md text-xs font-medium ${statusStyles(
             user.status,
@@ -146,9 +131,6 @@ export function UsersTable({
         <Table.Thead>
           <Table.Tr>
             <Table.Th>User</Table.Th>
-            <Table.Th>Phone</Table.Th>
-            <Table.Th>Role</Table.Th>
-            <Table.Th>Organization</Table.Th>
             <Table.Th>Status</Table.Th>
             <Table.Th>Joined</Table.Th>
             <Table.Th />
