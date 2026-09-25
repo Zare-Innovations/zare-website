@@ -77,7 +77,12 @@ export async function signInApi(email: string, password: string): Promise<string
 
 /**
  * The signed-in person's bench_users row, created on first sign-in.
- * Everyone starts as a recruiter; roles are changed on the user record.
+ *
+ * The FIRST person to sign in becomes the exec; everyone after them is a
+ * recruiter. Only an exec can change roles (setUserRole, mirroring
+ * guard_role_change), so without this nobody could ever be promoted and
+ * the role settings would stay locked forever. That exec then assigns
+ * everyone else from Settings.
  */
 export async function ensureBenchUser(email: string): Promise<User> {
   const q = `?q=${encodeURIComponent('t=10000')}`;
@@ -97,7 +102,7 @@ export async function ensureBenchUser(email: string): Promise<User> {
   const created = await request('POST', 'bench/user', {
     fullName: name || email,
     email,
-    role: 'recruiter',
+    role: rows.length === 0 ? 'exec' : 'recruiter',
   });
   return fromApi('users', created) as unknown as User;
 }
