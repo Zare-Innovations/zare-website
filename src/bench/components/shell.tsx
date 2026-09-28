@@ -9,11 +9,14 @@ import {
   Briefcase,
   Check,
   ChevronDown,
+  FileSignature,
+  FileText,
   Flame,
   LogOut,
   PhoneCall,
   Settings,
   Users,
+  UserCog,
   X,
 } from 'lucide-react';
 
@@ -62,6 +65,11 @@ const NAV: NavItem[] = [
   { href: '/portal/queue', label: 'Call queue', short: 'Queue', icon: PhoneCall, roles: ['recruiter', 'account_manager'] },
   { href: '/portal/candidates', label: 'Candidates', short: 'Candidates', icon: Users, roles: ALL },
   { href: '/portal/requests', label: 'Requests', short: 'Requests', icon: Briefcase, roles: ALL },
+  // Folded in from /admin. Jobs and contracts are everyday work; staff
+  // administration is the exec's.
+  { href: '/portal/jobs', label: 'Jobs', short: 'Jobs', icon: FileText, roles: ALL },
+  { href: '/portal/contracts', label: 'Contracts', short: 'Contracts', icon: FileSignature, roles: ALL },
+  { href: '/portal/staff', label: 'Staff', short: 'Staff', icon: UserCog, roles: ['exec'] },
   { href: '/portal/settings', label: 'Settings', short: 'Settings', icon: Settings, roles: ALL },
 ];
 
