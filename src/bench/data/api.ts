@@ -15,6 +15,8 @@
  * comma-separated text.
  */
 
+import { deleteCookie, setCookie } from 'cookies-next';
+
 import type { Snapshot } from './store';
 import type { User } from './types';
 
@@ -49,6 +51,11 @@ export function getToken(): string | null {
 export function setToken(token: string): void {
   try {
     window.sessionStorage.setItem(TOKEN_KEY, token);
+    // The admin area reads this cookie (src/store/base-query.ts). Writing it
+    // here means one sign-in covers both areas while /admin is folded into
+    // the portal, and its middleware stops bouncing portal users to
+    // /admin/login.
+    setCookie('access_token', token);
   } catch {
     // In-memory session only; sign-in still works for the tab's lifetime.
   }
@@ -57,6 +64,7 @@ export function setToken(token: string): void {
 export function clearToken(): void {
   try {
     window.sessionStorage.removeItem(TOKEN_KEY);
+    deleteCookie('access_token');
   } catch {
     // Nothing to clear.
   }
@@ -161,7 +169,8 @@ function toApi(row: Record<string, unknown>) {
   return mapKeys(row as Record<string, unknown>, snakeToCamel);
 }
 
-async function request(method: string, path: string, body?: unknown) {
+/** Shared by the bench collections and the admin screens (src/bench/admin). */
+export async function request(method: string, path: string, body?: unknown) {
   const token = getToken();
   const headers: Record<string, string> = {};
   if (body) headers['Content-Type'] = 'application/json';
