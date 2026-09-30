@@ -29,7 +29,7 @@ export interface Person {
 export const founder: Person = {
   name: 'Emanuel Nebiyu Samuel',
   role: 'CEO',
-  photo: { src: '/people/emanuel.png', alt: 'Emanuel Nebiyu Samuel' },
+  photo: { src: '/people/emanuel.jpeg', alt: 'Emanuel Nebiyu Samuel' },
 };
 
 /**
@@ -52,7 +52,7 @@ export const leadership: Person[] = [
   {
     name: 'Michael Wondimu',
     role: 'COO',
-    photo: { src: '/people/michael.png', alt: 'Michael Wondimu' },
+    photo: { src: '/people/michael.jpeg', alt: 'Michael Wondimu' },
   },
   {
     name: 'Addis Alemayehou',
