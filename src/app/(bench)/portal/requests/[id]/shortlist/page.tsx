@@ -290,13 +290,13 @@ function Builder({
             type="button"
             onClick={(e) => void exportPdf(e)}
             disabled={exporting || problems.length > 0 || !canExport}
-            title={canExport ? undefined : 'Only an account manager or an exec can export.'}
+            title={canExport ? undefined : 'Only a recruiter or an exec can export.'}
             className="flex h-10 items-center gap-2 rounded-md bg-accent px-4 text-[13px] font-semibold text-accent-contrast transition-colors hover:bg-accent-bright disabled:cursor-not-allowed disabled:opacity-40"
           >
             {exporting ? <Loader2 size={15} className="animate-spin" /> : <FileText size={15} />}
             Export PDF
           </button>
-          {!canExport && <span className="text-[11.5px] text-bench-ink-faint">Only an account manager or an exec can export.</span>}
+          {!canExport && <span className="text-[11.5px] text-bench-ink-faint">Only a recruiter or an exec can export.</span>}
           </div>
         )}
       </div>

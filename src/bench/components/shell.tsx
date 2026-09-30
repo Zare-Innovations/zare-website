@@ -12,6 +12,7 @@ import {
   FileSignature,
   FileText,
   Flame,
+  Lock,
   LogOut,
   PhoneCall,
   Settings,
@@ -22,6 +23,8 @@ import {
 
 import {
   DEMO_MODE,
+  ROLE_LABEL,
+  ROLES,
   signInAs,
   signOut,
   useCallQueue,
@@ -40,15 +43,17 @@ import { useMounted } from '@/bench/use-mounted';
 import { cn } from '@/bench/utils';
 
 /**
- * Navigation is role-aware, which is the ONLY thing role does to the UI.
- * Every role can edit everything; an exec simply has no reason to live in
- * the call queue, and a recruiter has no reason to open the exec summary.
+ * Navigation is role-aware. Two roles: an exec runs the portal (staff,
+ * roles, role settings); a recruiter works the bench. Pages a role cannot
+ * use are left out of its navigation, and exec-only pages refuse to render
+ * for anyone else even when reached by URL. The data layer and the API
+ * enforce the same rules underneath.
  *
  * Two layouts from one list. Desktop gets the sidebar. Phones get a bottom
  * tab bar, because the phone is where calls actually get made: the queue has
  * to be one thumb away, not behind a menu.
  */
-const ALL: Role[] = ['recruiter', 'account_manager', 'exec'];
+const ALL: Role[] = ROLES;
 
 interface NavItem {
   href: string;
@@ -62,7 +67,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: '/portal', label: 'Dashboard', short: 'Bench', icon: BarChart3, roles: ALL },
   // An exec has no reason to live in the call queue.
-  { href: '/portal/queue', label: 'Call queue', short: 'Queue', icon: PhoneCall, roles: ['recruiter', 'account_manager'] },
+  { href: '/portal/queue', label: 'Call queue', short: 'Queue', icon: PhoneCall, roles: ['recruiter'] },
   { href: '/portal/candidates', label: 'Candidates', short: 'Candidates', icon: Users, roles: ALL },
   { href: '/portal/requests', label: 'Requests', short: 'Requests', icon: Briefcase, roles: ALL },
   // Folded in from /admin. Jobs and contracts are everyday work; staff
@@ -76,14 +81,16 @@ const NAV: NavItem[] = [
 const isActive = (href: string, pathname: string) =>
   href === '/portal' ? pathname === '/portal' : pathname === href || pathname.startsWith(`${href}/`);
 
+/** Pages only an exec may open, by URL as well as from the navigation. */
+const EXEC_ONLY = NAV.filter((n) => n.roles.length === 1 && n.roles[0] === 'exec').map((n) => n.href);
+const isExecOnly = (pathname: string) => EXEC_ONLY.some((href) => isActive(href, pathname));
+
 const initials = (name: string | null) =>
   (name ?? '?')
     .split(' ')
     .map((p) => p[0])
     .slice(0, 2)
     .join('');
-
-const ROLE_LABEL: Record<Role, string> = { recruiter: 'Recruiter', account_manager: 'Account manager', exec: 'Exec' };
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -208,7 +215,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
         {/* Clear the tab bar, including the home indicator on notched phones. */}
         <main className="min-w-0 flex-1 overflow-x-hidden pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
-          <CallToastProvider>{children}</CallToastProvider>
+          <CallToastProvider>
+            {isExecOnly(pathname) && user?.role !== 'exec' ? <ExecOnly /> : children}
+          </CallToastProvider>
         </main>
       </div>
 
@@ -517,5 +526,25 @@ function SignOutButton({ compact }: { compact?: boolean }) {
     >
       <LogOut size={compact ? 13 : 16} /> Sign out
     </button>
+  );
+}
+
+function ExecOnly() {
+  return (
+    <div className="grid min-h-[60vh] place-items-center px-5 py-10">
+      <div className="max-w-sm text-center">
+        <Lock size={18} className="mx-auto text-bench-ink-faint" />
+        <h1 className="mt-3 text-[15px] font-semibold">Exec only</h1>
+        <p className="mt-1 text-[12.5px] text-bench-ink-dim">
+          Staff and roles are managed by an exec. Ask one if you need access.
+        </p>
+        <Link
+          href="/portal"
+          className="mt-4 inline-flex h-8 items-center rounded-md border border-bench-line px-3 text-[12px] text-bench-ink-dim no-underline transition-colors hover:text-bench-ink"
+        >
+          Back to the bench
+        </Link>
+      </div>
+    </div>
   );
 }
