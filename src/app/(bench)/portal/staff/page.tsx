@@ -5,7 +5,15 @@ import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { deleteStaff, staffName, useStaff, type StaffUser } from '@/bench/admin';
-import { useCurrentUser, useUsers, setUserRole, type Role } from '@/bench/data';
+import {
+  addUser,
+  ROLE_LABEL,
+  ROLES,
+  setUserRole,
+  useCurrentUser,
+  useUsers,
+  type Role,
+} from '@/bench/data';
 import { initials } from '@/bench/components/candidate-bits';
 import { cn, formatDate } from '@/bench/utils';
 
@@ -15,13 +23,9 @@ import { cn, formatDate } from '@/bench/utils';
  * Two records back one person: the landing-api account that lets them sign
  * in, and the bench user that carries their portal role. This screen owns
  * the account; the role is edited here too, so an exec has one place to go.
+ * Someone who has not signed in yet has no bench row: picking a role for
+ * them creates it, and their first sign-in picks it up.
  */
-
-const ROLES: { value: Role; label: string }[] = [
-  { value: 'recruiter', label: 'Recruiter' },
-  { value: 'account_manager', label: 'Account manager' },
-  { value: 'exec', label: 'Exec' },
-];
 
 export default function StaffPage() {
   const { data: accounts, loading, error, reload } = useStaff();
@@ -45,16 +49,13 @@ export default function StaffPage() {
     }
   }
 
-  async function changeRole(email: string, role: Role) {
+  async function changeRole(u: StaffUser, role: Role) {
     const bench = benchUsers.find(
-      (b) => b.email.toLowerCase() === email.toLowerCase(),
+      (b) => b.email.toLowerCase() === u.email.toLowerCase(),
     );
-    if (!bench) {
-      alert('They have not signed into the portal yet, so they have no role to set.');
-      return;
-    }
     try {
-      await setUserRole(bench.id, role);
+      if (bench) await setUserRole(bench.id, role);
+      else await addUser({ full_name: staffName(u), email: u.email, role });
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Could not change the role.');
     }
@@ -130,27 +131,18 @@ export default function StaffPage() {
                   </div>
                 </div>
 
-                {bench ? (
-                  <select
-                    aria-label={`Portal role for ${staffName(u)}`}
-                    value={bench.role}
-                    onChange={(e) => changeRole(u.email, e.target.value as Role)}
-                    className="h-8 rounded-md border border-bench-line bg-bench-surface-2 px-2 text-[12px] text-bench-ink focus:border-accent/50 focus:outline-none"
-                  >
-                    {ROLES.map((r) => (
-                      <option key={r.value} value={r.value}>
-                        {r.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <span
-                    className="rounded px-2 py-1 text-[11px] text-bench-ink-faint"
-                    title="They get a portal role the first time they sign in."
-                  >
-                    Never signed in
-                  </span>
-                )}
+                <select
+                  aria-label={`Portal role for ${staffName(u)}`}
+                  value={bench?.role ?? 'recruiter'}
+                  onChange={(e) => changeRole(u, e.target.value as Role)}
+                  className="h-8 rounded-md border border-bench-line bg-bench-surface-2 px-2 text-[12px] text-bench-ink focus:border-accent/50 focus:outline-none"
+                >
+                  {ROLES.map((r) => (
+                    <option key={r} value={r}>
+                      {ROLE_LABEL[r]}
+                    </option>
+                  ))}
+                </select>
 
                 <button
                   type="button"
