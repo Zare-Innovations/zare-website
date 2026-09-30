@@ -6,7 +6,8 @@ import { useId, useState } from 'react';
 import { ArrowLeft, Check, Copy } from 'lucide-react';
 
 import { createStaff } from '@/bench/admin';
-import { FormField, inputCls, Section } from '@/bench/components/form-bits';
+import { addUser, ROLE_LABEL, ROLES, type Role } from '@/bench/data';
+import { FormField, inputCls, Section, Segmented } from '@/bench/components/form-bits';
 
 /**
  * Add a staff account.
@@ -15,6 +16,8 @@ import { FormField, inputCls, Section } from '@/bench/components/form-bits';
  * a second call exchanges it for the chosen one. Until that exchange runs
  * the account cannot sign in, so both happen behind this one button, and
  * the result is shown once for the admin to pass on — nothing is emailed.
+ * The portal role is set in the same step, so their first sign-in lands
+ * with the access the exec chose.
  */
 
 interface Form {
@@ -23,6 +26,7 @@ interface Form {
   email: string;
   phone: string;
   password: string;
+  role: Role;
 }
 
 type Errors = Partial<Record<keyof Form | 'form', string>>;
@@ -33,6 +37,7 @@ const EMPTY: Form = {
   email: '',
   phone: '',
   password: '',
+  role: 'recruiter',
 };
 
 function validate(f: Form): Errors {
@@ -58,6 +63,8 @@ export default function NewStaffPage() {
     email: string;
     password: string;
     usable: boolean;
+    role: Role;
+    roleSet: boolean;
   } | null>(null);
 
   const set = <K extends keyof Form>(key: K, value: Form[K]) => {
@@ -72,15 +79,25 @@ export default function NewStaffPage() {
 
     setSaving(true);
     try {
-      setCreated(
-        await createStaff({
-          firstName: form.firstName.trim(),
-          lastName: form.lastName.trim(),
-          email: form.email.trim().toLowerCase(),
-          phone: form.phone.trim(),
-          password: form.password,
-        }),
-      );
+      const account = await createStaff({
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim().toLowerCase(),
+        phone: form.phone.trim(),
+        password: form.password,
+      });
+      let roleSet = true;
+      try {
+        await addUser({
+          full_name: `${form.firstName.trim()} ${form.lastName.trim()}`,
+          email: account.email,
+          role: form.role,
+        });
+      } catch (err) {
+        console.error(err);
+        roleSet = false;
+      }
+      setCreated({ ...account, role: form.role, roleSet });
     } catch (err) {
       console.error(err);
       setErrors({ form: 'Could not create the account. Try again.' });
@@ -98,6 +115,13 @@ export default function NewStaffPage() {
           not shown again.
         </p>
 
+        {!created.roleSet && (
+          <div className="mb-4 max-w-xl rounded-md border border-bench-warning/40 bg-bench-warning/10 px-4 py-3 text-[12.5px] text-bench-warning">
+            The account exists, but their portal role did not save. They will
+            start as a recruiter; change it from Staff.
+          </div>
+        )}
+
         {!created.usable && (
           <div className="mb-4 max-w-xl rounded-md border border-bench-warning/40 bg-bench-warning/10 px-4 py-3 text-[12.5px] text-bench-warning">
             The account exists, but setting the password you chose did not go
@@ -110,6 +134,10 @@ export default function NewStaffPage() {
             <div className="flex items-center gap-3">
               <dt className="w-36 shrink-0 text-bench-ink-faint">Email</dt>
               <dd className="font-mono text-[12.5px]">{created.email}</dd>
+            </div>
+            <div className="flex items-center gap-3">
+              <dt className="w-36 shrink-0 text-bench-ink-faint">Role</dt>
+              <dd>{ROLE_LABEL[created.roleSet ? created.role : 'recruiter']}</dd>
             </div>
             <div className="flex items-center gap-3">
               <dt className="w-36 shrink-0 text-bench-ink-faint">
@@ -166,7 +194,7 @@ export default function NewStaffPage() {
 
       <h1 className="text-[19px] font-semibold tracking-tight">Add person</h1>
       <p className="mb-5 mt-1 text-[13px] text-bench-ink-dim">
-        They can sign in straight away. Their portal role is set once they do.
+        They can sign in straight away, with the role you pick.
       </p>
 
       <form onSubmit={submit} className="flex max-w-xl flex-col gap-4">
@@ -208,6 +236,18 @@ export default function NewStaffPage() {
               />
             </FormField>
           </div>
+        </Section>
+
+        <Section
+          title="Role"
+          description="An exec manages staff, roles and role settings. A recruiter works the bench."
+        >
+          <Segmented
+            label="Role"
+            value={form.role}
+            options={ROLES.map((r) => ({ value: r, label: ROLE_LABEL[r] }))}
+            onChange={(v) => set('role', v)}
+          />
         </Section>
 
         <Section
