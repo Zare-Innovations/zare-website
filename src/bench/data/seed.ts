@@ -74,7 +74,7 @@ export function seedUsers(now: number): User[] {
       id: USER_AM,
       full_name: 'Selamawit Girma',
       email: 'selam@zareinnovations.com',
-      role: 'account_manager',
+      role: 'recruiter',
       notify_scarcity: true,
       notify_decay_warning: false,
       notify_new_request: true,

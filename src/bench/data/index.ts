@@ -149,6 +149,8 @@ export {
   FRESHNESS_MIN_DAYS,
   isExec,
   queueStartsOnMine,
+  ROLE_LABEL,
+  ROLES,
   READY_TARGET_MAX,
   isOneCallAway,
   normalizePhone,
@@ -283,7 +285,7 @@ function canManageRequests(s: Snapshot): boolean {
   return canManageRequestsRole(actor(s)?.role);
 }
 
-const MANAGE_REQUESTS_DENIED = 'Only an account manager or an exec can do that.';
+const MANAGE_REQUESTS_DENIED = 'Sign in as a recruiter or an exec to do that.';
 
 function requestState(s: Snapshot, requestId: string): RequestState | null {
   const req = s.requests.find((r) => r.id === requestId);
@@ -1799,6 +1801,36 @@ export async function signOut(): Promise<void> {
   if (API_MODE) clearApiToken();
   mutate((s) => {
     s.signedIn = false;
+  });
+}
+
+/**
+ * Gives someone a portal role before they ever sign in, so the exec who
+ * adds a person decides what they can do. Their first sign-in finds this
+ * row by email instead of creating a recruiter. If the row already exists
+ * the role is changed through setUserRole, with its last-exec rule.
+ */
+export async function addUser(input: { full_name: string; email: string; role: Role }): Promise<void> {
+  const s = getSnapshot();
+  const actor = s.users.find((u) => u.id === s.currentUserId);
+  if (!isExec(actor?.role)) throw new Error('Only an exec can add people to the portal.');
+
+  const email = input.email.trim().toLowerCase();
+  const existing = s.users.find((u) => u.email.toLowerCase() === email);
+  if (existing) return setUserRole(existing.id, input.role);
+
+  write((draft) => {
+    draft.users.push({
+      id: newId('user'),
+      full_name: input.full_name.trim() || email,
+      email,
+      role: input.role,
+      notify_scarcity: true,
+      notify_decay_warning: true,
+      notify_new_request: true,
+      notify_weekly_summary: true,
+      created_at: new Date().toISOString(),
+    });
   });
 }
 

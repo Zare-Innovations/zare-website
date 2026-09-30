@@ -43,10 +43,18 @@ const HOUR_MS = 3_600_000;
 // Who may do what, in one place. The data layer enforces these; screens use
 // the same functions to decide what to offer.
 
+export const ROLES: Role[] = ['exec', 'recruiter'];
+
+export const ROLE_LABEL: Record<Role, string> = { exec: 'Exec', recruiter: 'Recruiter' };
+
+/** Staff, roles and role settings are the exec's. */
 export const isExec = (role: Role | undefined) => role === 'exec';
 
-/** Request status, closing and export are account work. */
-export const canManageRequestsRole = (role: Role | undefined) => role === 'account_manager' || role === 'exec';
+/**
+ * Request status, closing and export. This was account-manager work; with
+ * that role folded into recruiter, every signed-in role keeps it.
+ */
+export const canManageRequestsRole = (role: Role | undefined) => role === 'recruiter' || role === 'exec';
 
 /** Recruiters open the queue on their own candidates; others see everyone's. */
 export const queueStartsOnMine = (role: Role | undefined) => role === 'recruiter';
