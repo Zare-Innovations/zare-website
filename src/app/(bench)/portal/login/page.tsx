@@ -7,12 +7,12 @@ import { ArrowRight, ArrowUpRight, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 import {
   DEMO_MODE,
+  ROLE_LABEL,
   signInAs,
   signInWithPassword,
   STAFF_EMAIL_DOMAIN,
   useSession,
   useUsers,
-  type Role,
 } from '@/bench/data';
 import { ZareLogo } from '@/components/layout/logo';
 import { useMounted } from '@/bench/use-mounted';
@@ -31,7 +31,6 @@ import { cn } from '@/bench/utils';
  */
 
 
-const ROLE_LABEL: Record<Role, string> = { recruiter: 'Recruiter', account_manager: 'Account manager', exec: 'Exec' };
 
 /**
  * Where to go after signing in. Only ever a path inside the portal:

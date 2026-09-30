@@ -26,6 +26,8 @@ import {
   isExec,
   READY_TARGET_MAX,
   resetDemo,
+  ROLE_LABEL,
+  ROLES,
   runJob,
   setUserRole,
   updateArchetype,
@@ -51,33 +53,37 @@ import { cn, HEALTH_COLOR, timeAgo } from '@/bench/utils';
  * each control shows its consequence before it is saved: a shorter freshness
  * window says how many people it will knock out of Ready.
  *
- * All roles can edit everything except roles themselves, which only an exec
- * may change.
+ * Role settings, the team and the scheduled jobs are the exec's; a
+ * recruiter sees only their own notifications.
  */
 
 const SECTIONS = [
-  { id: 'roles', label: 'Roles and targets', icon: Sliders },
-  { id: 'team', label: 'Team', icon: Users },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'jobs', label: 'Scheduled jobs', icon: Clock },
-  { id: 'demo', label: 'Demo', icon: Wrench },
+  { id: 'roles', label: 'Roles and targets', icon: Sliders, exec: true },
+  { id: 'team', label: 'Team', icon: Users, exec: true },
+  { id: 'notifications', label: 'Notifications', icon: Bell, exec: false },
+  { id: 'jobs', label: 'Scheduled jobs', icon: Clock, exec: true },
+  { id: 'demo', label: 'Demo', icon: Wrench, exec: false },
 ];
 
 export default function SettingsPage() {
   const archetypes = useArchetypes();
+  const exec = isExec(useCurrentUser().role);
+  const sections = SECTIONS.filter((s) => exec || !s.exec);
   const [savedId, setSavedId] = useState<string | null>(null);
 
   return (
     <div className="px-5 py-6">
       <div className="mb-6">
         <h1 className="text-[19px] font-semibold tracking-tight">Settings</h1>
-        <p className="mt-1 text-[13px] text-bench-ink-dim">How the bench is measured, who is on the team, and what gets emailed.</p>
+        <p className="mt-1 text-[13px] text-bench-ink-dim">
+          {exec ? 'How the bench is measured, who is on the team, and what gets emailed.' : 'Which emails you receive.'}
+        </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[180px_minmax(0,1fr)]">
         <nav className="hidden lg:block" aria-label="Settings sections">
           <ul className="sticky top-4 flex flex-col gap-0.5">
-            {SECTIONS.map((s) => (
+            {sections.map((s) => (
               <li key={s.id}>
                 <a
                   href={`#${s.id}`}
@@ -91,6 +97,7 @@ export default function SettingsPage() {
         </nav>
 
         <div className="flex min-w-0 max-w-4xl flex-col gap-10">
+          {exec && (
           <Block id="roles" title="Roles and targets" description="What Ready means for each role, and how much of it the business needs.">
             <div className="flex flex-col gap-4">
               {archetypes.map((a) => (
@@ -109,18 +116,23 @@ export default function SettingsPage() {
               ))}
             </div>
           </Block>
+          )}
 
-          <Block id="team" title="Team" description="Role decides navigation, which emails someone gets by default, and what they can change: only an exec edits role settings and roles, and only an account manager or an exec changes, closes or exports requests.">
-            <Team />
-          </Block>
+          {exec && (
+            <Block id="team" title="Team" description="An exec manages staff, roles and role settings. A recruiter works the bench: calls, candidates and requests.">
+              <Team />
+            </Block>
+          )}
 
           <Block id="notifications" title="Your notifications" description="Each person chooses their own. Sign in as someone else in the sidebar to see theirs.">
             <Notifications />
           </Block>
 
-          <Block id="jobs" title="Scheduled jobs" description="Run on a schedule in production. Run one now to see exactly what it would send. The demo sends nothing.">
-            <Jobs />
-          </Block>
+          {exec && (
+            <Block id="jobs" title="Scheduled jobs" description="Run on a schedule in production. Run one now to see exactly what it would send. The demo sends nothing.">
+              <Jobs />
+            </Block>
+          )}
 
           <Block id="demo" title="Demo">
             <Demo />
@@ -355,8 +367,6 @@ function ArchetypeCard({
 
 // ----------------------------------------------------------------- team ----
 
-const ROLE_LABEL: Record<Role, string> = { recruiter: 'Recruiter', account_manager: 'Account manager', exec: 'Exec' };
-
 function Team() {
   const users = useUsers();
   const me = useCurrentUser();
@@ -406,7 +416,7 @@ function Team() {
                   aria-label={`Role for ${u.full_name}`}
                   className="h-8 rounded-md border border-bench-line bg-bench-surface-2 px-2 text-[12.5px] focus:border-accent/50 focus:outline-none"
                 >
-                  {(Object.keys(ROLE_LABEL) as Role[]).map((r) => (
+                  {ROLES.map((r) => (
                     <option key={r} value={r}>
                       {ROLE_LABEL[r]}
                     </option>
@@ -425,7 +435,11 @@ function Team() {
         ))}
       </ul>
       <div className="border-t border-bench-line px-4 py-2.5 text-[11.5px] text-bench-ink-faint">
-        New people join by signing in with their company email, and start as recruiters. That arrives with real sign-in.
+        Add people, and pick their role, from{' '}
+        <Link href="/portal/staff" className="text-accent no-underline hover:underline">
+          Staff
+        </Link>
+        .
       </div>
     </div>
   );

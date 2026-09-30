@@ -12,7 +12,7 @@ import type { ExportDocument } from '@/bench/export/shortlist';
  * window — never stored, because it is only true for a while. See logic.ts.
  */
 
-export type Role = 'recruiter' | 'account_manager' | 'exec';
+export type Role = 'exec' | 'recruiter';
 
 export type Layer = 'ready' | 'known' | 'raw' | 'archived';
 
