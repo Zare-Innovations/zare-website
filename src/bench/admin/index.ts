@@ -104,7 +104,9 @@ function useRecord<T>(path: string, id: string | null): Loadable<T | null> {
 
 export const useJobs = () => useCollection<Job>('job');
 export const useJob = (id: string | null) => useRecord<Job>('job', id);
-export const useStaff = () => useCollection<StaffUser>('user');
+// The user controller lists per organisation (`list/:id`), and every
+// account sits in the one the admin area has always read: '1'.
+export const useStaff = () => useCollection<StaffUser>('user/list/1');
 export const useStaffMember = (id: string | null) =>
   useRecord<StaffUser>('user', id);
 
