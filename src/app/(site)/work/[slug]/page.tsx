@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 
 import { Section } from '@/components/layout/section';
 import { Heading } from '@/components/typography/heading';
@@ -25,6 +24,7 @@ import { SystemDiagram } from '../_components/system-diagram';
 import { OutcomeGrid } from '../_components/outcome-grid';
 import { EngagementShape } from '../_components/engagement-shape';
 import { RelatedWork } from '../_components/related-work';
+import { CaseGallery } from '../_components/case-gallery';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -230,42 +230,7 @@ export default async function CaseStudyPage({ params }: Props) {
                 own experience are different products, and mixing them reads
                 as one app that cannot keep its design straight. A case with
                 no `surface` set renders exactly as before. */}
-            {imageGroups(c.images).map((group) => (
-              <div key={group.label ?? 'all'}>
-                {group.label ? (
-                  <MonoLabel className="mt-12 block text-[var(--accent-text)]">
-                    {group.label}
-                  </MonoLabel>
-                ) : null}
-                <div
-                  className={
-                    group.images.length > 1
-                      ? 'mt-6 grid gap-10 lg:grid-cols-2'
-                      : 'mt-6 max-w-4xl'
-                  }
-                >
-                  {group.images.map((img) => (
-                    <Reveal key={img.src.src}>
-                      <figure>
-                        <div className="overflow-hidden rounded-lg border border-[var(--rule-color)] bg-white">
-                          <Image
-                            src={img.src}
-                            alt={img.alt}
-                            width={1200}
-                            height={750}
-                            className="h-auto w-full object-contain"
-                            sizes="(min-width: 1024px) 40rem, 100vw"
-                          />
-                        </div>
-                        <figcaption className="mt-4 max-w-[44em] text-body-sm text-[var(--muted-color)]">
-                          {img.caption}
-                        </figcaption>
-                      </figure>
-                    </Reveal>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <CaseGallery groups={imageGroups(c.images)} />
           </Section>
         ) : null}
 
