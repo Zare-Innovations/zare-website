@@ -8,6 +8,24 @@
  * docs/decisions/005-two-case-study-models.md
  */
 
+import type { StaticImageData } from 'next/image';
+
+import litcurrentLitscreen from '../../public/case-studies/litcurrent-litscreen.png';
+import litcurrentLithub from '../../public/case-studies/litcurrent-lithub.png';
+import litcurrentLitstream from '../../public/case-studies/litcurrent-litstream.png';
+import litcurrentLitportalSearch from '../../public/case-studies/litcurrent-litportal-search.png';
+import pickrellSite from '../../public/case-studies/pickrell-site.jpg';
+import womentorDashboard from '../../public/case-studies/womentor-dashboard.webp';
+import womentorAdminMatching from '../../public/case-studies/womentor-admin-matching.png';
+import womentorMenteeHome from '../../public/case-studies/womentor-mentee-home.png';
+import womentorTraining from '../../public/case-studies/womentor-training.png';
+import womentorMessaging from '../../public/case-studies/womentor-messaging.png';
+import womentorCommunity from '../../public/case-studies/womentor-community.png';
+import tenasolSite from '../../public/case-studies/tenasol-site.png';
+import kagolSite from '../../public/case-studies/kagol-site.png';
+import joveoSite from '../../public/case-studies/joveo-site.png';
+import exeliaSite from '../../public/case-studies/refs/exelia-site.png';
+
 // ---------------------------------------------------------------- primitives
 
 export type Client =
@@ -46,7 +64,12 @@ export interface CaseQuote {
 }
 
 export interface CaseImage {
-  src: string;
+  /**
+   * A static import, not a path: it carries the file's real width and height
+   * and a blur preview, so frames are sized to the shot before it loads and
+   * the gallery never jumps.
+   */
+  src: StaticImageData;
   alt: string;
   caption: string;
   /**
@@ -277,28 +300,28 @@ export const caseStudies: CaseStudy[] = [
     ],
     images: [
       {
-        src: "/case-studies/litcurrent-litscreen.png",
+        src: litcurrentLitscreen,
         alt: "LitScreen: the scheduled literature feed with abstracts, AI summaries, and save-to-library screening",
         caption:
           "LitScreen: scheduled surveillance — the digest feed screened article by article, AI summary beside the abstract, one tap to the library.",
         kind: "product"
       },
       {
-        src: "/case-studies/litcurrent-lithub.png",
+        src: litcurrentLithub,
         alt: "LitHub: the saved-article library with abstracts, AI summaries, audio, LitScholar and LitClub actions",
         caption:
           "LitHub: the canonical library — every saved article carries its abstract, AI summary, audio, deep-dive and discussion actions.",
         kind: "product"
       },
       {
-        src: "/case-studies/litcurrent-litstream.png",
+        src: litcurrentLitstream,
         alt: "LitStream: generated audio summaries of saved articles with play and download controls",
         caption:
           "LitStream: audio learning — saved articles become playable, downloadable summaries with specialty tags.",
         kind: "product"
       },
       {
-        src: "/case-studies/litcurrent-litportal-search.png",
+        src: litcurrentLitportalSearch,
         alt: "LitPortal: a clinical question answered with deduplicated, ranked evidence in a sortable table",
         caption:
           "LitPortal: point-of-care search — a clinical question resolved through the PECO framework into 22 deduplicated records, ranked and filterable.",
@@ -387,7 +410,7 @@ export const caseStudies: CaseStudy[] = [
       "The same engagement has run since January 2024. Continuity, not headcount, is what the client is buying.",
     images: [
       {
-        src: "/case-studies/pickrell-site.jpg",
+        src: pickrellSite,
         alt: "Pickrell Global Technologies' website",
         caption:
           "The client's delivery organisation — the pod works inside Pickrell's own workflow, on Pickrell's own clients.",
@@ -490,7 +513,7 @@ export const caseStudies: CaseStudy[] = [
       // Two surfaces, and the gallery splits on them: the programme team runs
       // the console, the participants live in the other four screens.
       {
-        src: "/case-studies/womentor-dashboard.webp",
+        src: womentorDashboard,
         alt: "The Womentor programme-analytics dashboard: users per country and per type, with mentorship filters and AI-match export",
         caption:
           "Programme analytics: users per country and per type across markets, with mentorship filters and AI-match export.",
@@ -498,7 +521,7 @@ export const caseStudies: CaseStudy[] = [
         surface: "admin"
       },
       {
-        src: "/case-studies/womentor-admin-matching.png",
+        src: womentorAdminMatching,
         alt: "A mentee's record in the admin console, showing three matched mentors each scored by an automatic match and an AI match, with the AI's reasoning open",
         caption:
           "Matching, the part that had to be defensible: every candidate mentor carries two scores — an automatic one and an AI one — and the reasoning is written out in full before an administrator confirms or declines. The mentee's contact details are masked here.",
@@ -506,7 +529,7 @@ export const caseStudies: CaseStudy[] = [
         surface: "admin"
       },
       {
-        src: "/case-studies/womentor-mentee-home.png",
+        src: womentorMenteeHome,
         alt: "A mentee's home screen: a passed session awaiting confirmation, the tasks attached to it, and the mentorship plan beside it",
         caption:
           "A mentee’s home. The passed session asks to be confirmed, its tasks are split into before, during and after, and the plan runs alongside with the next session already scheduled.",
@@ -514,7 +537,7 @@ export const caseStudies: CaseStudy[] = [
         surface: "participant"
       },
       {
-        src: "/case-studies/womentor-training.png",
+        src: womentorTraining,
         alt: "A completed training session: speaker, bio, agenda, session date, and the recording link",
         caption:
           "A training session after the fact — speaker and bio, the agenda, and the recording — with attendance confirmed by the participant rather than assumed.",
@@ -522,7 +545,7 @@ export const caseStudies: CaseStudy[] = [
         surface: "participant"
       },
       {
-        src: "/case-studies/womentor-messaging.png",
+        src: womentorMessaging,
         alt: "A mentee messaging their mentor in-platform, including a shared PDF attachment",
         caption:
           "Mentor and mentee message inside the platform, attachments included, so the relationship and its record stay in the programme rather than moving to private email.",
@@ -530,7 +553,7 @@ export const caseStudies: CaseStudy[] = [
         surface: "participant"
       },
       {
-        src: "/case-studies/womentor-community.png",
+        src: womentorCommunity,
         alt: "The Womentor community feed, showing a post with an image, tags, likes and comments",
         caption:
           "The community feed, where participants post opportunities and resources to the wider cohort — the part of the programme that outlives any one pairing.",
@@ -631,7 +654,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     images: [
       {
-        src: "/case-studies/tenasol-site.png",
+        src: tenasolSite,
         alt: "Tenasol's clinical intelligence platform: the document-to-FHIR pipeline, health records and claims in, a patient summary with AI-predicted probability, FHIR R4 bundle out",
         caption:
           "The client's product world — the clinical data platform the role-based interfaces were designed for.",
@@ -677,7 +700,7 @@ export const caseStudies: CaseStudy[] = [
       "The vetting bar held: the same standard applied to one placement, applied more than eighty times. Throughput is a capability, not an accident.",
     images: [
       {
-        src: "/case-studies/kagol-site.png",
+        src: kagolSite,
         alt: "Kagool's website",
         caption:
           "The client: a 200-person, three-continent Microsoft and SAP consultancy — the delivery organisation the Addis Ababa roster now serves.",
@@ -749,7 +772,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     images: [
       {
-        src: "/case-studies/joveo-site.png",
+        src: joveoSite,
         alt: "Joveo's agentic recruiting platform: the ATS landing page, with the TA teams it is used by",
         caption:
           "The client's product world — the recruitment platform the embedded pod builds inside.",
@@ -791,7 +814,7 @@ export const caseStudies: CaseStudy[] = [
       "The client calls him part of the Exelia family — the outcome the trial period exists to produce.",
     images: [
       {
-        src: "/case-studies/refs/exelia-site.png",
+        src: exeliaSite,
         alt: "Exelia Technologies' website",
         caption:
           "The client's product world — the fast-moving team the designer works inside.",
