@@ -3,6 +3,8 @@ import Image from 'next/image';
 
 import { type CaseStudy, clientName } from '@/content/work';
 import { MonoLabel } from '@/components/typography/mono-label';
+import { cn } from '@/lib/utils';
+import { coverShots, ScreenshotStage } from './screenshot-stage';
 
 /**
  * A showcased case, in the Company Profile 2026 case-spread format — the
@@ -56,7 +58,11 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
 
   // Four cells, as the profile's band carries.
   const stats = caseStudy.outcomes.slice(0, 4);
-  const cover = caseStudy.images?.[0];
+  // Beside the copy at lg the band is wide, so an upright cover gets a
+  // partner there; on a phone two windows would each be thumbnail-sized.
+  const shots = coverShots(caseStudy.images, { pair: false });
+  const wideShots = coverShots(caseStudy.images, { pair: true });
+  const paired = wideShots.length > shots.length;
 
   return (
     <article className="group">
@@ -153,26 +159,37 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
             </div>
           </div>
 
-          {/* Stacked, the screen takes a 16:10 frame sized by the column
-              rather than a fixed 260px box; beside the copy at lg it
-              stretches to the row as before. */}
-          <div className="relative aspect-[16/10] border-2 border-[var(--heading-color)] bg-white lg:aspect-auto lg:min-h-full">
-            {cover ? (
-              <Image
-                src={cover.src}
-                alt={cover.alt}
-                fill
+          {/* Shown whole (see ScreenshotStage), in a frame shaped by the
+              shots and sized by its column at every width. Beside the copy
+              at lg it no longer shrinks to the copy's height: uncropped, a
+              ~300px band left the shots too small to read as product. */}
+          {shots.length ? (
+            <>
+              <ScreenshotStage
+                shots={shots}
                 sizes="(min-width: 1024px) 55vw, 100vw"
-                className="object-cover object-top-left"
+                fitShape
+                className={cn(
+                  'border-2 border-[var(--heading-color)] lg:self-start',
+                  paired && 'lg:hidden',
+                )}
               />
-            ) : (
-              <div className="grid h-full place-items-center">
-                <MonoLabel muted size="caption">
-                  Screenshots pending clearance
-                </MonoLabel>
-              </div>
-            )}
-          </div>
+              {paired ? (
+                <ScreenshotStage
+                  shots={wideShots}
+                  sizes="28vw"
+                  fitShape
+                  className="hidden border-2 border-[var(--heading-color)] lg:flex lg:self-start"
+                />
+              ) : null}
+            </>
+          ) : (
+            <div className="grid aspect-[16/10] place-items-center border-2 border-[var(--heading-color)] bg-white lg:self-start">
+              <MonoLabel muted size="caption">
+                Screenshots pending clearance
+              </MonoLabel>
+            </div>
+          )}
         </div>
 
         {/* The numbers band. Two-up until lg, then ONE COLUMN PER STAT —

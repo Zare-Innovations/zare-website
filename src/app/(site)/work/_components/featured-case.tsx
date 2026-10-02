@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { type CaseStudy, clientName } from '@/content/work';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { panelSurface, linkSurface } from '@/components/content/surface';
+import { coverShots, ScreenshotStage } from './screenshot-stage';
 
 /**
  * A case on the index, as the Company Profile 2026 case spreads set it out:
@@ -14,9 +15,9 @@ import { panelSurface, linkSurface } from '@/components/content/surface';
  * is designed to be read as a column, so the earlier split layout (argument
  * left, media right) was a different card wearing the same content.
  *
- * The screenshot fills its band: scaled to the band's height with its aspect
- * ratio intact, anchored top-left so the crop falls on the right. These shots
- * are far wider than the card, and containing them left deep letterboxing.
+ * The screenshot is shown whole, in a drawn browser window on a light stage
+ * (ScreenshotStage). It used to fill the band and crop on the right; the
+ * stage is what keeps the uncropped shot from reading as letterboxing.
  *
  * The closing band appears only where the client actually said something.
  * The profile prints one on every card, but four of these seven have no such
@@ -37,7 +38,7 @@ export function FeaturedCase({ caseStudy }: { caseStudy: CaseStudy }) {
 
   // Two, as the profile's cards carry — one number is a teaser, two a shape.
   const stats = caseStudy.outcomes.slice(0, 2);
-  const cover = caseStudy.images?.[0];
+  const shots = coverShots(caseStudy.images, { pair: false });
 
   return (
     <article className={`${panelSurface} ${linkSurface} group h-full`}>
@@ -68,23 +69,19 @@ export function FeaturedCase({ caseStudy }: { caseStudy: CaseStudy }) {
         </MonoLabel>
 
         {/* ------------------------------------------- the screenshot */}
-        <div className="relative mt-4 h-[188px] overflow-hidden border-2 border-[var(--rule-color)] bg-white">
-          {cover ? (
-            <Image
-              src={cover.src}
-              alt={cover.alt}
-              fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-              className="object-cover object-top-left"
-            />
-          ) : (
-            <div className="grid h-full place-items-center">
-              <MonoLabel muted size="caption">
-                Screenshots pending clearance
-              </MonoLabel>
-            </div>
-          )}
-        </div>
+        {shots.length ? (
+          <ScreenshotStage
+            shots={shots}
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="mt-4 aspect-[16/10] border-2 border-[var(--rule-color)]"
+          />
+        ) : (
+          <div className="mt-4 grid aspect-[16/10] place-items-center border-2 border-[var(--rule-color)] bg-white">
+            <MonoLabel muted size="caption">
+              Screenshots pending clearance
+            </MonoLabel>
+          </div>
+        )}
 
         {/* ---------------------------------------------- the argument */}
         <h3 className="mt-5 font-display text-[25px] font-bold leading-[1.15] text-[var(--heading-color)]">
