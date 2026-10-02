@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
     // Trimmed from the defaults to the widths this layout actually requests,
     // so the optimizer generates fewer variants per source image.
     deviceSizes: [640, 828, 1080, 1200, 1920],
+    // 75 for photographs; 90 for product screenshots, whose small UI text
+    // smears at 75. Next 16 rejects any quality not listed here.
+    qualities: [75, 90],
     imageSizes: [64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },

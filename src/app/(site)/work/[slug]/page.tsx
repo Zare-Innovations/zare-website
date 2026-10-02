@@ -245,7 +245,7 @@ export default async function CaseStudyPage({ params }: Props) {
                   }
                 >
                   {group.images.map((img) => (
-                    <Reveal key={img.src}>
+                    <Reveal key={img.src.src}>
                       <figure>
                         <div className="overflow-hidden rounded-lg border border-[var(--rule-color)] bg-white">
                           <Image
