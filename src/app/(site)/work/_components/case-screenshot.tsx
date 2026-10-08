@@ -16,7 +16,9 @@ export function coverShot(caseStudy: CaseStudy): CaseImage | undefined {
 
 /**
  * A case screenshot on a card: the image itself, full width, at its own
- * shape. No frame, stage or drawn window around it.
+ * shape. No frame, stage or drawn window around it — only a 1px hairline in
+ * the section's rule colour and the gallery's 8px radius, so a mostly-white
+ * screen still has an edge on /work's white ground.
  *
  * Every case image is cropped to 16:10 at source (see `images` in
  * src/content/work.ts), so laying the image out at its natural ratio is what
@@ -39,7 +41,10 @@ export function CaseScreenshot({
       sizes={sizes}
       quality={SCREENSHOT_QUALITY}
       placeholder="blur"
-      className={cn('block h-auto w-full', className)}
+      className={cn(
+        'block h-auto w-full rounded-lg border border-[var(--rule-color)]',
+        className,
+      )}
     />
   );
 }
