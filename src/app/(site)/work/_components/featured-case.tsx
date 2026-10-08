@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { type CaseStudy, clientName } from '@/content/work';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { panelSurface, linkSurface } from '@/components/content/surface';
-import { coverShots, ScreenshotStage } from './screenshot-stage';
+import { CaseScreenshot, coverShot } from './case-screenshot';
 
 /**
  * A case on the index, as the Company Profile 2026 case spreads set it out:
@@ -15,9 +15,8 @@ import { coverShots, ScreenshotStage } from './screenshot-stage';
  * is designed to be read as a column, so the earlier split layout (argument
  * left, media right) was a different card wearing the same content.
  *
- * The screenshot is shown whole, in a drawn browser window on a light stage
- * (ScreenshotStage). It used to fill the band and crop on the right; the
- * stage is what keeps the uncropped shot from reading as letterboxing.
+ * The screenshot is the image itself, full width and uncropped. Every case
+ * image is 16:10 at source, so the three cards come out the same height.
  *
  * The closing band appears only where the client actually said something.
  * The profile prints one on every card, but four of these seven have no such
@@ -38,7 +37,7 @@ export function FeaturedCase({ caseStudy }: { caseStudy: CaseStudy }) {
 
   // Two, as the profile's cards carry — one number is a teaser, two a shape.
   const stats = caseStudy.outcomes.slice(0, 2);
-  const shots = coverShots(caseStudy);
+  const shot = coverShot(caseStudy);
 
   return (
     <article className={`${panelSurface} ${linkSurface} group h-full`}>
@@ -69,11 +68,11 @@ export function FeaturedCase({ caseStudy }: { caseStudy: CaseStudy }) {
         </MonoLabel>
 
         {/* ------------------------------------------- the screenshot */}
-        {shots.length ? (
-          <ScreenshotStage
-            shots={shots}
+        {shot ? (
+          <CaseScreenshot
+            shot={shot}
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="mt-4 aspect-[16/10] border-2 border-[var(--rule-color)]"
+            className="mt-4"
           />
         ) : (
           <div className="mt-4 grid aspect-[16/10] place-items-center border-2 border-[var(--rule-color)] bg-white">
