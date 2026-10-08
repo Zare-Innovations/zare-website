@@ -24,7 +24,7 @@ import womentorMessaging from '../../public/case-studies/womentor-messaging.png'
 import womentorCommunity from '../../public/case-studies/womentor-community.png';
 import tenasolHomepage from '../../public/case-studies/tenasol-homepage.png';
 import kagoolHomepage from '../../public/case-studies/kagool-homepage.png';
-import joveoSite from '../../public/case-studies/joveo-site.png';
+import joveoHomepage from '../../public/case-studies/joveo-homepage.png';
 import exeliaSite from '../../public/case-studies/refs/exelia-site.png';
 
 // ---------------------------------------------------------------- primitives
@@ -792,8 +792,8 @@ export const caseStudies: CaseStudy[] = [
     ],
     images: [
       {
-        src: joveoSite,
-        alt: "Joveo's agentic recruiting platform: the ATS landing page, with the TA teams it is used by",
+        src: joveoHomepage,
+        alt: "Joveo's agentic recruiting platform: the landing page, with the TA teams it is used by",
         caption:
           "The client's product world — the recruitment platform the embedded pod builds inside.",
         kind: "context"
