@@ -3,7 +3,6 @@ import Image from 'next/image';
 
 import { type CaseStudy, clientName } from '@/content/work';
 import { MonoLabel } from '@/components/typography/mono-label';
-import { cn } from '@/lib/utils';
 import { coverShots, ScreenshotStage } from './screenshot-stage';
 
 /**
@@ -60,9 +59,7 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
   const stats = caseStudy.outcomes.slice(0, 4);
   // Beside the copy at lg the band is wide, so an upright cover gets a
   // partner there; on a phone two windows would each be thumbnail-sized.
-  const shots = coverShots(caseStudy.images, { pair: false });
-  const wideShots = coverShots(caseStudy.images, { pair: true });
-  const paired = wideShots.length > shots.length;
+  const shots = coverShots(caseStudy);
 
   return (
     <article className="group">
@@ -164,25 +161,12 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
               at lg it no longer shrinks to the copy's height: uncropped, a
               ~300px band left the shots too small to read as product. */}
           {shots.length ? (
-            <>
-              <ScreenshotStage
-                shots={shots}
-                sizes="(min-width: 1024px) 55vw, 100vw"
-                fitShape
-                className={cn(
-                  'border-2 border-[var(--heading-color)] lg:self-start',
-                  paired && 'lg:hidden',
-                )}
-              />
-              {paired ? (
-                <ScreenshotStage
-                  shots={wideShots}
-                  sizes="28vw"
-                  fitShape
-                  className="hidden border-2 border-[var(--heading-color)] lg:flex lg:self-start"
-                />
-              ) : null}
-            </>
+            <ScreenshotStage
+              shots={shots}
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              fitShape
+              className="border-2 border-[var(--heading-color)] lg:self-start"
+            />
           ) : (
             <div className="grid aspect-[16/10] place-items-center border-2 border-[var(--heading-color)] bg-white lg:self-start">
               <MonoLabel muted size="caption">
