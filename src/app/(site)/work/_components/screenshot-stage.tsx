@@ -5,10 +5,10 @@ import type { CaseImage, CaseStudy } from '@/content/work';
 import { cn } from '@/lib/utils';
 
 /**
- * Product screenshots carry small UI text, which WebP smears at the default
- * 75. Must stay listed in `images.qualities` in next.config.ts.
+ * Product screenshots carry small UI text, which WebP smears at any lossy
+ * setting below 100. Must stay listed in `images.qualities` in next.config.ts.
  */
-export const SCREENSHOT_QUALITY = 90;
+export const SCREENSHOT_QUALITY = 100;
 
 /** The drawn window bar, px. */
 const BAR = 14;
