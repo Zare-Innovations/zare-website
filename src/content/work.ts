@@ -14,8 +14,8 @@ import litcurrentLitscreen from '../../public/case-studies/litcurrent-litscreen.
 import litcurrentLithub from '../../public/case-studies/litcurrent-lithub.png';
 import litcurrentLitstream from '../../public/case-studies/litcurrent-litstream.png';
 import litcurrentLitportalSearch from '../../public/case-studies/litcurrent-litportal-search.png';
-import pickrellSite from '../../public/case-studies/pickrell-site.jpg';
-import womentorDashboard from '../../public/case-studies/womentor-dashboard.webp';
+import pickrellSite from '../../public/case-studies/pickrell-site.png';
+import womentorDashboard from '../../public/case-studies/womentor-dashboard.png';
 import womentorAdminMatching from '../../public/case-studies/womentor-admin-matching.png';
 import womentorMenteeHome from '../../public/case-studies/womentor-mentee-home.png';
 import womentorTraining from '../../public/case-studies/womentor-training.png';
