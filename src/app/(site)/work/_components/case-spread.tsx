@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { type CaseStudy, clientName } from '@/content/work';
 import { MonoLabel } from '@/components/typography/mono-label';
-import { coverShots, ScreenshotStage } from './screenshot-stage';
+import { CaseScreenshot, coverShot } from './case-screenshot';
 
 /**
  * A showcased case, in the Company Profile 2026 case-spread format — the
@@ -59,7 +59,7 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
   const stats = caseStudy.outcomes.slice(0, 4);
   // Beside the copy at lg the band is wide, so an upright cover gets a
   // partner there; on a phone two windows would each be thumbnail-sized.
-  const shots = coverShots(caseStudy);
+  const shot = coverShot(caseStudy);
 
   return (
     <article className="group">
@@ -156,16 +156,14 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
             </div>
           </div>
 
-          {/* Shown whole (see ScreenshotStage), in a frame shaped by the
-              shots and sized by its column at every width. Beside the copy
-              at lg it no longer shrinks to the copy's height: uncropped, a
-              ~300px band left the shots too small to read as product. */}
-          {shots.length ? (
-            <ScreenshotStage
-              shots={shots}
+          {/* The screenshot itself, the full width of its column, at its
+              own 16:10 (see CaseScreenshot). Beside the copy at lg it keeps
+              that shape rather than shrinking to the copy's height. */}
+          {shot ? (
+            <CaseScreenshot
+              shot={shot}
               sizes="(min-width: 1024px) 55vw, 100vw"
-              fitShape
-              className="border-2 border-[var(--heading-color)] lg:self-start"
+              className="lg:self-start"
             />
           ) : (
             <div className="grid aspect-[16/10] place-items-center border-2 border-[var(--heading-color)] bg-white lg:self-start">
