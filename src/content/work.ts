@@ -10,6 +10,7 @@
 
 import type { StaticImageData } from 'next/image';
 
+import litcurrentCover from '../../public/case-studies/litcurrent.png';
 import litcurrentLitscreen from '../../public/case-studies/litcurrent-litscreen.png';
 import litcurrentLithub from '../../public/case-studies/litcurrent-lithub.png';
 import litcurrentLitstream from '../../public/case-studies/litcurrent-litstream.png';
@@ -147,8 +148,20 @@ interface CaseBase {
   /** How Zare actually worked with the client. */
   delivery?: string;
   quote?: CaseQuote;
-  /** Real screenshots only — see CaseImage. Absent renders no gallery. */
+  /**
+   * Real screenshots only — see CaseImage. Absent renders no gallery.
+   *
+   * Every shot is cropped to 16:10 at source, so cards and the gallery hold
+   * one shape; a near-16:10 shot is padded with its own edge colour rather
+   * than cut. Crop to the part of the screen that tells the story.
+   */
   images?: CaseImage[];
+  /**
+   * The shot the index and homepage cards show, where it is not the
+   * gallery's first. A card is one glance, so it can carry a screen chosen
+   * for that, without that screen joining the gallery.
+   */
+  cover?: CaseImage;
   /**
    * The client's own mark, top-right of the index card exactly as the
    * Company Profile 2026 case spreads place it. Optional and never faked:
@@ -298,6 +311,13 @@ export const caseStudies: CaseStudy[] = [
       "PostgreSQL",
       "Redis"
     ],
+    cover: {
+      src: litcurrentCover,
+      alt: "LitScreen: a scheduled digest being screened, the article's abstract and AI summary side by side with save and skip",
+      caption:
+        "LitScreen: scheduled surveillance — the digest feed screened article by article, AI summary beside the abstract.",
+      kind: "product"
+    },
     images: [
       {
         src: litcurrentLitscreen,

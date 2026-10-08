@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 
-import type { CaseImage } from '@/content/work';
+import type { CaseImage, CaseStudy } from '@/content/work';
 import { cn } from '@/lib/utils';
 
 /**
@@ -17,21 +17,10 @@ const GAP = 16;
 
 const ratio = (img: CaseImage) => img.src.width / img.src.height;
 
-/**
- * What a card shows. Normally the cover alone. Where the band is wide and
- * the cover is upright, an upright second shot sits beside it: one portrait
- * screen in a wide band is a small window in a lot of grey, and two say more
- * about the product than one did cropped to its header.
- */
-export function coverShots(
-  images: CaseImage[] | undefined,
-  { pair }: { pair: boolean },
-): CaseImage[] {
-  const [first, second] = images ?? [];
-  if (!first) return [];
-  const upright = (img: CaseImage) => ratio(img) < 1.3;
-  if (pair && second && upright(first) && upright(second)) return [first, second];
-  return [first];
+/** What a card shows: the case's chosen cover, else its first screenshot. */
+export function coverShots(caseStudy: CaseStudy): CaseImage[] {
+  const cover = caseStudy.cover ?? caseStudy.images?.[0];
+  return cover ? [cover] : [];
 }
 
 /**
