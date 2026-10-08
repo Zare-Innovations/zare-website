@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import type { CaseImage } from '@/content/work';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { Reveal } from '@/components/motion/reveal';
-import { SCREENSHOT_QUALITY } from './screenshot-stage';
+import { SCREENSHOT_QUALITY } from './case-screenshot';
 
 export interface GalleryGroup {
   label: string | null;
