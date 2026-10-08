@@ -22,8 +22,8 @@ import womentorMenteeHome from '../../public/case-studies/womentor-mentee-home.p
 import womentorTraining from '../../public/case-studies/womentor-training.png';
 import womentorMessaging from '../../public/case-studies/womentor-messaging.png';
 import womentorCommunity from '../../public/case-studies/womentor-community.png';
-import tenasolSite from '../../public/case-studies/tenasol-site.png';
-import kagolSite from '../../public/case-studies/kagol-site.png';
+import tenasolHomepage from '../../public/case-studies/tenasol-homepage.png';
+import kagoolHomepage from '../../public/case-studies/kagool-homepage.png';
 import joveoSite from '../../public/case-studies/joveo-site.png';
 import exeliaSite from '../../public/case-studies/refs/exelia-site.png';
 
@@ -674,7 +674,7 @@ export const caseStudies: CaseStudy[] = [
     ],
     images: [
       {
-        src: tenasolSite,
+        src: tenasolHomepage,
         alt: "Tenasol's clinical intelligence platform: the document-to-FHIR pipeline, health records and claims in, a patient summary with AI-predicted probability, FHIR R4 bundle out",
         caption:
           "The client's product world — the clinical data platform the role-based interfaces were designed for.",
@@ -720,8 +720,8 @@ export const caseStudies: CaseStudy[] = [
       "The vetting bar held: the same standard applied to one placement, applied more than eighty times. Throughput is a capability, not an accident.",
     images: [
       {
-        src: kagolSite,
-        alt: "Kagool's website",
+        src: kagoolHomepage,
+        alt: "Kagool's homepage: its office map across three continents and its technology partners",
         caption:
           "The client: a 200-person, three-continent Microsoft and SAP consultancy — the delivery organisation the Addis Ababa roster now serves.",
         kind: "context"
