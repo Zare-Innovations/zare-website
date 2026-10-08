@@ -38,7 +38,7 @@ export function FeaturedCase({ caseStudy }: { caseStudy: CaseStudy }) {
 
   // Two, as the profile's cards carry — one number is a teaser, two a shape.
   const stats = caseStudy.outcomes.slice(0, 2);
-  const shots = coverShots(caseStudy.images, { pair: false });
+  const shots = coverShots(caseStudy);
 
   return (
     <article className={`${panelSurface} ${linkSurface} group h-full`}>
