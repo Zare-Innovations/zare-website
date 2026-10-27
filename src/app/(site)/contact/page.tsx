@@ -122,6 +122,16 @@ export default async function ContactPage({ searchParams }: Props) {
             </div>
 
             <aside className="flex flex-col gap-12">
+              {/* The room the scoping call (step 03) happens in, with these
+                  people — not a sales layer. It leads the column. */}
+              <Image
+                src={officePhotos.boardroomPresentation.src}
+                alt={officePhotos.boardroomPresentation.alt}
+                placeholder="blur"
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
+              />
+
               <div>
                 <Eyebrow>What happens next</Eyebrow>
                 <ol className="mt-8 flex flex-col">
@@ -144,16 +154,6 @@ export default async function ContactPage({ searchParams }: Props) {
                     </li>
                   ))}
                 </ol>
-
-                {/* Step 03's room. The scoping call happens at this table,
-                    with these people — not a sales layer. */}
-                <Image
-                  src={officePhotos.boardroomPresentation.src}
-                  alt={officePhotos.boardroomPresentation.alt}
-                  placeholder="blur"
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="mt-8 aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
-                />
               </div>
 
               <div className="border-t border-[var(--rule-color)] pt-8">
