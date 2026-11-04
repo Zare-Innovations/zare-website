@@ -12,8 +12,9 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import { createCandidate, type ContactResult } from '@/bench/data';
 import { request } from '@/bench/data/api';
-import type { CreatedAccount, Job, JobInput, StaffUser } from './types';
+import type { Applicant, CreatedAccount, Job, JobInput, StaffUser } from './types';
 
 /** Everything, in one page. These lists are tens of rows, not thousands. */
 const ALL = `?q=${encodeURIComponent('t=1000')}`;
@@ -104,6 +105,8 @@ function useRecord<T>(path: string, id: string | null): Loadable<T | null> {
 
 export const useJobs = () => useCollection<Job>('job');
 export const useJob = (id: string | null) => useRecord<Job>('job', id);
+/** Every careers application. The applied-jobs list has no per-job route. */
+export const useApplicants = () => useCollection<Applicant>('applied-jobs/all');
 // The user controller lists per organisation (`list/:id`), and every
 // account sits in the one the admin area has always read: '1'.
 export const useStaff = () => useCollection<StaffUser>('user/list/1');
@@ -122,6 +125,29 @@ export async function updateJob(id: string, input: JobInput): Promise<Job> {
 
 export async function deleteJob(id: string): Promise<void> {
   await request('DELETE', `job/${id}`);
+}
+
+/**
+ * Puts a careers applicant on the bench as a Raw candidate of the role.
+ * Same checks as adding someone by hand: a phone already on the bench is
+ * refused with a link to that record, and an application moves only once.
+ */
+export function moveToBench(
+  applicant: Applicant,
+  archetypeId: string,
+  jobTitle: string,
+): Promise<ContactResult> {
+  return createCandidate({
+    archetype_id: archetypeId,
+    full_name: applicant.fullName,
+    phone: applicant.phone,
+    email: applicant.email ?? '',
+    location: '',
+    linkedin_url: '',
+    notes: `Applied on the careers page for ${jobTitle}.`,
+    source: 'careers',
+    applied_job_id: applicant.id,
+  });
 }
 
 /**
