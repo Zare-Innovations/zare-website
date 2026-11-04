@@ -124,6 +124,7 @@ const COLLECTIONS = [
   ['requests', 'bench/request'],
   ['shortlists', 'bench/shortlist'],
   ['shortlistCandidates', 'bench/shortlist-candidate'],
+  ['requestCandidates', 'bench/request-candidate'],
   ['placements', 'bench/placement'],
   ['jobRuns', 'bench/job-run'],
 ] as const;
@@ -187,7 +188,7 @@ export async function request(method: string, path: string, body?: unknown) {
   return text ? JSON.parse(text) : null;
 }
 
-/** All nine collections, mapped into the snapshot's table shapes. */
+/** Every collection, mapped into the snapshot's table shapes. */
 export async function fetchCollections(): Promise<
   Pick<
     Snapshot,
@@ -198,6 +199,7 @@ export async function fetchCollections(): Promise<
     | 'requests'
     | 'shortlists'
     | 'shortlistCandidates'
+    | 'requestCandidates'
     | 'placements'
     | 'jobRuns'
   >

@@ -79,6 +79,12 @@ export interface Archetype {
   technical_weight: number;
   /** Status at the last scarcity check; alerts fire only when it worsens. (0006) */
   last_health_status: HealthStatus | null;
+  /**
+   * Set when an exec retires the role. Its candidates and history stay; it
+   * is no longer offered for new candidates, requests or jobs, and leaves
+   * bench health and the scarcity emails.
+   */
+  retired_at: string | null;
   created_at: string;
 }
 
@@ -185,6 +191,11 @@ export type CallDueState =
 export interface ClientRequest {
   id: string;
   client_name: string;
+  /**
+   * The position as the client names it ('Senior Full Stack, React + Node').
+   * Tells apart requests for the same role. Null: the role's name stands in.
+   */
+  title: string | null;
   archetype_id: string;
   quantity: number;
   required_by: string | null;
@@ -236,6 +247,28 @@ export interface ShortlistCandidate {
   candidate_id: string;
   verified_at: string;
   position: number;
+}
+
+/**
+ * Where a candidate stands on a request's pipeline. Whether they are on the
+ * client shortlist is not a stage: it is read from the shortlist itself, so
+ * there is one truth for what the client was sent.
+ */
+export type PipelineStage = 'considering' | 'screening' | 'dropped';
+
+/**
+ * A candidate attached to a request while they are considered. Anyone on
+ * the bench can be here, of any role and any layer; the shortlist and its
+ * export checks decide who goes to the client.
+ */
+export interface RequestCandidate {
+  id: string;
+  request_id: string;
+  candidate_id: string;
+  stage: PipelineStage;
+  note: string | null;
+  added_by: string | null;
+  created_at: string;
 }
 
 // ---------------------------------------------------------------- reads ----

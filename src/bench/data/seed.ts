@@ -110,6 +110,7 @@ export function seedArchetypes(now: number): Archetype[] {
       // Recorded as green at the last check, so the demo opens mid-slide:
       // CSR is amber now, and running the scarcity check shows a real alert.
       last_health_status: 'green',
+      retired_at: null,
       created_at: iso(now - 400 * DAY),
     },
     {
@@ -123,6 +124,7 @@ export function seedArchetypes(now: number): Archetype[] {
       communication_weight: 0.4,
       technical_weight: 0.6,
       last_health_status: 'amber',
+      retired_at: null,
       created_at: iso(now - 400 * DAY),
     },
   ];
@@ -497,6 +499,7 @@ export function seedRequests(
       {
         id: r1,
         client_name: 'BETA Technologies',
+        title: null,
         archetype_id: ARCHETYPE_CSR,
         quantity: 5,
         required_by: day(now + 14 * DAY),
@@ -512,6 +515,7 @@ export function seedRequests(
       {
         id: r2,
         client_name: 'Meridian Health',
+        title: null,
         archetype_id: ARCHETYPE_SWE,
         quantity: 3,
         required_by: day(now + 30 * DAY),
@@ -526,6 +530,7 @@ export function seedRequests(
       {
         id: r3,
         client_name: 'Northwind Logistics',
+        title: null,
         archetype_id: ARCHETYPE_CSR,
         quantity: 8,
         required_by: day(now + 5 * DAY),
@@ -540,6 +545,7 @@ export function seedRequests(
       {
         id: r4,
         client_name: 'Harbor Retail Group',
+        title: null,
         archetype_id: ARCHETYPE_CSR,
         quantity: 3,
         required_by: day(closedAt),
