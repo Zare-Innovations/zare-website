@@ -32,6 +32,8 @@ export interface Job {
   description: string;
   aboutJob?: string | null;
   aboutCompany?: string | null;
+  /** The bench role this job hires for. Applicants moved to the bench land in it. */
+  archetypeId?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -48,6 +50,7 @@ export interface JobInput {
   description: string;
   aboutJob?: string;
   aboutCompany?: string;
+  archetypeId?: string | null;
 }
 
 /** A staff account, as `/api/user` returns it. */

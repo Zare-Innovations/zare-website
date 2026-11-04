@@ -36,6 +36,7 @@ import {
   FRESHNESS_MIN_DAYS,
   isExec,
   READY_TARGET_MAX,
+  roleIdentityProblem,
   findDuplicates,
   normalizePhone,
   validateContact,
@@ -54,10 +55,14 @@ import {
   type RequestErrors,
   type RequestState,
   normalizeTag,
+  PIPELINE_NOTE_MAX,
+  requestFit,
+  requestLabel,
   requestPool,
   SHIFT_OPTIONS,
   shortlistWarnings,
   type Commitment,
+  type RequestFit,
   type RequestPool,
   computeBenchHealth,
   IMMEDIATE,
@@ -127,7 +132,9 @@ import type {
   NotificationKey,
   Placement,
   RequestStatus,
+  PipelineStage,
   QueueItem,
+  RequestCandidate,
   Role,
   SeenByClient,
   Shortlist,
@@ -148,7 +155,14 @@ export {
   FRESHNESS_MAX_DAYS,
   FRESHNESS_MIN_DAYS,
   isExec,
+  PIPELINE_NOTE_MAX,
+  PIPELINE_STAGE_LABEL,
+  PIPELINE_STAGES,
   queueStartsOnMine,
+  REQUEST_TITLE_MAX,
+  requestLabel,
+  roleIdentityProblem,
+  ROLE_NAME_MAX,
   ROLE_LABEL,
   ROLES,
   READY_TARGET_MAX,
@@ -351,6 +365,14 @@ export function useArchetypes() {
   return useStore((s) => s.archetypes);
 }
 
+/** Roles still in use. Retired roles stay in useArchetypes for their history. */
+const activeArchetypes = (s: Snapshot) => s.archetypes.filter((a) => !a.retired_at);
+
+/** Roles that can take new candidates, requests and jobs. */
+export function useActiveArchetypes(): Archetype[] {
+  return useStore((s) => derive(s, `active-archetypes:${version}`, () => activeArchetypes(s)));
+}
+
 export interface CandidateFilter {
   archetypeId?: string;
   layers?: Layer[];
@@ -414,7 +436,7 @@ export function useCandidate(id: string): CandidateView | null {
 export function useBenchHealth(): BenchHealth[] {
   return useStore((s) =>
     derive(s, `health:${version}`, () =>
-      s.archetypes.map((a) => computeBenchHealth(a, views(s), new Date())),
+      activeArchetypes(s).map((a) => computeBenchHealth(a, views(s), new Date())),
     ),
   );
 }
@@ -1135,7 +1157,8 @@ function cleanShifts(shifts: string[]): string[] {
 export type RequestInput = Pick<
   ClientRequest,
   'client_name' | 'archetype_id' | 'quantity' | 'required_by' | 'notes' | 'required_skills' | 'required_shifts'
->;
+> &
+  Partial<Pick<ClientRequest, 'title'>>;
 
 /** Mirrors the client_requests checks (0007): validated here, whatever the form did. */
 export async function createRequest(
@@ -1151,6 +1174,7 @@ export async function createRequest(
     draft.requests.push({
       id,
       client_name: input.client_name.trim(),
+      title: input.title?.trim() || null,
       archetype_id: input.archetype_id,
       quantity: input.quantity,
       required_by: input.required_by || null,
@@ -1171,7 +1195,9 @@ export async function createRequest(
 /** Edits a request's details. Closed requests are final. Status has its own writes. */
 export async function updateRequest(
   id: string,
-  patch: Partial<Pick<ClientRequest, 'quantity' | 'required_by' | 'notes' | 'client_name' | 'required_skills' | 'required_shifts'>>,
+  patch: Partial<
+    Pick<ClientRequest, 'quantity' | 'required_by' | 'notes' | 'client_name' | 'title' | 'required_skills' | 'required_shifts'>
+  >,
 ): Promise<{ ok: true } | { ok: false; errors: RequestErrors }> {
   const s = getSnapshot();
   const current = s.requests.find((r) => r.id === id);
@@ -1184,6 +1210,7 @@ export async function updateRequest(
     const r = draft.requests.find((x) => x.id === id);
     if (!r) return;
     Object.assign(r, patch);
+    if ('title' in patch) r.title = patch.title?.trim() || null;
     if (patch.required_skills) r.required_skills = cleanTags(patch.required_skills);
     if (patch.required_shifts) r.required_shifts = cleanShifts(patch.required_shifts);
   });
@@ -1265,6 +1292,153 @@ export async function closeRequest(
   return { ok: true };
 }
 
+// ------------------------------------------------------------ pipeline ----
+
+export interface PipelineEntry {
+  entry: RequestCandidate;
+  candidate: CandidateView;
+  /** How they measure against this request's requirements. Advisory. */
+  fit: RequestFit;
+  /** On the draft shortlist, already sent in an exported one, or neither. */
+  shortlist: 'draft' | 'sent' | null;
+}
+
+const STAGE_ORDER: Record<PipelineStage, number> = { screening: 0, considering: 1, dropped: 2 };
+
+/** Everyone on a request's pipeline: screening first, dropped last. */
+export function useRequestPipeline(requestId: string): PipelineEntry[] {
+  return useStore((s) =>
+    derive(s, `pipeline:${version}:${requestId}`, () => {
+      const req = s.requests.find((r) => r.id === requestId);
+      if (!req) return [];
+      const byId = new Map(views(s).map((v) => [v.id, v]));
+      const shortlists = s.shortlists.filter((sl) => sl.request_id === requestId);
+      const draftIds = new Set(shortlists.filter((sl) => sl.status === 'draft').map((sl) => sl.id));
+      const sentIds = new Set(shortlists.filter((sl) => sl.status === 'exported').map((sl) => sl.id));
+      const on = (candidateId: string, ids: Set<string>) =>
+        s.shortlistCandidates.some((sc) => sc.candidate_id === candidateId && ids.has(sc.shortlist_id));
+      return s.requestCandidates
+        .filter((rc) => rc.request_id === requestId)
+        .flatMap((rc) => {
+          const candidate = byId.get(rc.candidate_id);
+          if (!candidate) return [];
+          return [
+            {
+              entry: rc,
+              candidate,
+              fit: requestFit(req, candidate),
+              shortlist: on(rc.candidate_id, draftIds) ? 'draft' : on(rc.candidate_id, sentIds) ? 'sent' : null,
+            } satisfies PipelineEntry,
+          ];
+        })
+        .sort(
+          (a, b) =>
+            STAGE_ORDER[a.entry.stage] - STAGE_ORDER[b.entry.stage] ||
+            a.entry.created_at.localeCompare(b.entry.created_at),
+        );
+    }),
+  );
+}
+
+type PipelineResult = { ok: true } | { ok: false; reason: string };
+
+function openRequest(s: Snapshot, requestId: string): ClientRequest | string {
+  const req = s.requests.find((r) => r.id === requestId);
+  if (!req) return 'Request not found.';
+  if (req.status === 'closed') return 'This request is closed.';
+  return req;
+}
+
+/**
+ * Attaches anyone on the bench to a request: a different role, not yet
+ * assessed, or just added. Attaching twice is a no-op.
+ */
+export async function attachToRequest(
+  requestId: string,
+  candidateId: string,
+  stage: PipelineStage = 'considering',
+): Promise<PipelineResult> {
+  const s = getSnapshot();
+  const req = openRequest(s, requestId);
+  if (typeof req === 'string') return { ok: false, reason: req };
+  if (!views(s).some((v) => v.id === candidateId)) return { ok: false, reason: 'Candidate not found.' };
+  if (s.requestCandidates.some((rc) => rc.request_id === requestId && rc.candidate_id === candidateId)) {
+    return { ok: true };
+  }
+  write((draft) => {
+    draft.requestCandidates.push({
+      id: newId('rc'),
+      request_id: requestId,
+      candidate_id: candidateId,
+      stage,
+      note: null,
+      added_by: draft.currentUserId || null,
+      created_at: new Date().toISOString(),
+    });
+  });
+  return { ok: true };
+}
+
+export async function setPipelineStage(entryId: string, stage: PipelineStage): Promise<PipelineResult> {
+  const s = getSnapshot();
+  const rc = s.requestCandidates.find((x) => x.id === entryId);
+  if (!rc) return { ok: false, reason: 'Not on this request.' };
+  const req = openRequest(s, rc.request_id);
+  if (typeof req === 'string') return { ok: false, reason: req };
+  write((draft) => {
+    const x = draft.requestCandidates.find((y) => y.id === entryId);
+    if (x) x.stage = stage;
+  });
+  return { ok: true };
+}
+
+export async function setPipelineNote(entryId: string, note: string): Promise<PipelineResult> {
+  const s = getSnapshot();
+  const rc = s.requestCandidates.find((x) => x.id === entryId);
+  if (!rc) return { ok: false, reason: 'Not on this request.' };
+  const req = openRequest(s, rc.request_id);
+  if (typeof req === 'string') return { ok: false, reason: req };
+  if (note.length > PIPELINE_NOTE_MAX) return { ok: false, reason: `${PIPELINE_NOTE_MAX} characters at most.` };
+  write((draft) => {
+    const x = draft.requestCandidates.find((y) => y.id === entryId);
+    if (x) x.note = note.trim() || null;
+  });
+  return { ok: true };
+}
+
+/** Takes someone off a request's pipeline. Not while they are on its draft shortlist. */
+export async function removeFromPipeline(entryId: string): Promise<PipelineResult> {
+  const s = getSnapshot();
+  const rc = s.requestCandidates.find((x) => x.id === entryId);
+  if (!rc) return { ok: true };
+  const req = openRequest(s, rc.request_id);
+  if (typeof req === 'string') return { ok: false, reason: req };
+  const drafts = new Set(
+    s.shortlists.filter((sl) => sl.request_id === rc.request_id && sl.status === 'draft').map((sl) => sl.id),
+  );
+  if (s.shortlistCandidates.some((sc) => sc.candidate_id === rc.candidate_id && drafts.has(sc.shortlist_id))) {
+    return { ok: false, reason: 'Take them off the shortlist first.' };
+  }
+  write((draft) => {
+    draft.requestCandidates = draft.requestCandidates.filter((x) => x.id !== entryId);
+  });
+  return { ok: true };
+}
+
+/**
+ * Puts a pipeline candidate on the request's draft shortlist, opening one if
+ * there is none. The shortlist's export checks apply: someone not yet Ready
+ * stays on the pipeline with the reason why.
+ */
+export async function shortlistFromPipeline(requestId: string, candidateId: string): Promise<PipelineResult> {
+  const s = getSnapshot();
+  const req = openRequest(s, requestId);
+  if (typeof req === 'string') return { ok: false, reason: req };
+  const archetype = s.archetypes.find((a) => a.id === req.archetype_id);
+  const shortlistId = await createShortlist(requestId, `${req.client_name} — ${requestLabel(req, archetype)}`);
+  return addToShortlist(shortlistId, candidateId);
+}
+
 export async function createShortlist(requestId: string, title: string): Promise<string> {
   const id = newId('sl');
   const snap = getSnapshot();
@@ -1328,6 +1502,19 @@ export async function addToShortlist(
     const position = draft.shortlistCandidates.filter(
       (sc) => sc.shortlist_id === shortlistId,
     ).length;
+    // Whoever is shortlisted is on the request's pipeline as well, so the
+    // pipeline is the one list of everyone the request has considered.
+    if (!draft.requestCandidates.some((rc) => rc.request_id === target.request_id && rc.candidate_id === candidateId)) {
+      draft.requestCandidates.push({
+        id: newId('rc'),
+        request_id: target.request_id,
+        candidate_id: candidateId,
+        stage: 'screening',
+        note: null,
+        added_by: draft.currentUserId || null,
+        created_at: new Date().toISOString(),
+      });
+    }
     draft.shortlistCandidates.push({
       id: newId('slc'),
       shortlist_id: shortlistId,
@@ -1489,6 +1676,75 @@ export async function updateArchetype(
   });
 }
 
+export interface NewRoleInput {
+  name: string;
+  code: string;
+  color: string;
+  target_ready: number;
+  freshness_days: number;
+  /** 0–1. Technical takes the rest. */
+  communication_weight: number;
+}
+
+export type NewRoleErrors = Partial<Record<'name' | 'code' | 'form', string>>;
+
+/**
+ * Adds a role ('SDR', 'Full Stack Developer'). Exec only, like every other
+ * role setting. A new role starts with no candidates, so its health starts
+ * red until the bench is built for it.
+ */
+export async function createArchetype(
+  input: NewRoleInput,
+): Promise<{ ok: true; id: string } | { ok: false; errors: NewRoleErrors }> {
+  const s = getSnapshot();
+  if (!isExec(actor(s)?.role)) return { ok: false, errors: { form: 'Only an exec can add roles.' } };
+
+  const errors: NewRoleErrors = roleIdentityProblem(input, s.archetypes);
+  const role = {
+    target_ready: input.target_ready,
+    freshness_days: input.freshness_days,
+    color: input.color,
+    communication_weight: Math.round(input.communication_weight * 100) / 100,
+    technical_weight: Math.round((1 - input.communication_weight) * 100) / 100,
+  };
+  const problem = archetypeProblem(role);
+  if (problem) errors.form = problem;
+  if (Object.keys(errors).length) return { ok: false, errors };
+
+  const id = newId('arch');
+  write((draft) => {
+    draft.archetypes.push({
+      id,
+      name: input.name.trim(),
+      code: input.code.trim().toUpperCase(),
+      coverage_ratio: 1,
+      last_health_status: null,
+      retired_at: null,
+      created_at: new Date().toISOString(),
+      ...role,
+    });
+  });
+  return { ok: true, id };
+}
+
+/**
+ * Retires a role, or brings it back. Nothing is deleted: candidates keep the
+ * role, closed requests keep it, and restoring it puts it back as it was.
+ */
+export async function setArchetypeRetired(id: string, retired: boolean): Promise<void> {
+  const s = getSnapshot();
+  if (!isExec(actor(s)?.role)) throw new Error('Only an exec can retire roles.');
+  const target = s.archetypes.find((a) => a.id === id);
+  if (!target) return;
+  if (retired && !target.retired_at && activeArchetypes(s).length === 1) {
+    throw new Error('Keep at least one role active.');
+  }
+  write((draft) => {
+    const a = draft.archetypes.find((x) => x.id === id);
+    if (a) a.retired_at = retired ? (a.retired_at ?? new Date().toISOString()) : null;
+  });
+}
+
 /** Whether the signed-in user may change role targets, freshness and weights. */
 export function useCanEditRoleSettings(): boolean {
   return useStore((s) => isExec(actor(s)?.role));
@@ -1572,7 +1828,7 @@ export async function runJob(job: JobName): Promise<JobRun> {
   const now = new Date();
   const started = now.toISOString();
   const all = views(s);
-  const health = s.archetypes.map((a) => computeBenchHealth(a, all, now));
+  const health = activeArchetypes(s).map((a) => computeBenchHealth(a, all, now));
 
   let detail: JobRun['detail'] = [];
   let nextStatus: Record<string, Archetype['last_health_status']> | null = null;
@@ -1580,7 +1836,7 @@ export async function runJob(job: JobName): Promise<JobRun> {
   let skipped: string | null = null;
 
   if (job === 'scarcity_check') {
-    const result = buildScarcityAlerts({ archetypes: s.archetypes, health, users: s.users, views: all, now });
+    const result = buildScarcityAlerts({ archetypes: activeArchetypes(s), health, users: s.users, views: all, now });
     detail = scarcityEmails(result.alerts);
     nextStatus = result.nextStatus;
     alerted = result.alertedLeaving;
@@ -1650,8 +1906,8 @@ export function useScarcityPreview(): ScarcityPreview {
     derive(s, `pv-scarcity:${version}`, () => {
       const all = views(s);
       const now = new Date();
-      const health = s.archetypes.map((a) => computeBenchHealth(a, all, now));
-      const real = buildScarcityAlerts({ archetypes: s.archetypes, health, users: s.users, views: all, now });
+      const health = activeArchetypes(s).map((a) => computeBenchHealth(a, all, now));
+      const real = buildScarcityAlerts({ archetypes: activeArchetypes(s), health, users: s.users, views: all, now });
       if (real.alerts.length > 0) return { alerts: real.alerts, transitions: real.transitions, example: false };
 
       const rank = { green: 0, amber: 1, red: 2 } as const;
@@ -1681,7 +1937,7 @@ export function useWeeklySummaryPreview(): WeeklySummary[] {
     derive(s, `pv-weekly:${version}`, () => {
       const all = views(s);
       const stats = buildWeeklyStats({
-        health: s.archetypes.map((a) => computeBenchHealth(a, all, new Date())),
+        health: activeArchetypes(s).map((a) => computeBenchHealth(a, all, new Date())),
         calls: s.calls,
         requests: s.requests,
         shortlists: s.shortlists,

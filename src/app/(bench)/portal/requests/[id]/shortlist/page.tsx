@@ -22,6 +22,7 @@ import {
 
 import {
   addToShortlist,
+  requestLabel,
   createShortlist,
   exportBlockReason,
   markShortlistExported,
@@ -168,7 +169,7 @@ function Builder({
 
   async function ensureDraft(): Promise<string> {
     if (shortlist && !isSent) return shortlist.id;
-    return createShortlist(requestId, `${request.client_name} — ${archetype.name}`);
+    return createShortlist(requestId, `${request.client_name} — ${requestLabel(request, archetype)}`);
   }
 
   async function add(candidateId: string) {
@@ -221,7 +222,7 @@ function Builder({
     if (startingVersion) return;
     setStartingVersion(true);
     try {
-      const slId = await createShortlist(requestId, `${request.client_name} — ${archetype.name}`);
+      const slId = await createShortlist(requestId, `${request.client_name} — ${requestLabel(request, archetype)}`);
       // Carry across whoever is still exportable; the rest stay behind.
       for (const e of entries) await addToShortlist(slId, e.candidate.id);
     } catch (err) {
