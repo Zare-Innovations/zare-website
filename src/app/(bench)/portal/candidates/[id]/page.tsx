@@ -46,6 +46,7 @@ import {
   Score,
   Tag,
 } from '@/bench/components/candidate-bits';
+import { ApplicantCv } from '@/bench/components/applicant-cv';
 import { CallOutcomeControls } from '@/bench/components/call-outcome';
 import { DuplicateNotice } from '@/bench/components/duplicate-notice';
 import { useCallToast } from '@/bench/components/call-toast';
@@ -620,6 +621,8 @@ function ContactPanel({ v }: { v: CandidateView }) {
             <a href={v.cv_url} target="_blank" rel="noreferrer" className="hover:text-accent">
               View CV
             </a>
+          ) : v.applied_job_id ? (
+            <ApplicantCv applicantId={v.applied_job_id} />
           ) : (
             <span className="text-bench-ink-faint">No CV uploaded</span>
           )}

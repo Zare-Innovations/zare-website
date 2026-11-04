@@ -88,6 +88,8 @@ export interface Archetype {
   created_at: string;
 }
 
+export type CandidateSource = 'manual' | 'careers';
+
 export interface Candidate {
   id: string;
   ref_code: string;
@@ -131,6 +133,10 @@ export interface Candidate {
 
   // lifecycle
   owner_id: string | null;
+  /** Added by a recruiter, or moved from the careers page. */
+  source: CandidateSource;
+  /** The careers application this person was moved from. One bench record per application. */
+  applied_job_id: string | null;
   archived_reason: ArchiveReason | null;
   recall_at: string | null;
   /**
