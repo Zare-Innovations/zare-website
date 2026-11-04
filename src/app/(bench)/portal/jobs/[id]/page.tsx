@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useId, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Users } from 'lucide-react';
 
 import {
   createJob,
@@ -164,12 +164,24 @@ export default function JobFormPage() {
         <ArrowLeft size={14} /> Jobs
       </Link>
 
-      <h1 className="text-[19px] font-semibold tracking-tight">
-        {isEdit ? 'Edit job' : 'New job'}
-      </h1>
-      <p className="mb-5 mt-1 text-[13px] text-bench-ink-dim">
-        This is what candidates see on the careers page.
-      </p>
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-[19px] font-semibold tracking-tight">
+            {isEdit ? 'Edit job' : 'New job'}
+          </h1>
+          <p className="mt-1 text-[13px] text-bench-ink-dim">
+            This is what candidates see on the careers page.
+          </p>
+        </div>
+        {isEdit && (
+          <Link
+            href={`/portal/jobs/${jobId}/applicants`}
+            className="flex h-9 items-center gap-1.5 rounded-md border border-bench-line px-3 text-[12.5px] text-bench-ink-dim no-underline transition-colors hover:text-bench-ink"
+          >
+            <Users size={14} /> Applicants
+          </Link>
+        )}
+      </div>
 
       <form onSubmit={submit} className="flex max-w-3xl flex-col gap-4">
         <Section title="The role">

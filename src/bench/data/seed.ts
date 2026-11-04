@@ -413,6 +413,8 @@ export function seedCandidates(now: number): { candidates: Candidate[]; calls: C
       shift_flexibility: shifts,
       setup_verified: assessed,
       owner_id: owner,
+      source: 'manual',
+      applied_job_id: null,
       archived_reason: null,
       recall_at: null,
       ready_exit_alerted_for: null,
