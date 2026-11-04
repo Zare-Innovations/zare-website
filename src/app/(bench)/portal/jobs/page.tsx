@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Users } from 'lucide-react';
 
-import { deleteJob, isExpired, jobSkills, useJobs, type Job } from '@/bench/admin';
+import { deleteJob, isExpired, jobSkills, useApplicants, useJobs, type Job } from '@/bench/admin';
 import { useArchetypes, type Archetype } from '@/bench/data';
 import { Tag } from '@/bench/components/candidate-bits';
 import { cn, formatDate } from '@/bench/utils';
@@ -32,6 +32,12 @@ export default function JobsPage() {
   const { data: jobs, loading, error, reload } = useJobs();
   const [tab, setTab] = useState<Tab>('open');
   const [busy, setBusy] = useState<string | null>(null);
+  const { data: applicants } = useApplicants();
+  const applied = useMemo(() => {
+    const n = new Map<string, number>();
+    for (const a of applicants) n.set(a.jobId, (n.get(a.jobId) ?? 0) + 1);
+    return n;
+  }, [applicants]);
 
   const counts = useMemo(
     () =>
@@ -122,6 +128,7 @@ export default function JobsPage() {
               job={job}
               first={i === 0}
               busy={busy === job.id}
+              applicants={applied.get(job.id) ?? 0}
               onDelete={() => remove(job)}
             />
           ))}
@@ -135,11 +142,13 @@ function JobRow({
   job,
   first,
   busy,
+  applicants,
   onDelete,
 }: {
   job: Job;
   first: boolean;
   busy: boolean;
+  applicants: number;
   onDelete: () => void;
 }) {
   const closed = isExpired(job);
@@ -193,6 +202,16 @@ function JobRow({
             ))}
           </div>
         )}
+      </Link>
+
+      <Link
+        href={`/portal/jobs/${job.id}/applicants`}
+        aria-label={`${applicants} applicants for ${job.title}`}
+        className="flex shrink-0 items-center gap-1.5 rounded-md border border-bench-line px-2.5 py-1.5 text-[12px] text-bench-ink-dim no-underline transition-colors hover:border-accent/40 hover:text-accent"
+      >
+        <Users size={13} />
+        <span className="tabular">{applicants}</span>
+        <span className="hidden sm:inline">applicants</span>
       </Link>
 
       <button

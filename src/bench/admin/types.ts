@@ -53,6 +53,18 @@ export interface JobInput {
   archetypeId?: string | null;
 }
 
+/** A careers application, as `/api/applied-jobs` returns it. */
+export interface Applicant {
+  id: string;
+  jobId: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  coverLetter: string;
+  status: string;
+  createdAt: string;
+}
+
 /** A staff account, as `/api/user` returns it. */
 export interface StaffUser {
   id: string;

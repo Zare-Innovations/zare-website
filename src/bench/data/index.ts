@@ -429,6 +429,15 @@ export function useCandidates(filter: CandidateFilter = {}): CandidateView[] {
   );
 }
 
+/** Candidates moved from the careers page, keyed by the application they came from. */
+export function useBenchByApplication(): Map<string, CandidateView> {
+  return useStore((s) =>
+    derive(s, `by-application:${version}`, () =>
+      new Map(views(s).flatMap((v) => (v.applied_job_id ? [[v.applied_job_id, v] as const] : []))),
+    ),
+  );
+}
+
 export function useCandidate(id: string): CandidateView | null {
   return useStore((s) => views(s).find((v) => v.id === id) ?? null);
 }
@@ -962,7 +971,9 @@ export type ContactResult =
  * A name or email match is only a warning, so it is the form's to show.
  */
 export async function createCandidate(
-  input: ContactInput & Pick<Candidate, 'archetype_id'> & Partial<Pick<Candidate, 'owner_id' | 'notes'>>,
+  input: ContactInput &
+    Pick<Candidate, 'archetype_id'> &
+    Partial<Pick<Candidate, 'owner_id' | 'notes' | 'source' | 'applied_job_id'>>,
 ): Promise<ContactResult> {
   const id = newId('cand');
   const s = getSnapshot();
@@ -974,6 +985,10 @@ export async function createCandidate(
   if (Object.keys(errors).length) return { ok: false, errors };
   const duplicate = findDuplicates(input, views(s)).phone[0];
   if (duplicate) return { ok: false, errors: { phone: 'This number is already on the bench.' }, duplicate };
+  // Mirrors UQ_bench_candidates_appliedJobId: an application moves once.
+  if (input.applied_job_id && s.candidates.some((c) => c.applied_job_id === input.applied_job_id)) {
+    return { ok: false, errors: { form: 'This applicant is already on the bench.' } };
+  }
 
   const rest = {
     archetype_id: input.archetype_id,
@@ -984,6 +999,8 @@ export async function createCandidate(
     linkedin_url: input.linkedin_url.trim() || null,
     owner_id: input.owner_id ?? s.currentUserId,
     notes: input.notes?.trim() || null,
+    source: input.source ?? 'manual',
+    applied_job_id: input.applied_job_id ?? null,
   };
 
   const candidate = applyOverallScore<Candidate>(
