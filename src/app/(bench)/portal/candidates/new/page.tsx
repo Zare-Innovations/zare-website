@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, Lock } from 'lucide-react';
 
 import {
   createCandidate,
-  useArchetypes,
+  useActiveArchetypes,
   useCurrentUser,
   useDuplicateCandidates,
   useUsers,
@@ -30,7 +30,7 @@ import { cn } from '@/bench/utils';
 
 export default function NewCandidatePage() {
   const router = useRouter();
-  const archetypes = useArchetypes();
+  const archetypes = useActiveArchetypes();
   const users = useUsers();
   const me = useCurrentUser();
 

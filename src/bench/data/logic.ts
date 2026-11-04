@@ -35,6 +35,7 @@ import type {
   Shortlist,
   ShortlistCandidate,
   User,
+  PipelineStage,
 } from './types';
 
 const HOUR_MS = 3_600_000;
@@ -46,6 +47,30 @@ const HOUR_MS = 3_600_000;
 export const ROLES: Role[] = ['exec', 'recruiter'];
 
 export const ROLE_LABEL: Record<Role, string> = { exec: 'Exec', recruiter: 'Recruiter' };
+
+export const ROLE_NAME_MAX = 60;
+
+/**
+ * A new role's name and code. The code is the short label on chips and
+ * filters ('SDR', 'FSD'): 2–8 letters or digits, unique across every role,
+ * retired ones included, so an old candidate's code never changes meaning.
+ */
+export function roleIdentityProblem(
+  input: { name: string; code: string },
+  existing: Pick<Archetype, 'name' | 'code'>[],
+): { name?: string; code?: string } {
+  const out: { name?: string; code?: string } = {};
+  const name = input.name.trim();
+  const code = input.code.trim().toUpperCase();
+  if (name.length < 2) out.name = 'Give the role a name.';
+  else if (name.length > ROLE_NAME_MAX) out.name = `At most ${ROLE_NAME_MAX} characters.`;
+  else if (existing.some((a) => a.name.trim().toLowerCase() === name.toLowerCase())) {
+    out.name = 'A role with this name already exists.';
+  }
+  if (!/^[A-Z0-9]{2,8}$/.test(code)) out.code = '2 to 8 letters or digits, like SDR.';
+  else if (existing.some((a) => a.code.toUpperCase() === code)) out.code = 'This code is already used.';
+  return out;
+}
 
 /** Staff, roles and role settings are the exec's. */
 export const isExec = (role: Role | undefined) => role === 'exec';
@@ -693,13 +718,31 @@ export function shortlistWarnings(
 export const REQUEST_QUANTITY_MAX = 100;
 export const CLIENT_NAME_MAX = 120;
 export const REQUEST_NOTES_MAX = 1000;
+export const REQUEST_TITLE_MAX = 120;
+export const PIPELINE_NOTE_MAX = 500;
 
-export type RequestField = 'client_name' | 'archetype_id' | 'quantity' | 'required_by' | 'notes' | 'form';
+/** What a request is called on screen and on its shortlist. */
+export function requestLabel(
+  req: Pick<ClientRequest, 'title'>,
+  archetype?: Pick<Archetype, 'name'> | null,
+): string {
+  return req.title?.trim() || archetype?.name || 'Request';
+}
+
+export const PIPELINE_STAGES: PipelineStage[] = ['considering', 'screening', 'dropped'];
+export const PIPELINE_STAGE_LABEL: Record<PipelineStage, string> = {
+  considering: 'Considering',
+  screening: 'Screening',
+  dropped: 'Dropped',
+};
+
+export type RequestField = 'client_name' | 'title' | 'archetype_id' | 'quantity' | 'required_by' | 'notes' | 'form';
 export type RequestErrors = Partial<Record<RequestField, string>>;
 
 /** Mirrors: the checks on client_requests (0007). The deadline cannot be in the past. */
 export function validateRequest(
-  input: Pick<ClientRequest, 'client_name' | 'archetype_id' | 'quantity' | 'required_by' | 'notes'>,
+  input: Pick<ClientRequest, 'client_name' | 'archetype_id' | 'quantity' | 'required_by' | 'notes'> &
+    Partial<Pick<ClientRequest, 'title'>>,
   now: Date,
   opts: { creating: boolean } = { creating: true },
 ): RequestErrors {
@@ -707,6 +750,7 @@ export function validateRequest(
   const name = input.client_name.trim();
   if (!name) e.client_name = 'Client name is required.';
   else if (name.length > CLIENT_NAME_MAX) e.client_name = `${CLIENT_NAME_MAX} characters at most.`;
+  if ((input.title ?? '').trim().length > REQUEST_TITLE_MAX) e.title = `${REQUEST_TITLE_MAX} characters at most.`;
   if (!input.archetype_id) e.archetype_id = 'Choose a role.';
   if (!Number.isInteger(input.quantity) || input.quantity < 1 || input.quantity > REQUEST_QUANTITY_MAX) {
     e.quantity = `A whole number from 1 to ${REQUEST_QUANTITY_MAX}.`;

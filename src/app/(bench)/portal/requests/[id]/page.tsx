@@ -10,6 +10,7 @@ import {
   exportBlockReason,
   OUTCOME_LABEL,
   setRequestStatus,
+  REQUEST_TITLE_MAX,
   updateRequest,
   useBenchTags,
   useCanManageRequests,
@@ -27,6 +28,7 @@ import {
   type RequestSummary,
 } from '@/bench/data';
 import { TagInput } from '@/bench/components/form-bits';
+import { RequestPipeline } from '@/bench/components/request-pipeline';
 import { Freshness, Score, Tag } from '@/bench/components/candidate-bits';
 import { InlineCall } from '@/bench/components/inline-call';
 import {
@@ -89,6 +91,7 @@ export default function RequestPage() {
             <h1 className="text-[22px] font-semibold tracking-tight">{r.client_name}</h1>
             <RequestStatusPill status={r.status} />
           </div>
+          <TitleLine r={r} />
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-bench-ink-faint">
             <span className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full" style={{ background: r.archetype_color }} />
@@ -236,6 +239,77 @@ export default function RequestPage() {
         </section>
       </div>
       </>
+      )}
+
+      <RequestPipeline r={r} />
+    </div>
+  );
+}
+
+/** The position title, editable in place while the request is open. */
+function TitleLine({ r }: { r: RequestSummary }) {
+  const [editing, setEditing] = useState(false);
+  const [title, setTitle] = useState(r.title ?? '');
+  const [error, setError] = useState<string | null>(null);
+  const editable = r.status !== 'closed';
+
+  if (editing) {
+    return (
+      <form
+        className="mt-1.5 flex flex-wrap items-center gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void updateRequest(r.id, { title }).then((res) => {
+            if (res.ok) setEditing(false);
+            else setError(res.errors.title ?? res.errors.form ?? 'Could not save.');
+          });
+        }}
+      >
+        <input
+          autoFocus
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={REQUEST_TITLE_MAX}
+          placeholder="e.g. Senior Full Stack, React + Node"
+          aria-label="Position title"
+          className="h-8 w-72 max-w-full rounded-md border border-bench-line bg-bench-surface-2 px-2.5 text-[13px] focus:border-accent/50 focus:outline-none"
+        />
+        <button type="submit" className="h-8 rounded-md bg-accent px-3 text-[12px] font-medium text-accent-contrast">
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setTitle(r.title ?? '');
+            setEditing(false);
+            setError(null);
+          }}
+          className="h-8 px-2 text-[12px] text-bench-ink-faint hover:text-bench-ink"
+        >
+          Cancel
+        </button>
+        {error && <span className="text-[12px] text-bench-critical">{error}</span>}
+      </form>
+    );
+  }
+
+  if (!r.title && !editable) return null;
+  return (
+    <div className="mt-1 flex items-center gap-2">
+      {r.title ? (
+        <span className="text-[14.5px] text-bench-ink-dim">{r.title}</span>
+      ) : (
+        <span className="text-[12.5px] text-bench-ink-faint">No position title</span>
+      )}
+      {editable && (
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          aria-label="Edit position title"
+          className="grid h-6 w-6 place-items-center rounded text-bench-ink-faint hover:bg-bench-surface-2 hover:text-bench-ink"
+        >
+          <Pencil size={12} aria-hidden />
+        </button>
       )}
     </div>
   );

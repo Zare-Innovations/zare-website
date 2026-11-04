@@ -9,8 +9,10 @@ import {
   Clock,
   Eye,
   Loader2,
+  Archive,
   Lock,
   Play,
+  Plus,
   RotateCcw,
   Sliders,
   Users,
@@ -21,6 +23,8 @@ import {
   JOBS,
   nextRun,
   archetypeProblem,
+  createArchetype,
+  setArchetypeRetired,
   FRESHNESS_MAX_DAYS,
   FRESHNESS_MIN_DAYS,
   isExec,
@@ -100,7 +104,7 @@ export default function SettingsPage() {
           {exec && (
           <Block id="roles" title="Roles and targets" description="What Ready means for each role, and how much of it the business needs.">
             <div className="flex flex-col gap-4">
-              {archetypes.map((a) => (
+              {archetypes.filter((a) => !a.retired_at).map((a) => (
                 // Keyed on the saved values too, so a demo reset or a change
                 // made elsewhere remounts the form instead of leaving stale
                 // inputs on screen.
@@ -114,6 +118,8 @@ export default function SettingsPage() {
                   }}
                 />
               ))}
+              <AddRole />
+              <RetiredRoles roles={archetypes.filter((a) => a.retired_at)} />
             </div>
           </Block>
           )}
@@ -200,6 +206,19 @@ function ArchetypeCard({
     }
   }
 
+  async function retire() {
+    const ok = window.confirm(
+      `Retire ${a.name}? Its candidates keep the role, but it is no longer offered for new candidates, requests or jobs. You can restore it later.`,
+    );
+    if (!ok) return;
+    setError(null);
+    try {
+      await setArchetypeRetired(a.id, true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  }
+
   function discard() {
     setTarget(String(a.target_ready));
     setFreshness(String(a.freshness_days));
@@ -222,6 +241,18 @@ function ArchetypeCard({
             </span>{' '}
             Ready now
           </span>
+        )}
+        {canEdit && (
+          <button
+            type="button"
+            onClick={() => void retire()}
+            className={cn(
+              'flex items-center gap-1 rounded px-1.5 py-1 text-[11.5px] text-bench-ink-faint transition-colors hover:text-bench-ink',
+              !current && 'ml-auto',
+            )}
+          >
+            <Archive size={12} aria-hidden /> Retire
+          </button>
         )}
       </div>
 
@@ -361,6 +392,195 @@ function ArchetypeCard({
           <Check size={13} /> Saved. The dashboard and queue already reflect it.
         </div>
       )}
+    </section>
+  );
+}
+
+/**
+ * Adds a role. Collapsed to one button until asked for: most visits to
+ * Settings are about the roles that already exist.
+ */
+function AddRole() {
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [code, setCode] = useState('');
+  const [color, setColor] = useState(PALETTE[2]);
+  const [target, setTarget] = useState('10');
+  const [freshness, setFreshness] = useState('30');
+  const [commWeight, setCommWeight] = useState(50);
+  const [errors, setErrors] = useState<{ name?: string; code?: string; form?: string }>({});
+  const [saving, setSaving] = useState(false);
+
+  function reset() {
+    setName('');
+    setCode('');
+    setColor(PALETTE[2]);
+    setTarget('10');
+    setFreshness('30');
+    setCommWeight(50);
+    setErrors({});
+  }
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    const res = await createArchetype({
+      name,
+      code,
+      color: color.trim(),
+      target_ready: Number(target),
+      freshness_days: Number(freshness),
+      communication_weight: commWeight / 100,
+    });
+    setSaving(false);
+    if (!res.ok) return setErrors(res.errors);
+    reset();
+    setOpen(false);
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex h-10 items-center justify-center gap-1.5 rounded-lg border border-dashed border-bench-line text-[12.5px] text-bench-ink-dim transition-colors hover:border-accent/40 hover:text-bench-ink"
+      >
+        <Plus size={14} aria-hidden /> Add a role
+      </button>
+    );
+  }
+
+  return (
+    <form onSubmit={save} className="fade-up rounded-lg border border-accent/30 bg-bench-surface">
+      <div className="border-b border-bench-line px-4 py-3 text-[14px] font-medium">New role</div>
+      <div className="grid gap-5 p-4 md:grid-cols-2">
+        <Field label="Name" hint="As recruiters and clients say it">
+          <input
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              setErrors((x) => ({ ...x, name: undefined }));
+            }}
+            placeholder="Sales Development Representative"
+            aria-invalid={Boolean(errors.name)}
+            className="h-9 w-full rounded-md border border-bench-line bg-bench-surface-2 px-3 text-[13px] focus:border-accent/50 focus:outline-none"
+          />
+          {errors.name && <p className="mt-1.5 text-[11.5px] text-bench-critical">{errors.name}</p>}
+        </Field>
+        <Field label="Code" hint="The short label on chips and filters">
+          <input
+            value={code}
+            onChange={(e) => {
+              setCode(e.target.value.toUpperCase());
+              setErrors((x) => ({ ...x, code: undefined }));
+            }}
+            placeholder="SDR"
+            maxLength={8}
+            aria-invalid={Boolean(errors.code)}
+            className="tabular h-9 w-32 rounded-md border border-bench-line bg-bench-surface-2 px-3 font-mono text-[13px] uppercase focus:border-accent/50 focus:outline-none"
+          />
+          {errors.code && <p className="mt-1.5 text-[11.5px] text-bench-critical">{errors.code}</p>}
+        </Field>
+        <Field label="Ready target" hint="How many Ready candidates this role should always have">
+          <NumberInput value={target} onChange={setTarget} min={1} max={READY_TARGET_MAX} suffix="candidates" />
+        </Field>
+        <Field label="Freshness window" hint="How long a confirmed availability stays true">
+          <NumberInput value={freshness} onChange={setFreshness} min={FRESHNESS_MIN_DAYS} max={FRESHNESS_MAX_DAYS} suffix="days" />
+        </Field>
+        <Field label="Scoring weights" hint="How overall is calculated from the two sub-scores">
+          <div className="rounded-md border border-bench-line bg-bench-surface-2 px-3 py-2.5">
+            <div className="flex items-center justify-between text-[12px]">
+              <span>
+                Communication <span className="tabular font-semibold">{commWeight}%</span>
+              </span>
+              <span>
+                <span className="tabular font-semibold">{100 - commWeight}%</span> Technical
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              step={5}
+              value={commWeight}
+              onChange={(e) => setCommWeight(Number(e.target.value))}
+              aria-label="Communication weight"
+              aria-valuetext={`${commWeight}% communication, ${100 - commWeight}% technical`}
+              className="mt-2 w-full accent-[var(--color-accent)]"
+            />
+          </div>
+        </Field>
+        <Field label="Colour" hint="Used on the health ring and role tags">
+          <div className="flex flex-wrap items-center gap-2">
+            {PALETTE.map((p) => (
+              <button
+                key={p}
+                type="button"
+                aria-label={`Use ${p}`}
+                aria-pressed={color.toLowerCase() === p}
+                onClick={() => setColor(p)}
+                className={cn(
+                  'h-6 w-6 rounded-full border-2 transition-transform hover:scale-110',
+                  color.toLowerCase() === p ? 'border-bench-ink' : 'border-transparent',
+                )}
+                style={{ background: p }}
+              />
+            ))}
+          </div>
+        </Field>
+      </div>
+      <div className="flex flex-wrap items-center gap-3 border-t border-bench-line bg-bench-surface-2/40 px-4 py-3">
+        <p className="min-w-0 flex-1 text-[12px] text-bench-critical">{errors.form}</p>
+        <button
+          type="button"
+          onClick={() => {
+            reset();
+            setOpen(false);
+          }}
+          className="px-2 py-1.5 text-[12px] text-bench-ink-faint hover:text-bench-ink"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={saving}
+          className="h-8 rounded-md bg-accent px-3.5 text-[12px] font-medium text-accent-contrast transition-opacity hover:opacity-90 disabled:opacity-50"
+        >
+          {saving ? 'Adding…' : 'Add role'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+/** Retired roles, one line each, with a way back. */
+function RetiredRoles({ roles }: { roles: Archetype[] }) {
+  const [error, setError] = useState<string | null>(null);
+  if (roles.length === 0) return null;
+  return (
+    <section className="rounded-lg border border-bench-line bg-bench-surface/50">
+      <div className="border-b border-bench-line px-4 py-2.5 font-mono text-[10.5px] uppercase tracking-widest text-bench-ink-faint">
+        Retired
+      </div>
+      <ul>
+        {roles.map((a, i) => (
+          <li key={a.id} className={cn('flex items-center gap-3 px-4 py-2.5', i > 0 && 'border-t border-bench-line')}>
+            <span className="h-2 w-2 rounded-full opacity-50" style={{ background: a.color }} />
+            <span className="text-[13px] text-bench-ink-dim">{a.name}</span>
+            <span className="font-mono text-[10.5px] uppercase tracking-widest text-bench-ink-faint">{a.code}</span>
+            <button
+              type="button"
+              onClick={() =>
+                setArchetypeRetired(a.id, false).catch((e) => setError(e instanceof Error ? e.message : String(e)))
+              }
+              className="ml-auto flex items-center gap-1 rounded px-1.5 py-1 text-[11.5px] text-bench-ink-faint transition-colors hover:text-bench-ink"
+            >
+              <RotateCcw size={12} aria-hidden /> Restore
+            </button>
+          </li>
+        ))}
+      </ul>
+      {error && <p className="border-t border-bench-line px-4 py-2 text-[12px] text-bench-critical">{error}</p>}
     </section>
   );
 }
