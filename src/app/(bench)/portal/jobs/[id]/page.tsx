@@ -15,6 +15,7 @@ import {
   type JobType,
   type WorkType,
 } from '@/bench/admin';
+import { useActiveArchetypes, useArchetypes } from '@/bench/data';
 import { FormField, inputCls, Section, Segmented, TagInput } from '@/bench/components/form-bits';
 import { cn } from '@/bench/utils';
 
@@ -40,6 +41,7 @@ interface Form {
   description: string;
   aboutJob: string;
   aboutCompany: string;
+  archetypeId: string;
 }
 
 type Errors = Partial<Record<keyof Form | 'form', string>>;
@@ -56,6 +58,7 @@ const EMPTY: Form = {
   description: '',
   aboutJob: '',
   aboutCompany: '',
+  archetypeId: '',
 };
 
 function validate(f: Form): Errors {
@@ -87,6 +90,10 @@ export default function JobFormPage() {
   const [form, setForm] = useState<Form>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
+  // Retired roles are not offered, except the one this job already has.
+  const allRoles = useArchetypes();
+  const activeRoles = useActiveArchetypes();
+  const roleOptions = allRoles.filter((a) => !a.retired_at || a.id === form.archetypeId);
 
   useEffect(() => {
     if (!job) return;
@@ -102,6 +109,7 @@ export default function JobFormPage() {
       description: job.description ?? '',
       aboutJob: job.aboutJob ?? '',
       aboutCompany: job.aboutCompany ?? '',
+      archetypeId: job.archetypeId ?? '',
     });
   }, [job]);
 
@@ -128,6 +136,7 @@ export default function JobFormPage() {
       description: form.description.trim(),
       aboutJob: form.aboutJob.trim() || undefined,
       aboutCompany: form.aboutCompany.trim() || undefined,
+      archetypeId: form.archetypeId || null,
     };
 
     try {
@@ -208,6 +217,28 @@ export default function JobFormPage() {
                 options={JOB_TYPES.map((t) => ({ value: t, label: t }))}
                 onChange={(v) => set('type', v)}
               />
+            </FormField>
+
+            <FormField
+              label="Bench role"
+              htmlFor={`${uid}-role`}
+              hint={activeRoles.length ? 'Applicants moved to the bench join this role' : undefined}
+              className="sm:col-span-2"
+            >
+              <select
+                id={`${uid}-role`}
+                className={inputCls}
+                value={form.archetypeId}
+                onChange={(e) => set('archetypeId', e.target.value)}
+              >
+                <option value="">No bench role</option>
+                {roleOptions.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                    {a.retired_at ? ' (retired)' : ''}
+                  </option>
+                ))}
+              </select>
             </FormField>
 
             <FormField label="Contract" className="sm:col-span-2">

@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { deleteJob, isExpired, jobSkills, useJobs, type Job } from '@/bench/admin';
+import { useArchetypes, type Archetype } from '@/bench/data';
 import { Tag } from '@/bench/components/candidate-bits';
 import { cn, formatDate } from '@/bench/utils';
 
@@ -143,6 +144,7 @@ function JobRow({
 }) {
   const closed = isExpired(job);
   const skills = jobSkills(job);
+  const role = useArchetypes().find((a: Archetype) => a.id === job.archetypeId);
 
   return (
     <li
@@ -166,6 +168,12 @@ function JobRow({
           >
             {closed ? 'Closed' : 'Open'}
           </span>
+          {role && (
+            <span className="flex items-center gap-1.5 text-[11px] text-bench-ink-dim">
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: role.color }} aria-hidden />
+              {role.name}
+            </span>
+          )}
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-2 text-[11.5px] text-bench-ink-faint">
           <span>{job.location}</span>

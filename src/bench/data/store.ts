@@ -27,6 +27,7 @@ import type {
   ClientRequest,
   JobRun,
   Placement,
+  RequestCandidate,
   Shortlist,
   ShortlistCandidate,
   User,
@@ -40,6 +41,7 @@ export interface Snapshot {
   requests: ClientRequest[];
   shortlists: Shortlist[];
   shortlistCandidates: ShortlistCandidate[];
+  requestCandidates: RequestCandidate[];
   placements: Placement[];
   jobRuns: JobRun[];
   /** Who is "logged in". Fake auth: a role picker, no credentials. */
@@ -55,7 +57,7 @@ export interface Snapshot {
 
 // Bumped when the snapshot shape changes, so an open session reseeds rather
 // than reading records that are missing fields.
-const STORAGE_KEY = 'zare-bench-demo-v9';
+const STORAGE_KEY = 'zare-bench-demo-v10';
 /**
  * Who is signed in lives under its own key, so a reseeded demo (a new data
  * version, a reset) never signs anyone out mid-task.
@@ -96,6 +98,7 @@ function build(now: number): Snapshot {
     requests,
     shortlists,
     shortlistCandidates,
+    requestCandidates: [],
     placements,
     jobRuns: seedJobRuns(now),
     currentUserId: USER_RECRUITER_1,
@@ -134,6 +137,7 @@ function emptySnapshot(session: Pick<Snapshot, 'currentUserId' | 'signedIn'> | n
     requests: [],
     shortlists: [],
     shortlistCandidates: [],
+    requestCandidates: [],
     placements: [],
     jobRuns: [],
     currentUserId: session?.currentUserId ?? '',

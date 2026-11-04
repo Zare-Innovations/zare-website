@@ -9,7 +9,8 @@ import {
   createRequest,
   OUTCOME_LABEL,
   REQUEST_QUANTITY_MAX,
-  useArchetypes,
+  REQUEST_TITLE_MAX,
+  useActiveArchetypes,
   useBenchTags,
   useRequestSummaries,
   type RequestErrors,
@@ -116,6 +117,7 @@ function RequestRow({ r, first }: { r: RequestSummary; first: boolean }) {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="truncate text-[14px] font-medium">{r.client_name}</span>
+            {r.title && <span className="truncate text-[13px] text-bench-ink-dim">{r.title}</span>}
             <RequestStatusPill status={r.status} />
           </div>
           <div className="mt-1 flex items-center gap-2 text-[11.5px] text-bench-ink-faint">
@@ -221,8 +223,9 @@ function Metric({
 
 function CreateRequest({ onCancel }: { onCancel: () => void }) {
   const router = useRouter();
-  const archetypes = useArchetypes();
+  const archetypes = useActiveArchetypes();
   const [client, setClient] = useState('');
+  const [title, setTitle] = useState('');
   const [archetypeId, setArchetypeId] = useState(archetypes[0]?.id ?? '');
   const [quantity, setQuantity] = useState(3);
   const [requiredBy, setRequiredBy] = useState('');
@@ -240,6 +243,7 @@ function CreateRequest({ onCancel }: { onCancel: () => void }) {
     setSaving(true);
     const res = await createRequest({
       client_name: client,
+      title,
       archetype_id: archetypeId,
       quantity,
       required_by: requiredBy || null,
@@ -279,6 +283,19 @@ function CreateRequest({ onCancel }: { onCancel: () => void }) {
             value={client}
             onChange={(e) => setClient(e.target.value)}
             placeholder="e.g. BETA Technologies"
+            className={inputCls}
+          />
+        </FormField>
+        <FormField
+          label="Position title (optional)"
+          error={errors.title}
+          className="lg:col-span-2"
+        >
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={REQUEST_TITLE_MAX}
+            placeholder="e.g. Senior Full Stack, React + Node"
             className={inputCls}
           />
         </FormField>

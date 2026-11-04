@@ -7,6 +7,7 @@ import {
   exportBlockReason,
   healthStatus,
   overallScoreProblem,
+  roleIdentityProblem,
   scoreLabel,
   validateAssessment,
   type AssessmentInput,
@@ -160,5 +161,36 @@ describe('seed', () => {
       }
     }
     expect(archetypes.every((a) => Math.round((a.communication_weight + a.technical_weight) * 100) === 100)).toBe(true);
+  });
+});
+
+describe('roleIdentityProblem', () => {
+  const existing = [
+    { name: 'Software Engineer', code: 'SWE' },
+    { name: 'Customer Service Representative', code: 'CSR' },
+  ];
+
+  it('accepts a new name and code', () => {
+    expect(roleIdentityProblem({ name: 'Sales Development Representative', code: 'sdr' }, existing)).toEqual({});
+  });
+
+  it('rejects a code already in use, whatever its case', () => {
+    expect(roleIdentityProblem({ name: 'Senior Engineer', code: 'swe' }, existing).code).toBe('This code is already used.');
+  });
+
+  it('rejects a name already in use, whatever its case or spacing', () => {
+    expect(roleIdentityProblem({ name: '  software engineer ', code: 'SE2' }, existing).name).toBe(
+      'A role with this name already exists.',
+    );
+  });
+
+  it('requires a 2–8 character alphanumeric code', () => {
+    expect(roleIdentityProblem({ name: 'Designer', code: 'D' }, existing).code).toBeTruthy();
+    expect(roleIdentityProblem({ name: 'Designer', code: 'UX-UI' }, existing).code).toBeTruthy();
+    expect(roleIdentityProblem({ name: 'Designer', code: 'TOOLONGCODE' }, existing).code).toBeTruthy();
+  });
+
+  it('requires a name', () => {
+    expect(roleIdentityProblem({ name: ' ', code: 'DES' }, existing).name).toBe('Give the role a name.');
   });
 });
