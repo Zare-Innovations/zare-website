@@ -10,10 +10,14 @@ import {
   assessmentTextWarnings,
   calculateOverall,
   CONCERN_MAX,
+  defaultRecallDate,
   exportBlockReason,
+  IMMEDIATE,
+  logCall,
   MAX_OVERALL_OVERRIDE,
   MIN_EXPORT_SCORE,
   MIN_OVERRIDE_REASON,
+  NOTICE_OPTIONS,
   scoreLabel,
   SHIFT_OPTIONS,
   STRENGTH_MAX,
@@ -21,10 +25,13 @@ import {
   useBenchTags,
   useCandidate,
   validateAssessment,
+  validateCallDetails,
   type Archetype,
   type AssessmentErrors,
   type AssessmentField,
   type AssessmentInput,
+  type CallDetails,
+  type CallErrors,
   type CandidateView,
   type EnglishLevel,
   type Seniority,
@@ -32,6 +39,7 @@ import {
 import { findLeaks, toExportCandidate, type ExportCandidate } from '@/bench/export/shortlist';
 import { CharCount, FormField, inputCls, ScoreInput, Section, Segmented, StepBtn, TagInput } from '@/bench/components/form-bits';
 import { StepIndicator } from '@/bench/components/step-indicator';
+import { todayKey } from '@/bench/dates';
 import { cn, formatDate } from '@/bench/utils';
 
 /**
@@ -41,7 +49,18 @@ import { cn, formatDate } from '@/bench/utils';
  * built around the one artefact it feeds: the page a client reads. That page
  * is rendered live on the right from the same whitelist the PDF uses, so the
  * assessor sees exactly what will leave the building while they write it.
+ *
+ * Availability is still only ever confirmed by a call. When the interview was
+ * that call, its outcome is recorded here and logged on save, exactly as the
+ * queue logs one, so a candidate can go from Raw to Ready in one step.
  */
+
+type CallChoice = 'none' | 'available' | 'not_available';
+const CALL_CHOICES: { value: CallChoice; label: string }[] = [
+  { value: 'none', label: 'Not asked' },
+  { value: 'available', label: 'Available' },
+  { value: 'not_available', label: 'Not available' },
+];
 
 const SENIORITY: { value: Seniority; label: string }[] = [
   { value: 'junior', label: 'Junior' },
@@ -105,6 +124,12 @@ function AssessForm({ v, archetype }: { v: CandidateView; archetype: Archetype }
   // Only what is already on record. A Raw candidate starts with no shifts.
   const [shifts, setShifts] = useState<string[]>(v.shift_flexibility);
   const [setup, setSetup] = useState(v.setup_verified);
+  // The availability call, if this interview was one. Logged on save.
+  const [callOutcome, setCallOutcome] = useState<CallChoice>('none');
+  const [notice, setNotice] = useState('');
+  const [start, setStart] = useState('');
+  const [recall, setRecall] = useState(() => defaultRecallDate(new Date()));
+  const [callServerErrors, setCallServerErrors] = useState<CallErrors>({});
 
   const [submitted, setSubmitted] = useState(false);
   const [serverErrors, setServerErrors] = useState<AssessmentErrors>({});
@@ -141,11 +166,29 @@ function AssessForm({ v, archetype }: { v: CandidateView; archetype: Archetype }
   const err = (k: AssessmentField) => errors[k] ?? null;
   const errorCount = Object.keys(liveErrors).length;
 
+  const immediate = notice === IMMEDIATE;
+  const callDetails: CallDetails =
+    callOutcome === 'available'
+      ? { notice_period: notice, earliest_start_date: immediate ? null : start || null, shift_flexibility: shifts }
+      : callOutcome === 'not_available'
+        ? { recall_at: recall }
+        : {};
+  const liveCallErrors = callOutcome === 'none' ? {} : validateCallDetails(callOutcome, callDetails, new Date());
+  const callErrors: CallErrors = submitted ? { ...liveCallErrors, ...callServerErrors } : callServerErrors;
+  const callErrorCount = Object.keys(liveCallErrors).length;
+  // A complete Available call, which will make the record Ready once saved.
+  const confirming = callOutcome === 'available' && callErrorCount === 0;
+
   // ---- the draft as it will exist once saved, for the preview and checks
   const draft: CandidateView = useMemo(() => {
-    // Saving an assessment never changes availability, so a Known or Raw
-    // record with a live confirmation becomes Ready, and nothing else does.
-    const fresh = v.layer === 'ready' || (v.layer === 'raw' && v.availability_status === 'available' && (v.days_until_expiry ?? -1) >= 0);
+    // The assessment itself never changes availability: a Known or Raw
+    // record with a live confirmation becomes Ready, and so does one whose
+    // Available call is recorded here. A Not available call never does.
+    const now = new Date().toISOString();
+    const fresh =
+      confirming ||
+      (callOutcome === 'none' &&
+        (v.layer === 'ready' || (v.layer === 'raw' && v.availability_status === 'available' && (v.days_until_expiry ?? -1) >= 0)));
     return {
       ...v,
       ...input,
@@ -154,23 +197,35 @@ function AssessForm({ v, archetype }: { v: CandidateView; archetype: Archetype }
       overall_score_calculated: calculated,
       concern: concern.trim() || null,
       strengths: strengths.map((s) => s.trim()),
-      assessed_at: v.assessed_at ?? new Date().toISOString(),
-      layer: v.layer === 'archived' ? 'archived' : fresh ? 'ready' : 'known',
+      assessed_at: v.assessed_at ?? now,
+      ...(confirming && {
+        availability_status: 'available' as const,
+        last_verified_at: now,
+        notice_period: notice,
+        earliest_start_date: immediate ? null : start,
+      }),
+      ...(callOutcome === 'not_available' && {
+        availability_status: 'not_available' as const,
+        last_verified_at: now,
+        earliest_start_date: null,
+      }),
+      layer: v.layer === 'archived' && !confirming ? 'archived' : fresh ? 'ready' : 'known',
     };
-  }, [v, input, overall, calculated, concern, strengths]);
+  }, [v, input, overall, calculated, concern, strengths, confirming, callOutcome, notice, start, immediate]);
 
   const leaks = findLeaks([draft]);
   const textWarnings = assessmentTextWarnings({ strengths, concern });
   // A real confirmation: an Available call on record. Nothing else is shown
   // to the client as confirmed.
-  const confirmed = v.availability_status === 'available' && v.last_verified_at !== null;
+  const confirmed =
+    confirming || (callOutcome === 'none' && v.availability_status === 'available' && v.last_verified_at !== null);
   const scored = comm !== null || techValue !== null;
   const communicationOnly = techValue === null && archetype.technical_weight > 0;
-  const exportCandidate = toExportCandidate(draft, v.last_verified_at ?? new Date().toISOString());
+  const exportCandidate = toExportCandidate(draft, draft.last_verified_at ?? new Date().toISOString());
 
   // ---- unsaved changes guard
   const [initial] = useState(input);
-  const dirty = useMemo(() => !sameInput(input, initial), [input, initial]);
+  const dirty = useMemo(() => !sameInput(input, initial) || callOutcome !== 'none', [input, initial, callOutcome]);
   useEffect(() => {
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       if (dirty && !savedRef.current) e.preventDefault();
@@ -182,17 +237,31 @@ function AssessForm({ v, archetype }: { v: CandidateView; archetype: Archetype }
   async function save() {
     setSubmitted(true);
     setServerErrors({});
-    if (errorCount > 0) {
+    setCallServerErrors({});
+    if (errorCount > 0 || callErrorCount > 0) {
       requestAnimationFrame(() => document.querySelector('[role="alert"]')?.scrollIntoView({ block: 'center', behavior: 'smooth' }));
       return;
     }
     setSaving(true);
     const res = await assessCandidate(v.id, input);
-    setSaving(false);
     if (!res.ok) {
+      setSaving(false);
       setServerErrors(res.errors);
       return;
     }
+    // Logged after the assessment, because a call needs an assessed record.
+    if (callOutcome !== 'none') {
+      const logged = await logCall(v.id, callOutcome, callDetails);
+      if (!logged.ok) {
+        setSaving(false);
+        setCallServerErrors({
+          ...logged.errors,
+          form: `The assessment is saved, but the call was not logged. ${logged.errors.form ?? 'Check the availability fields.'}`,
+        });
+        return;
+      }
+    }
+    setSaving(false);
     savedRef.current = true;
     router.push(`/portal/candidates/${v.id}`);
   }
@@ -495,12 +564,79 @@ function AssessForm({ v, archetype }: { v: CandidateView; archetype: Archetype }
             </div>
           </Section>
 
-          {/* ---- work setup ---- */}
+          {/* ---- availability and work setup ---- */}
           <Section
-            title="Shifts and work setup"
-            description="Availability, notice period and start date are confirmed on a call, never entered here."
+            title="Availability and work setup"
+            description="If you confirmed availability on this call, record it here. It is logged as a call when you save, the same as from the queue."
           >
             <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                label="On this call"
+                hint={v.last_verified_at ? `Last confirmed ${formatDate(v.last_verified_at)}` : 'Never confirmed'}
+                className="sm:col-span-2"
+              >
+                <Segmented
+                  label="On this call"
+                  value={callOutcome}
+                  onChange={(c) => {
+                    setCallOutcome(c);
+                    setCallServerErrors({});
+                  }}
+                  options={CALL_CHOICES}
+                />
+              </FormField>
+              {callOutcome === 'available' && (
+                <>
+                  <FormField label="Notice period" htmlFor="notice" error={callErrors.notice_period}>
+                    <select
+                      id="notice"
+                      value={notice}
+                      onChange={(e) => setNotice(e.target.value)}
+                      aria-invalid={Boolean(callErrors.notice_period)}
+                      className={inputCls}
+                    >
+                      <option value="" disabled>
+                        Ask them
+                      </option>
+                      {NOTICE_OPTIONS.map((o) => (
+                        <option key={o} value={o}>
+                          {o}
+                        </option>
+                      ))}
+                    </select>
+                  </FormField>
+                  <FormField
+                    label="Earliest start"
+                    htmlFor="start"
+                    error={callErrors.earliest_start_date}
+                    hint={immediate ? 'Not needed: can start immediately' : undefined}
+                  >
+                    <input
+                      id="start"
+                      type="date"
+                      min={todayKey()}
+                      disabled={immediate}
+                      value={immediate ? '' : start}
+                      onChange={(e) => setStart(e.target.value)}
+                      aria-invalid={Boolean(callErrors.earliest_start_date)}
+                      className={cn(inputCls, 'disabled:opacity-50')}
+                    />
+                  </FormField>
+                </>
+              )}
+              {callOutcome === 'not_available' && (
+                <FormField label="Call again on" htmlFor="recall" error={callErrors.recall_at} className="sm:col-span-2">
+                  <input
+                    id="recall"
+                    type="date"
+                    min={todayKey()}
+                    value={recall}
+                    onChange={(e) => setRecall(e.target.value)}
+                    aria-invalid={Boolean(callErrors.recall_at)}
+                    className={cn(inputCls, 'sm:w-1/2')}
+                  />
+                </FormField>
+              )}
               <FormField label="Shifts they can work">
                 <div role="group" aria-label="Shifts they can work" className="flex flex-wrap gap-1.5">
                   {SHIFT_OPTIONS.map((s) => {
@@ -534,6 +670,11 @@ function AssessForm({ v, archetype }: { v: CandidateView; archetype: Archetype }
                 </label>
               </FormField>
             </div>
+            {callErrors.form && (
+              <p role="alert" className="mt-3 text-[12px] text-bench-critical">
+                {callErrors.form}
+              </p>
+            )}
           </Section>
 
           <Section title="Internal notes">
@@ -548,9 +689,9 @@ function AssessForm({ v, archetype }: { v: CandidateView; archetype: Archetype }
           </Section>
 
           <div className="flex flex-wrap items-center justify-end gap-2">
-            {submitted && errorCount > 0 && (
+            {submitted && errorCount + callErrorCount > 0 && (
               <span className="mr-auto text-[12px] text-bench-critical">
-                {errorCount} {errorCount === 1 ? 'field needs' : 'fields need'} attention.
+                {errorCount + callErrorCount} {errorCount + callErrorCount === 1 ? 'field needs' : 'fields need'} attention.
               </span>
             )}
             <Link href={`/portal/candidates/${v.id}`} className="px-3 py-2 text-[12.5px] text-bench-ink-faint hover:text-bench-ink">
@@ -605,8 +746,8 @@ function ExportChecks({
       label: ready
         ? 'Availability confirmed recently'
         : verified
-          ? 'Availability has expired: call to confirm'
-          : 'Never called: confirm availability after saving',
+          ? 'Availability has expired: record this call under Availability'
+          : 'Not confirmed yet: record this call under Availability',
     },
   ];
 

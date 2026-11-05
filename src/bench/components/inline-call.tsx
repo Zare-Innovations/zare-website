@@ -18,7 +18,7 @@ export function InlineCall({
   onLogged,
   className,
 }: {
-  candidate: Pick<CandidateView, 'id' | 'phone' | 'full_name' | 'shift_flexibility'>;
+  candidate: Pick<CandidateView, 'id' | 'phone' | 'full_name' | 'shift_flexibility' | 'setup_verified'>;
   onLogged?: (outcome: CallAttempt) => void;
   className?: string;
 }) {
