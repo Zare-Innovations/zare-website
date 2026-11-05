@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Lock } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, Check, Lock } from 'lucide-react';
 
 import {
   createCandidate,
   useActiveArchetypes,
+  useCandidate,
   useCurrentUser,
   useDuplicateCandidates,
   useUsers,
@@ -26,7 +27,13 @@ import { cn } from '@/bench/utils';
  * different jobs, often done on different days by different people, so a
  * name and number can land on the bench before anyone has interviewed them.
  * Raw candidates never count toward health and never enter the call queue.
+ *
+ * "Save and add another" is for sourcing in bulk: it saves as Raw and opens
+ * a blank form that keeps the role and owner, which rarely change between
+ * people from the same search.
  */
+
+const EMPTY = { fullName: '', phone: '+251 ', email: '', location: 'Addis Ababa', linkedin: '', notes: '' };
 
 export default function NewCandidatePage() {
   const router = useRouter();
@@ -35,16 +42,20 @@ export default function NewCandidatePage() {
   const me = useCurrentUser();
 
   const [archetypeId, setArchetypeId] = useState(archetypes[0]?.id ?? '');
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('+251 ');
-  const [email, setEmail] = useState('');
-  const [location, setLocation] = useState('Addis Ababa');
-  const [linkedin, setLinkedin] = useState('');
+  const [fullName, setFullName] = useState(EMPTY.fullName);
+  const [phone, setPhone] = useState(EMPTY.phone);
+  const [email, setEmail] = useState(EMPTY.email);
+  const [location, setLocation] = useState(EMPTY.location);
+  const [linkedin, setLinkedin] = useState(EMPTY.linkedin);
   const [ownerId, setOwnerId] = useState(me.id);
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState(EMPTY.notes);
   const [touched, setTouched] = useState(false);
-  const [saving, setSaving] = useState<null | 'raw' | 'assess'>(null);
+  const [saving, setSaving] = useState<null | 'raw' | 'assess' | 'another'>(null);
   const [ackDuplicate, setAckDuplicate] = useState(false);
+  // Everyone saved with "Save and add another" on this visit, newest last.
+  const [added, setAdded] = useState<string[]>([]);
+  const lastAdded = useCandidate(added.at(-1) ?? '');
+  const nameInput = useRef<HTMLInputElement>(null);
 
   const contact = { full_name: fullName, phone, email, location, linkedin_url: linkedin };
   const duplicates = useDuplicateCandidates(contact);
@@ -62,7 +73,7 @@ export default function NewCandidatePage() {
   const valid = Object.values(errors).every((e) => e === null);
   const blockedByDuplicate = duplicates.phone.length > 0 || (duplicates.similar.length > 0 && !ackDuplicate);
 
-  async function save(next: 'raw' | 'assess') {
+  async function save(next: 'raw' | 'assess' | 'another') {
     setTouched(true);
     if (!valid || blockedByDuplicate) return;
     setSaving(next);
@@ -70,6 +81,23 @@ export default function NewCandidatePage() {
     if (!res.ok) {
       setSaving(null);
       setServerErrors(res.errors);
+      return;
+    }
+    if (next === 'another') {
+      setAdded((ids) => [...ids, res.id]);
+      setFullName(EMPTY.fullName);
+      setPhone(EMPTY.phone);
+      setEmail(EMPTY.email);
+      setLocation(EMPTY.location);
+      setLinkedin(EMPTY.linkedin);
+      setNotes(EMPTY.notes);
+      setTouched(false);
+      setAckDuplicate(false);
+      setServerErrors({});
+      setSaving(null);
+      // Back to the top, so the confirmation is in view on a phone too.
+      nameInput.current?.focus({ preventScroll: true });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     router.push(next === 'assess' ? `/portal/candidates/${res.id}/assess` : `/portal/candidates/${res.id}`);
@@ -101,6 +129,24 @@ export default function NewCandidatePage() {
         }}
         className="grid max-w-3xl gap-4"
       >
+        {lastAdded && (
+          <div
+            role="status"
+            className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-bench-healthy/30 bg-bench-healthy/10 px-4 py-2.5 text-[12.5px]"
+          >
+            <Check size={14} className="shrink-0 text-bench-healthy" strokeWidth={2.5} />
+            <span>
+              Saved <span className="tabular">{lastAdded.ref_code}</span> {lastAdded.full_name} as Raw.
+            </span>
+            <Link href={`/portal/candidates/${lastAdded.id}`} className="text-accent hover:text-accent-bright">
+              Open
+            </Link>
+            {added.length > 1 && (
+              <span className="ml-auto text-[11.5px] text-bench-ink-faint">{added.length} added this time</span>
+            )}
+          </div>
+        )}
+
         <Section title="Role">
           <Segmented
             label="Role"
@@ -119,6 +165,7 @@ export default function NewCandidatePage() {
             <FormField label="Full name" htmlFor="full_name" error={err(errors.fullName)} className="sm:col-span-2">
               <input
                 id="full_name"
+                ref={nameInput}
                 autoFocus
                 autoComplete="off"
                 value={fullName}
@@ -226,6 +273,14 @@ export default function NewCandidatePage() {
             className="h-9 rounded-md border border-bench-line-bright bg-bench-surface px-3.5 text-[12.5px] font-medium text-bench-ink-dim transition-colors hover:text-bench-ink disabled:opacity-50"
           >
             Save as Raw
+          </button>
+          <button
+            type="button"
+            onClick={() => void save('another')}
+            disabled={saving !== null}
+            className="h-9 rounded-md border border-bench-line-bright bg-bench-surface px-3.5 text-[12.5px] font-medium text-bench-ink-dim transition-colors hover:text-bench-ink disabled:opacity-50"
+          >
+            {saving === 'another' ? 'Saving…' : 'Save and add another'}
           </button>
           <button
             type="submit"
