@@ -8,6 +8,7 @@ import {
   ArrowDown,
   ArrowUp,
   Check,
+  FileSpreadsheet,
   LayoutGrid,
   ListPlus,
   Rows3,
@@ -195,6 +196,12 @@ export default function CandidatesPage() {
         </div>
 
         <div className="flex items-center gap-2">
+        <Link
+          href="/portal/candidates/import"
+          className="flex h-9 items-center gap-1.5 rounded-md border border-bench-line px-3 text-[12.5px] text-bench-ink-dim transition-colors hover:text-bench-ink"
+        >
+          <FileSpreadsheet size={14} /> Import
+        </Link>
         <Link
           href="/portal/candidates/new"
           className="flex h-9 items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-3 text-[12.5px] font-medium text-accent transition-colors hover:bg-accent/20"
