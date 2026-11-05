@@ -363,6 +363,7 @@ export function buildCallQueue(
       days_until_expiry: v.days_until_expiry,
       recall_at: v.recall_at,
       shift_flexibility: v.shift_flexibility,
+      setup_verified: v.setup_verified,
       last_outcome: last?.outcome ?? null,
       last_called_at: last?.called_at ?? null,
       priority: state.kind === 'due' ? state.priority : 3,
