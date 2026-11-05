@@ -178,6 +178,11 @@ export interface CallDetails {
   earliest_start_date?: string | null;
   shift_flexibility?: string[];
   recall_at?: string | null;
+  /**
+   * Work setup checked on an Available call. Assessment data, so it is
+   * written to the record, not kept on the call; undo restores it with the rest.
+   */
+  setup_verified?: boolean;
 }
 
 export type CallDetailField = keyof CallDetails | 'form';
@@ -338,6 +343,8 @@ export interface QueueItem {
   recall_at: string | null;
   /** Last known shifts, to prefill the Available confirm step. */
   shift_flexibility: string[];
+  /** Prefills the work-setup check on the same step. */
+  setup_verified: boolean;
   last_outcome: CallOutcome | null;
   last_called_at: string | null;
   priority: 1 | 2 | 3 | 4;

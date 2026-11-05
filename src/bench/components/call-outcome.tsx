@@ -36,6 +36,7 @@ export interface CallTarget {
   id: string;
   full_name: string | null;
   shift_flexibility: string[];
+  setup_verified: boolean;
 }
 
 const OUTCOME_TOAST: Record<CallAttempt, string> = {
@@ -194,13 +195,20 @@ function AvailableForm({
   errors: CallErrors;
   busy: boolean;
   onCancel: () => void;
-  onSubmit: (d: { notice_period: string; earliest_start_date: string | null; shift_flexibility: string[]; note: string }) => void;
+  onSubmit: (d: {
+    notice_period: string;
+    earliest_start_date: string | null;
+    shift_flexibility: string[];
+    setup_verified: boolean;
+    note: string;
+  }) => void;
   className?: string;
 }) {
   const id = useId();
   const [notice, setNotice] = useState('');
   const [start, setStart] = useState('');
   const [shifts, setShifts] = useState<string[]>(candidate.shift_flexibility);
+  const [setup, setSetup] = useState(candidate.setup_verified);
   const [note, setNote] = useState('');
   const immediate = notice === IMMEDIATE;
 
@@ -210,7 +218,13 @@ function AvailableForm({
       aria-label="Confirm availability"
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit({ notice_period: notice, earliest_start_date: immediate ? null : start || null, shift_flexibility: shifts, note });
+        onSubmit({
+          notice_period: notice,
+          earliest_start_date: immediate ? null : start || null,
+          shift_flexibility: shifts,
+          setup_verified: setup,
+          note,
+        });
       }}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -288,6 +302,15 @@ function AvailableForm({
         </div>
         {errors.shift_flexibility && <ErrorText>{errors.shift_flexibility}</ErrorText>}
       </fieldset>
+      <label className="mt-3 flex cursor-pointer items-center gap-2 text-[11.5px] text-bench-ink-dim">
+        <input
+          type="checkbox"
+          checked={setup}
+          onChange={(e) => setSetup(e.target.checked)}
+          className="h-3.5 w-3.5 accent-[var(--color-accent)]"
+        />
+        Work setup verified: power backup, connection and a quiet space
+      </label>
       <NoteAndActions id={id} note={note} setNote={setNote} errors={errors} busy={busy} onCancel={onCancel} confirm="Log available" />
     </form>
   );

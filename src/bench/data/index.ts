@@ -859,6 +859,9 @@ export async function logCall(
     undoable.set(call.id, { before: draft.candidates[i], userId: draft.currentUserId, at: now.getTime() });
     draft.calls.push(call);
     draft.candidates[i] = applyCall(draft.candidates[i], call);
+    if (available && details.setup_verified !== undefined) {
+      draft.candidates[i] = { ...draft.candidates[i], setup_verified: details.setup_verified };
+    }
   });
   return { ok: true, callId: call.id };
 }
