@@ -390,7 +390,12 @@ function QueueRow({
         ) : (
           <div className={cn('flex items-center gap-1.5', formOpen ? 'basis-full' : 'shrink-0')}>
             <CallOutcomeControls
-              candidate={{ id: item.id, full_name: item.full_name, shift_flexibility: item.shift_flexibility }}
+              candidate={{
+                id: item.id,
+                full_name: item.full_name,
+                shift_flexibility: item.shift_flexibility,
+                setup_verified: item.setup_verified,
+              }}
               onOpenChange={setFormOpen}
               onWillLog={(outcome) => onHold(LOGGED_LABEL[outcome])}
               onLogFailed={onRelease}
