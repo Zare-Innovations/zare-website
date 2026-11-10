@@ -44,7 +44,7 @@ I conflated two different jobs: the **category** Zare should own, and the **posi
 | `The next leap starts here.` | Zero information. Reads as a line chosen because it sounded good. |
 | Six-metric grid at 132px | Visually loud, individually weak. Big numbers without sources read as decoration, and a CTO discounts the whole grid because one entry is unsourced. |
 | `+50% above national average` framed as impact | To a client buyer this reads as CSR, and CSR from a vendor reads as deflection from a capability question. |
-| "AI solutions" anywhere unattached to LitPulse | In 2026 this carries an automatic credibility discount. |
+| "AI solutions" anywhere unattached to a shipped system | In 2026 this carries an automatic credibility discount. |
 | A logo wall with no engagement context | The oldest trick in the outsourcing playbook. Logos without shape are assumed to be one-off or aspirational. |
 
 ## 1.4 Where it still feels like an outsourcing site wearing premium design
@@ -55,12 +55,12 @@ Three places, and they are all in the same failure mode: **leading with cost or 
 2. `80+ placements in one month` — impressive throughput, but throughput is a *staffing* metric. It quietly reframes Zare as a supply channel rather than an engineering partner.
 3. The "vetted talent" language, which is the standard vocabulary of every marketplace.
 
-The antidote in all three cases is the same: **lead with the system that was built, not the people who were supplied.** LitPulse first, always.
+The antidote in all three cases is the same: **lead with the system that was built, not the people who were supplied.**
 
 ## 1.5 Four visitors
 
 **US CTO with a referral.**
-Convinced by: the Clutch 5.0 verified February 2025; Pickrell running since January 2024; LitPulse being a genuinely non-trivial system.
+Convinced by: the Clutch 5.0 verified February 2025; Pickrell running since January 2024.
 Doubts remaining: who specifically would work on this; what happens when the engagement gets hard; whether the "senior" claim survives contact.
 Leaves because: no architecture, no named engineer, and a savings percentage above the fold that makes them re-file Zare mentally under "cheap."
 
@@ -75,7 +75,7 @@ Doubts: almost none. Best-served visitor on the site.
 Leaves because: they wouldn't. **But this person probably doesn't exist in Zare's current deal flow**, which is exactly the point of §1.1.
 
 **Ethiopian engineer.**
-Convinced by: LitPulse being real engineering; the +50% wage floor; the stack.
+Convinced by: the +50% wage floor; the stack.
 Doubts: will I do product work or maintenance; who would I learn from.
 Leaves because: no engineer is named anywhere. The site sells engineers to clients but never shows one. To a candidate, that reads as exactly the body shop they're trying to avoid.
 
@@ -181,7 +181,7 @@ This is the most important scheduling change in this document.
 
 1. **Clutch 5.0 verified, plus Pickrell running since January 2024.** Third-party attestation combined with duration. Nothing else on the site is in this class. **Currently the rating is unlinked** — an unlinked rating is an assertion.
 2. **Named engineers with shipped work.** Absent everywhere. Disqualifying for two of four audiences. Most competitors structurally cannot do this.
-3. **The LitPulse architecture diagram.** Converts the strongest asset from "they built a UI" to "they engineered a system."
+3. **A system architecture diagram.** Converts the strongest asset from "they built a UI" to "they engineered a system."
 
 **Distractions, in descending harm:**
 - The `50-70%` savings figure as a headline metric. Anchors on price, unsourced, undermines the positioning. **Demote it out of the top-line grid.**
@@ -227,7 +227,7 @@ No visual design step. Ten (now eight) sections with no comps produces eight sub
 `Business growth that creates opportunity.` → reframe entirely as retention: *the wage floor is why our engineers stay*.
 `50-70% cost savings vs US hiring` → demote out of the headline grid; state as a fact inside the engagement section where it belongs, with its basis.
 `Built by people who understand both technology and opportunity.` → replace with named people. A photograph and three names outperform any sentence here.
-LitPulse metrics → add one line of business outcome. `>40% full-text recovery` needs to say what that unlocked.
+Technical case metrics → add one line of business outcome: say what each one unlocked.
 
 **DELETE**
 Any unattached "AI solutions." Any unnamed client. Any adjective without a verifiable noun. `80+ placements in one month` as a *top-line* metric (keep it inside the embedded-teams track where throughput is the relevant question). Every banned word. "BPO" and "outsourcing" outside a meta description.
@@ -310,7 +310,7 @@ Purpose: route into the correct funnel. · Question: "Which of these is me?" · 
 **Must not exist:** visual hierarchy favouring either path, a third option, pricing.
 
 **S4 · Work and results**
-Purpose: prove technical depth. **The load-bearing section.** · Question: "Show me something you actually built." · Emotion: technical respect. · Proof: LitPulse **with an architecture diagram** plus one line of business outcome; Pickrell with its attributed Clutch quote and duration; Joveo. Results band closes the section, **with the savings figure removed from it**.
+Purpose: prove technical depth. **The load-bearing section.** · Question: "Show me something you actually built." · Emotion: technical respect. · Proof: a shipped system **with an architecture diagram** plus one line of business outcome; Pickrell with its attributed Clutch quote and duration; Joveo. Results band closes the section, **with the savings figure removed from it**.
 **Must not exist:** unnamed clients, unsourced metrics, stock imagery, more than three featured cases, cost as a metric.
 
 **S5 · How we deliver**

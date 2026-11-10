@@ -25,8 +25,6 @@ one is weaker than the real thing.
 
 | # | Item | Blocks | Fallback in place |
 |---|---|---|---|
-| 6 | **LitPulse engineering interview.** Five questions, 30–45 min, with whoever built LitPortal. | `/work/litpulse…` decisions section | Labelled "Pending engineering review" block. Honest, and the restraint reads well — but it is a gap where the strongest evidence should be. |
-| 7 | **LitPulse naming permission.** Currently named, following the CTO prototype. | LitPulse case, trust strip | Schema already supports anonymisation: `Client` is a union and unnamed clients carry a mandatory `reason`. One-line change. |
 | 8 | **Joveo outcome approval.** Marked `CLIENT APPROVAL REQUIRED` in the CTO prototype. | Promotion to featured case | Held in `workReferences` with only verifiable facts and no outcome claim. |
 | 9 | **Replacement policy, notice period, trial duration.** | S3 highlights, S6 | `Risk-free trial on every placement` renders without terms. Vague where it should be concrete. |
 | 10 | **Step 02 communication standard.** What "Communication assessment" actually measures. | S5 embed track | Step renders with its label only. |
@@ -37,19 +35,6 @@ one is weaker than the real thing.
 | 15 | **Named engineer consent.** One or two, with stack and shipped work. | S7 | Leadership only. Forfeits the strongest differentiator available: most competitors structurally cannot show who does the work. |
 | 16 | **Founder quote approval.** | S7 | Suppressed by the data model when unapproved. Section renders without it. |
 | 17 | **Working hours and timezone overlap policy.** | S6 | UTC+3 statable; the overlap commitment is not. |
-
----
-
-## The five LitPulse questions
-
-Someone else can run this. A transcript is enough.
-
-1. What broke about the old approach, specifically?
-2. Draw the system. What are the components, and what moves between them?
-3. Name three decisions where a reasonable engineer would have chosen
-   differently. What did you give up?
-4. What was hardest to get right?
-5. What changed for the client once it shipped?
 
 ---
 

@@ -10,11 +10,6 @@
 
 import type { StaticImageData } from 'next/image';
 
-import litcurrentCover from '../../public/case-studies/litcurrent.png';
-import litcurrentLitscreen from '../../public/case-studies/litcurrent-litscreen.png';
-import litcurrentLithub from '../../public/case-studies/litcurrent-lithub.png';
-import litcurrentLitstream from '../../public/case-studies/litcurrent-litstream.png';
-import litcurrentLitportalSearch from '../../public/case-studies/litcurrent-litportal-search.png';
 import pickrellSite from '../../public/case-studies/pickrell-site.png';
 import womentorDashboard from '../../public/case-studies/womentor-dashboard.png';
 import womentorAdminMatching from '../../public/case-studies/womentor-admin-matching.png';
@@ -127,9 +122,6 @@ export interface ProfilePrint {
   /** Marks top-right. Several where the profile shows several — Womentor
    *  carries both Mastercard AGF and AFIG. */
   logos?: { src: string; alt: string }[];
-  /** Where the profile sets the name as type rather than an image file.
-   *  LitCurrent has no mark; the deck typesets the word. */
-  wordmark?: string;
 }
 
 interface CaseBase {
@@ -165,7 +157,7 @@ interface CaseBase {
   /**
    * The client's own mark, top-right of the index card exactly as the
    * Company Profile 2026 case spreads place it. Optional and never faked:
-   * LitCurrent has no mark on file, so its card simply carries the label.
+   * a case with no mark on file simply carries the label.
    */
   logo?: { src: string; alt: string };
 }
@@ -217,178 +209,6 @@ export interface WorkReference {
 // ----------------------------------------------------------------- the cases
 
 export const caseStudies: CaseStudy[] = [
-  {
-    kind: "system",
-    slug: "litcurrent-federated-research-engine",
-    // Company Profile 2026, page 6. The profile prints Scienthesis as the
-    // client and LitCurrent as the product wordmark — it has no logo file,
-    // the deck sets the name as type, so the card does the same.
-    profile: {
-      format: "spread",
-      eyebrow: "Custom AI & Software · Scienthesis, Washington DC",
-      wordmark: "LitCurrent",
-      headline: "A clinician evidence platform, surveillance to point of care.",
-      problem:
-        "Clinicians need to stay current with the literature and answer questions at the point of care, but the evidence lives across PubMed, Europe PMC, OpenAlex, and ClinicalTrials.gov, four databases with different interfaces, overlapping records, and paywalled full texts.",
-      builtLabel: "What we built",
-      built:
-        "Scienthesis, a platform with two products: LitCurrent, the evidence-awareness workspace with literature surveillance, article library, audio learning, and AI-supported analysis; and LitPortal, point-of-care evidence search with citation-verified synthesis. Four services, one login, one shared library."
-    },
-    client: { named: true, name: "LitCurrent", url: "https://litpulse.com" },
-    industry: "Biomedical research",
-    location: "Washington DC",
-    featured: 1,
-    summary:
-      "A clinician evidence platform, surveillance to point of care: federated search over scattered biomedical sources, one deduplicated stream.",
-    problem:
-      "Clinical evidence lives across PubMed, Europe PMC, OpenAlex, and ClinicalTrials.gov — four databases with different interfaces, overlapping records, and paywalled full texts. Researchers lose hours to the same paper under different identifiers, and a review built on an incomplete corpus is a review with a hole in it.",
-    system: [
-      {
-        component: "LitPortal",
-        note: "Point-of-care evidence search with citation-verified synthesis: the federated multi-agent engine queries the sources in parallel, reconciles duplicate records, and returns a single ranked stream."
-      },
-      {
-        component: "LitCurrent",
-        note: "The evidence-awareness workspace: literature surveillance, an article library, audio learning, and AI-supported analysis."
-      },
-      {
-        component: "Platform",
-        note: "Four backend services behind one login and one shared library, alongside the wider modules: LitScreen, LitHub, LitStream and LitScholar."
-      }
-    ],
-    delivery:
-      "Built as a fixed-scope engagement, live in production. A separate five-week scope merged LitPortal into the platform, moved hosting under the owner's control, and produced the handoff package for the downstream migration partner.",
-    // Sourced from the platform's July 2026 current-state architecture
-    // handoff (docs/zare-company-profile/uploads/litcurrent-arch.pdf) —
-    // the developer-authored document produced for the migration partner.
-    decisions: [
-      {
-        decision:
-          "Four services instead of one monolith: two application backends (LitCurrent and LitPortal) beside shared Identity and library platform services.",
-        tradeoff:
-          "Four repositories and an internal service-auth layer to operate, instead of one deployable.",
-        result:
-          "One login and one canonical article library across both applications, with each backend still independently deployable."
-      },
-      {
-        decision:
-          "Stateless auth: the identity service issues one signed RS256 token and every service verifies it offline against cached JWKS keys.",
-        tradeoff:
-          "Revocation propagates on token expiry rather than instantly, and key rotation has to be managed with care.",
-        result:
-          "Authentication adds no cross-service round trip to any request."
-      },
-      {
-        decision:
-          "Saves mirror into the shared library through a durable outbox with scheduled retries, not an inline call.",
-        tradeoff:
-          "The library is eventually consistent — a save can land seconds later — and a dead-letter path has to be operated.",
-        result:
-          "A save survives a downstream outage, and every mirror attempt is auditable."
-      },
-      {
-        decision:
-          "AI interprets, deterministic systems decide: retrieval, ranking, source eligibility, article selection, and citations are controlled by deterministic code. The model may interpret clinical context and surface labelled supplemental candidates — nothing more.",
-        tradeoff:
-          "Gives up the convenience of end-to-end LLM answers; every AI-adjacent path needs its own enforcement gate.",
-        result:
-          "Citation-verified answers a clinician can check — the platform cannot hallucinate a PMID."
-      },
-      {
-        decision:
-          "A hybrid data layer: document stores for the application backends, PostgreSQL for identity and the canonical library.",
-        tradeoff:
-          "Two database technologies to operate, and a consolidation path that must be planned rather than assumed.",
-        result:
-          "The one-entry-per-user-per-paper guarantee lives in a relational core while application workflows keep their flexible stores."
-      }
-    ],
-    stack: [
-      "FastAPI",
-      "LangGraph",
-      "Next.js",
-      "MongoDB",
-      "PostgreSQL",
-      "Redis"
-    ],
-    cover: {
-      src: litcurrentCover,
-      alt: "LitScreen: a scheduled digest being screened, the article's abstract and AI summary side by side with save and skip",
-      caption:
-        "LitScreen: scheduled surveillance — the digest feed screened article by article, AI summary beside the abstract.",
-      kind: "product"
-    },
-    images: [
-      {
-        src: litcurrentLitscreen,
-        alt: "LitScreen: the scheduled literature feed with abstracts, AI summaries, and save-to-library screening",
-        caption:
-          "LitScreen: scheduled surveillance — the digest feed screened article by article, AI summary beside the abstract, one tap to the library.",
-        kind: "product"
-      },
-      {
-        src: litcurrentLithub,
-        alt: "LitHub: the saved-article library with abstracts, AI summaries, audio, LitScholar and LitClub actions",
-        caption:
-          "LitHub: the canonical library — every saved article carries its abstract, AI summary, audio, deep-dive and discussion actions.",
-        kind: "product"
-      },
-      {
-        src: litcurrentLitstream,
-        alt: "LitStream: generated audio summaries of saved articles with play and download controls",
-        caption:
-          "LitStream: audio learning — saved articles become playable, downloadable summaries with specialty tags.",
-        kind: "product"
-      },
-      {
-        src: litcurrentLitportalSearch,
-        alt: "LitPortal: a clinical question answered with deduplicated, ranked evidence in a sortable table",
-        caption:
-          "LitPortal: point-of-care search — a clinical question resolved through the PECO framework into 22 deduplicated records, ranked and filterable.",
-        kind: "product"
-      }
-    ],
-    outcomes: [
-      // The Company Profile 2026 case spread's band, verbatim in value and
-      // label. Full-text recovery follows it: real and verified, but not one
-      // of the profile's four, so it lives past the band and shows on the
-      // detail page rather than being dropped.
-      {
-        value: "99%+",
-        metric: "Deduplication accuracy",
-        context:
-          "across records federated from multiple biomedical sources, where the same paper appears under different identifiers.",
-        verified: true
-      },
-      {
-        value: "4",
-        metric: "Backend services, one login, one shared library",
-        context:
-          "two application backends beside shared identity and library platform services.",
-        verified: true
-      },
-      {
-        value: "<2s",
-        metric: "Initial search response",
-        context: "for a federated query spanning multiple upstream sources.",
-        verified: true
-      },
-      {
-        value: "LIVE",
-        metric: "Deployed in production",
-        context: "running for clinicians, not a prototype.",
-        verified: true
-      },
-      {
-        value: ">40%",
-        metric: "Full-text recovery",
-        context:
-          "improvement in retrieving full text for records where it was previously unreachable.",
-        verified: true
-      }
-    ]
-  },
-
   {
     kind: "engagement",
     slug: "pickrell-embedded-engineering-pod",
