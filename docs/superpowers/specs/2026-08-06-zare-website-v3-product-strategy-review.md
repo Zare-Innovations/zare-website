@@ -143,9 +143,9 @@ Assume every visual and verbal choice in this project is copyable within six mon
 
 **Evidence that convinces:** an architecture artifact from a real system. A named engineer with a stack and shipped work. A technology choice explained with a reason rather than listed. Long engagement duration.
 
-**Sections that serve them:** Work and results (LitPulse in particular), How we deliver (build track), Security & IP, People.
+**Sections that serve them:** Work and results, How we deliver (build track), Security & IP, People.
 
-**Gap:** LitPulse is the strongest asset in the project and is currently represented by a UI screenshot and five stack chips. A UI screenshot proves design. **An architecture diagram of the federated multi-agent engine proves engineering.** This is the highest-leverage single addition available anywhere in the project.
+**Gap:** the strongest system case is represented by a UI screenshot and five stack chips. A UI screenshot proves design. **An architecture diagram proves engineering.** This is the highest-leverage single addition available anywhere in the project.
 
 ## 2.2 CTO or VP Eng hiring embedded engineers
 
@@ -173,7 +173,7 @@ Assume every visual and verbal choice in this project is copyable within six mon
 
 **Sections:** Hero, Work and results, Impact, People.
 
-**Gap:** the LitPulse case reports `>99% dedup`, `<2s response`, `>40% full-text recovery`. All technical. **None answers "what did this do for the business?"** For a founder, "researchers recover 40% more full text" needs one more sentence: what that saved, enabled, or unlocked.
+**Gap:** the case metrics are all technical. **None answers "what did this do for the business?"** For a founder, a technical figure needs one more sentence: what it saved, enabled, or unlocked.
 
 ## 2.4 Procurement, legal, vendor management
 
@@ -199,7 +199,7 @@ Assume every visual and verbal choice in this project is copyable within six mon
 
 **Objections:** "Will I work on real products or maintenance tickets?" · "Who would I learn from?" · "Is the pay actually good?"
 
-**Evidence:** the LitPulse case (a genuinely interesting system), the +50% wage floor, named engineers, the stack, the eight-step process signalling that peers were selected carefully.
+**Evidence:** the +50% wage floor, named engineers, the stack, the eight-step process signalling that peers were selected carefully.
 
 **Sections:** Impact, People, Work, `/careers`.
 
@@ -276,7 +276,7 @@ Three tonal acts. Ten sections. Tonal shifts mark act boundaries only — not ev
 - **Purpose:** clear disqualifier 3. The load-bearing section of the page.
 - **Question:** "Show me something you actually built."
 - **Emotion:** technical respect.
-- **Content:** LitPulse flagship **with an architecture diagram**, plus one sentence of business outcome alongside the three technical metrics. Pickrell with its attributed Clutch quote. Joveo. Results band closes the section.
+- **Content:** a flagship system case **with an architecture diagram**, plus one sentence of business outcome alongside its technical metrics. Pickrell with its attributed Clutch quote. Joveo. Results band closes the section.
 - **Do NOT include:** unnamed clients. Metrics without a source. Stock imagery. More than three featured cases.
 
 **S5 · How we deliver**
@@ -344,7 +344,7 @@ Three tonal acts. Ten sections. Tonal shifts mark act boundaries only — not ev
 
 **Own the word "embedded."** It is precise, it is what Zare actually does, it is differentiated from staff-aug (transactional) and from agency (external), and it implies duration and accountability rather than hours. The CTO proposal already reached this conclusion. It should be defended against dilution.
 
-AI capability is real and should be evidenced through LitPulse rather than claimed as a category. In 2026, "AI consultancy" carries a credibility discount because everyone claims it. **Showing a shipped multi-agent system is worth more than the words "AI-powered" anywhere on the site.**
+AI capability is real and should be evidenced through shipped work rather than claimed as a category. In 2026, "AI consultancy" carries a credibility discount because everyone claims it. **Showing a shipped multi-agent system is worth more than the words "AI-powered" anywhere on the site.**
 
 ## 4.2 Positioning against each competitor set
 
@@ -354,7 +354,7 @@ AI capability is real and should be evidenced through LitPulse rather than claim
 | Outsourcing firms | US contracts, full IP assignment, dedicated placements never shared. |
 | Freelance marketplaces | An eight-step vetting process and a named accountable company. |
 | Offshore dev shops | A Delaware entity you contract with, and a delivery centre you can visit. |
-| AI consultancies | A shipped federated multi-agent system, with metrics. |
+| AI consultancies | A shipped multi-agent system, with metrics. |
 
 ## 4.3 Words to avoid, permanently
 
@@ -474,7 +474,7 @@ We do not say "a leading US ad-tech company" because unnamed clients read as inv
 We do not say "seamless integration." We say "in your codebase, in your standups, on your permissions."
 
 **Principle 5 — Never describe what can be shown.**
-We do not say "we build sophisticated AI systems." We show the LitPortal architecture and let the reader conclude it.
+We do not say "we build sophisticated AI systems." We show the architecture and let the reader conclude it.
 
 **Principle 6 — Write for scanning, reward drilling.**
 Every heading must be legible alone. Every section must survive being read as heading-plus-first-line. The depth is there for the one or two sections a reader actually drills into.
@@ -514,7 +514,7 @@ Ranked by persuasive power for this specific audience:
 | Evidence | Status | Action |
 |---|---|---|
 | Client logos | Text at 36% opacity in the prototype; permissions unresolved | Full contrast, with engagement labels. **Permissions are a blocker** |
-| Case studies | 18 in the codebase; 3 featured; LitPulse strongest | Add architecture diagram; add one business-outcome line |
+| Case studies | 18 in the codebase; 3 featured | Add architecture diagram; add one business-outcome line |
 | Metrics | Six, five verified, one honest placeholder | Add average tenure. Keep the placeholder |
 | Technical evidence | **Absent** | Architecture diagram. Named engineers |
 | Testimonials | One verified attributed Clutch quote | Sufficient if kept attributed. Never add an anonymous one |
@@ -524,7 +524,7 @@ Ranked by persuasive power for this specific audience:
 
 ## 7.3 The three additions that matter most
 
-1. **An architecture diagram for LitPulse.** Converts the strongest asset from "they made a UI" to "they engineered a system." One diagram.
+1. **An architecture diagram for the strongest system case.** Converts the strongest asset from "they made a UI" to "they engineered a system." One diagram.
 2. **One or two named engineers**, with stack and shipped work. Serves the CTO, the VP Eng, and recruiting simultaneously. Requires consent.
 3. **Average placement tenure**, if the number supports it. Directly answers the embedded buyer's primary fear.
 

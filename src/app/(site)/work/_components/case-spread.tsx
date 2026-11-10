@@ -7,8 +7,7 @@ import { CaseScreenshot, coverShot } from './case-screenshot';
 
 /**
  * A showcased case, in the Company Profile 2026 case-spread format — the
- * layout the profile gives a case its own page for (artboard "07 Case
- * LitCurrent" and its siblings), reproduced as a card.
+ * layout the profile gives a case its own page for, reproduced as a card.
  *
  * Reading order is the profile's: the CASE STUDY badge with the engine and
  * the client, the client's mark opposite; the headline in caps; then the
@@ -24,7 +23,7 @@ import { CaseScreenshot, coverShot } from './case-screenshot';
  *
  * The profile's own labels are kept for BOTH case kinds: its Womentor
  * spread, an embedded engagement, is headed THE PROBLEM / WHAT WE BUILT
- * exactly as the LitCurrent one is.
+ * exactly as a system build is.
  */
 /**
  * Column count for the numbers band, keyed by how many stats there are, so
@@ -78,7 +77,7 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
           {/* The marks, on white plates and sized to be legible rather than
               tucked into a corner. Several where the profile shows several —
               Womentor carries Mastercard AGF beside AFIG. */}
-          {logos.length > 0 || pr?.wordmark ? (
+          {logos.length > 0 ? (
             <span className="flex shrink-0 items-center gap-3">
               {logos.map((l) => (
                 <span
@@ -94,18 +93,6 @@ export function CaseSpread({ caseStudy }: { caseStudy: CaseStudy }) {
                   />
                 </span>
               ))}
-
-              {/* The profile has no logo file for LitCurrent — it typesets
-                  the product name. Reproduced as type, in the product's own
-                  blue on a white plate, because a client's mark is never
-                  knocked out to the site's palette. */}
-              {pr?.wordmark ? (
-                <span className="logo-plate flex h-14 items-center justify-center px-4">
-                  <span className="font-display text-[24px] font-bold leading-none tracking-[-0.02em] text-[#2563eb]">
-                    Lit<span className="text-[#1d4ed8]">Current</span>
-                  </span>
-                </span>
-              ) : null}
             </span>
           ) : null}
         </div>

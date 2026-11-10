@@ -62,14 +62,6 @@ const nextConfig: NextConfig = {
         destination: '/work/:path*',
         permanent: true,
       },
-      // The platform is LitCurrent, per the Company Profile 2026 (the site
-      // had carried the older LitPulse name). The case slug moved with it,
-      // so the old path keeps working rather than 404ing.
-      {
-        source: '/work/litpulse-federated-research-engine',
-        destination: '/work/litcurrent-federated-research-engine',
-        permanent: true,
-      },
     ];
   },
 };

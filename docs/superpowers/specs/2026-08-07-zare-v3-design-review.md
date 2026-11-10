@@ -134,7 +134,7 @@ The retired page had debounced search across title, description and skills. The 
 
 No amount of spacing, typography or motion refinement substitutes for this.
 
-**Recommend:** Team photography as a full-bleed band and in the people section; founder and leadership portraits; the LitPulse architecture diagram; case screenshots where cleared. Where an asset does not exist, use the labelled placeholder already built into `PersonCard` and `PlaceholderMat` rather than stock.
+**Recommend:** Team photography as a full-bleed band and in the people section; founder and leadership portraits; case screenshots where cleared. Where an asset does not exist, use the labelled placeholder already built into `PersonCard` and `PlaceholderMat` rather than stock.
 **Impact:** Highest of any visual change. **Effort:** 1 day implementation. The real cost is asset lead time.
 
 ### V-C2 · The trust strip has no visual weight
@@ -203,13 +203,6 @@ Correct given the approval gates. Revisit when Joveo clears. **Effort:** 0.25 da
 
 ## Critical
 
-### T-C1 · The flagship case study has an empty core
-**Location:** `content/work.ts:122` — `decisions: []`
-**Current:** `/work/litpulse-federated-research-engine` renders Engineering Decisions as a labelled gap. Confirmed live.
-**Why it matters:** LitPulse is the strongest technical asset and the Decisions block is what separates an engineering proof page from a portfolio entry. The honest placeholder is the right call over fabrication, but it is a hole in the page most likely to convince a CTO.
-**Recommend:** The 45-minute engineering interview; five questions already written in `docs/CONTENT-CHECKLIST.md`. **Blocked externally.**
-**Impact:** High. **Effort:** 0.5 day to write up once the transcript exists.
-
 ### T-C2 · Banned vocabulary reaches production through job data
 **Location:** `/careers`, sourced from the admin API
 **Current:** "robust" renders from a live job description.
@@ -244,7 +237,7 @@ Objection handling plus `FAQPage` schema, one of the last high-yield SEO surface
 
 **A strong skeleton with thin flesh.**
 
-The engineering is excellent and the strategy is sound and genuinely differentiated. What has not happened is the evidencing: no photographs, no security section, no people section, no engineering decisions on the flagship case, no visual weight on the client list, and no closing ask.
+The engineering is excellent and the strategy is sound and genuinely differentiated. What has not happened is the evidencing: no photographs, no security section, no people section, no visual weight on the client list, and no closing ask.
 
 The result reads as a well-built site by a company that has not yet shown you very much. For a first-time CTO visitor the experience is: *this is clearly competent, the argument is unusually precise, and I still do not know who these people are or what they have actually built.* Then the page ends without asking for anything.
 
@@ -255,7 +248,7 @@ None of that is a design failure in the conventional sense. Every mechanism need
 | Area | Score | Reasoning |
 |---|---|---|
 | **Positioning** | **8 / 10** | Genuinely differentiated, no competitor category can make the same claim. Loses for the hero/S3 duplication and repetition dulling the strongest phrases. |
-| **Trust** | **5 / 10** | Mechanisms are excellent: honest gaps, verified facts, named clients, type-enforced attribution. Evidence on screen is thin: no faces, no security section, no logos, flagship case incomplete, Clutch unlinked. |
+| **Trust** | **5 / 10** | Mechanisms are excellent: honest gaps, verified facts, named clients, type-enforced attribution. Evidence on screen is thin: no faces, no security section, no logos, Clutch unlinked. |
 | **Visual design** | **5 / 10** | Disciplined type, colour and tonal structure. Zero imagery and no measure scale. Currently reads as a competent implementation of the 2026 house style rather than as Zare. |
 | **UX** | **6 / 10** | Logical journey, clear nav, works without JavaScript, clean heading structure. Loses heavily for no closing CTA and a primary CTA likely below the fold. |
 | **Technical quality** | **8.5 / 10** | Server-first, zero-JS readable, structured data, redirects, 12 KB CSS, no heading skips. Loses for the unstyled 404 and 3% JS overage. |
@@ -265,7 +258,7 @@ None of that is a design failure in the conventional sense. Every mechanism need
 
 ---
 
-# TOP 10 HIGHEST-IMPACT IMPROVEMENTS
+# TOP 9 HIGHEST-IMPACT IMPROVEMENTS
 
 Ranked by impact per unit of effort, external blockers included because they dominate.
 
@@ -277,9 +270,8 @@ Ranked by impact per unit of effort, external blockers included because they dom
 | 4 | **Security and IP section (S6)** — clears the largest technical-buyer objection | Positioning | 0.5 d | no |
 | 5 | **People / why they stay (S7)** — the only place retention becomes concrete | Positioning | 0.5 d | partly |
 | 6 | **Trust strip visual weight + linked Clutch** — highest value per pixel on the page | Visual | 0.5 d | partly |
-| 7 | **LitPulse engineering decisions** — completes the strongest proof page | Technical | 0.5 d | interview |
-| 8 | **Hero paths above the fold** — restores the hero's entire purpose | Journey | 0.25 d | no |
-| 9 | **Styled 404** — stops broken links dumping visitors out of the brand | Visual | 0.25 d | no |
-| 10 | **Plausible** — without it none of the above can be proven to have worked | Journey | 0.25 d | you |
+| 7 | **Hero paths above the fold** — restores the hero's entire purpose | Journey | 0.25 d | no |
+| 8 | **Styled 404** — stops broken links dumping visitors out of the brand | Visual | 0.25 d | no |
+| 9 | **Plausible** — without it none of the above can be proven to have worked | Journey | 0.25 d | you |
 
-**Unblocked work in the top ten totals about 2 days** (#2, #4, #5, #8, #9) and addresses the two most serious findings. That is the sequence I would take first.
+**Unblocked work in the top nine totals about 2 days** (#2, #4, #5, #7, #8) and addresses the two most serious findings. That is the sequence I would take first.

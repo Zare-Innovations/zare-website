@@ -29,7 +29,7 @@ export function FeaturedWork() {
   // and guarantees every one of them has the problem/what-we-built copy the
   // spread needs.
   // publishedCases() preserves work.ts order, which is the profile's page
-  // order, so this is LitCurrent, Womentor, Tenasol — pages 6, 7 and 9.
+  // order, so this is Womentor, Tenasol, Kagool — pages 7, 9 and 10.
   const cases = publishedCases()
     .filter((c) => c.profile?.format !== 'card')
     .slice(0, 3);

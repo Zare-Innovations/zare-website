@@ -49,9 +49,8 @@ The profile's language landed on the page: engine headlines verbatim
 ("Production systems, not prototypes." / "Your team member, our payroll."),
 the EOR model stated plainly on the embedded path, Engine 1's real scope
 list (multi-agent, RAG, MCP, voice/multimodal, ERP/CRM), SEO positioning
-switched to the cover subhead ("Two engines, one firm"), countries served
-corrected 6 → 7, and the LitPulse case enriched with LitPortal/LitCurrent
-product detail and the five-week merge-and-handoff delivery note.
+switched to the cover subhead ("Two engines, one firm"), and countries
+served corrected 6 → 7.
 
 ### Profile integration — remaining items closed (`f686244`)
 
@@ -93,9 +92,8 @@ Visible changes, all sourced from the official Company Profile 2026:
 - **Hiring comparison table** closing the Embedded Teams path: in-house US
   hire vs Zare embedded (first candidate 3–9 wks vs 2–4 wks; wrong fit:
   full salary + restart vs $0 during trial + free replacement).
-- **Client logo plates** on the trust strip: 13 of 14 client cards carry
-  their mark on a white plate (LitPulse has no logo — no placeholder, the
-  text card stands alone). Assets live under `public/clients/` because the
+- **Client logo plates** on the trust strip: client cards carry their
+  mark on a white plate. Assets live under `public/clients/` because the
   `/our-work/:path*` redirect shadows `public/our-work/`.
 
 ### Profile integration M2 — design tokens and recipes (`4385978`)
