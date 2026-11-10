@@ -41,11 +41,6 @@ export const clients: ClientRef[] = [
     industry: 'Technology services',
   },
   {
-    name: 'LitCurrent',
-    engagement: 'Federated research engine',
-    industry: 'Biomedical research',
-  },
-  {
     name: 'Kagool',
     logo: '/clients/kagol.svg',
     engagement: '80+ technical placements in one month',
@@ -146,7 +141,7 @@ export const logoWall = [
 
 /**
  * The marquee below the wall: every remaining client with a mark on
- * file (LitCurrent has none and is never faked). Quieter and smaller than
+ * file. Quieter and smaller than
  * the six-up wall — a moving undercurrent, not a second headline.
  */
 export const logoMarquee = [

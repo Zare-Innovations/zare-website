@@ -92,7 +92,7 @@ exactly the visual vocabulary it was supposed to differentiate from. It also
 means the "real people, real place" claim is made only in prose.
 
 **Recommendation.** Team photography in the people section and as a full-bleed
-band; founder and leadership portraits; the LitPulse architecture diagram; case
+band; founder and leadership portraits; case
 study screenshots where cleared. Where an asset does not exist, the labelled
 placeholder pattern already built into `PersonCard` and `PlaceholderMat` should
 be used rather than stock.
@@ -115,22 +115,6 @@ design system, with links to `/work` and `/contact`.
 
 **Impact.** Medium-high on trust, low on volume.
 **Effort.** 0.25 day.
-
-## C5 — The flagship case study has an empty core
-
-**Issue.** `/work/litpulse-federated-research-engine` renders its Engineering
-Decisions section as a labelled gap. Confirmed present in production.
-
-**Reasoning.** LitPulse is the strongest technical asset on the site and the
-Decisions block is what separates an engineering proof page from a portfolio
-entry. The honest placeholder is the right call versus fabrication, but it is
-still a gap in the single page most likely to convince a CTO.
-
-**Recommendation.** The 45-minute engineering interview, five questions already
-written in `docs/CONTENT-CHECKLIST.md`.
-
-**Impact.** High.
-**Effort.** 0.5 day to write up once the transcript exists. Blocked externally.
 
 ## C6 — The trust strip has no visual weight
 
@@ -375,8 +359,7 @@ Not a decision, a proposal.
 **First, unblocked and highest value:** C1 contact section, C2 the three missing
 sections, C4 the 404 page. Roughly 2.25 days and it completes the argument.
 
-**Second, once assets exist:** C3 photography, C6 trust strip, C5 LitPulse
-decisions.
+**Second, once assets exist:** C3 photography, C6 trust strip.
 
 **Third, refinement:** I1 hero/S3 overlap, I3 `/work` weight, I4 repetition,
 I6 measure scale, I7 header token, I8 motion tokens. Roughly 2.5 days.

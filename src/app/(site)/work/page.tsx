@@ -14,9 +14,8 @@ import { CaseSpread } from './_components/case-spread';
 import { FeaturedCase } from './_components/featured-case';
 import { SelectedWorkCard } from './_components/selected-work-card';
 
-/** The order the Company Profile 2026 prints these in, pages 6 → 10. */
+/** The order the Company Profile 2026 prints these in, pages 7 → 10. */
 const PROFILE_ORDER = [
-  'litcurrent-federated-research-engine',
   'womentor-africa-mentorship-platform',
   'joveo-engineering-pod',
   'pickrell-embedded-engineering-pod',
@@ -34,8 +33,8 @@ export const metadata: Metadata = {
 
 export default function WorkPage() {
   // FORMAT FOLLOWS THE PROFILE, not our own featured ranking. The Company
-  // Profile gives four cases a page each (LitCurrent, Womentor, Tenasol,
-  // Kagool) and groups the other three onto one shared page as compact
+  // Profile gives three cases a page each (Womentor, Tenasol, Kagool) and
+  // groups the other three onto one shared page as compact
   // cards (Joveo, Pickrell, Exelia). Reading `profile.format` keeps that
   // split rather than re-deciding it here — and it matters, because a case
   // the profile prints as a card has no problem/what-we-built split to

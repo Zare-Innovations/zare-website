@@ -204,7 +204,7 @@ If the CTO wants the full Mercury-style multi-beat narrative, that is a legitima
 
 **Take A. Do not take B yet. Do not take C.**
 
-**Why not B, even though it has the highest ceiling:** the audit found that this site's binding constraint is *evidence*, not spectacle. There is not a single photograph anywhere, the flagship case study has an empty engineering-decisions section, and the trust strip renders twelve clients as plain text. Spending three to five days re-authoring the hero while those remain open is the wrong allocation. B becomes worth doing once the site has something to show.
+**Why not B, even though it has the highest ceiling:** the audit found that this site's binding constraint is *evidence*, not spectacle. There is not a single photograph anywhere, and the trust strip renders twelve clients as plain text. Spending three to five days re-authoring the hero while those remain open is the wrong allocation. B becomes worth doing once the site has something to show.
 
 **Why not C, despite the 178 KB:** the implicit signal is the hero's most defensible function today, and removing WebGL to save bytes on the one route where the payload is already lazy and gated is optimising the wrong axis.
 
@@ -222,4 +222,4 @@ If the CTO wants the full Mercury-style multi-beat narrative, that is a legitima
 
 ### What I would rather spend the week on
 
-Photography, the LitPulse engineering interview, and giving the trust strip visual weight. Those are the three things standing between this site and being convincing, and none of them is a hero problem.
+Photography and giving the trust strip visual weight. Those are the two things standing between this site and being convincing, and none of them is a hero problem.
