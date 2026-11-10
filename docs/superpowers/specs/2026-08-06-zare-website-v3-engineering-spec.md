@@ -495,7 +495,6 @@ All with `display: 'swap'` and a CSS variable. **The four Gotham `.otf` files (6
 
 ### 6.4 Client logos — **blocking, start day 1**
 SVG preferred, else PNG ≥400px with transparency. Per client, written permission to display.
-Confirmed available today: LitPulse screenshot (`docs/zare-website-v3/litpulse-screenshot.png`).
 Pending: Joveo, Pickrell, Kagool, Tenasol, Exelia, AFIG Funds, KEFI, Medrafa, ACMG, 251, KeySquare, CRDLE, 10.13.
 **Fallback if unapproved by day 6:** bordered mono cell, client name at full contrast, plus industry and market. Never faint grey text.
 
@@ -756,7 +755,7 @@ Ticker (unchanged, `aria-hidden`): `ZARE : ——.——` with blinking cursor.
 
 > Kicker: **Teams and software delivered for**
 >
-> Joveo · Pickrell Global Technologies · Kagool · Tenasol · Exelia Technologies · AFIG Funds · KEFI Gold & Copper · Medrafa · Africa Communications Media Group · LitPulse
+> Joveo · Pickrell Global Technologies · Kagool · Tenasol · Exelia Technologies · AFIG Funds · KEFI Gold & Copper · Medrafa · Africa Communications Media Group
 >
 > Kicker: **Verified**
 > ✓ Zare Innovations, LLC · Delaware, US
@@ -798,15 +797,6 @@ Ticker (unchanged, `aria-hidden`): `ZARE : ——.——` with blinking cursor.
 
 > Kicker: **Featured work**
 > H2: **Evidence, not adjectives.**
-
-**Flagship · LitPulse**
-> Meta: `LitPulse · Biomedical research · Washington DC`
-> H3: **A federated research engine for biomedical science.**
-> **Challenge:** researchers lose hours to duplicated results and paywalled sources scattered across databases.
-> **Zare built:** LitPortal, the federated multi-agent research engine inside the LitPulse platform, unifying biomedical sources into one fast, deduplicated stream.
-> Stack: `FastAPI` `LangGraph` `Next.js` `PostgreSQL` `Redis`
-> Metrics: `>99%` DEDUP ACCURACY · `<2s` RESPONSE TIME · `>40%` FULL-TEXT RECOVERY
-> CTA: `Read the case study →`
 
 **Pickrell Global Technologies**
 > Meta: `Pickrell Global Technologies · Technology services · Concord, NC`

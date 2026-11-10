@@ -86,7 +86,7 @@ liability.
 
 ```
 "40% improvement"                                      // cannot be expressed
-"40% improvement in full-text recovery after
+"40% improvement in search recall after
  rebuilding the indexing strategy"                     // the only option
 ```
 
@@ -110,9 +110,6 @@ evidence.
 - Adding a case means choosing a model first. That choice is the useful part.
 - `/work` ships with two featured cases rather than three. Joveo is held in the
   reference list until its outcome figures clear client approval.
-- LitPulse ships with a visible gap where its engineering decisions belong,
-  until the engineering interview happens. That interview is the highest-value
-  content task remaining in the project.
 - The homepage cannot accidentally grow full case studies: it consumes
   `summary`, the first `outcome`, and the link. Depth lives on the detail page.
 
