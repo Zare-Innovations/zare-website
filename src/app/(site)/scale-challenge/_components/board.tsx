@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
+import { ZareLogo } from '@/components/layout/logo';
 import { MonoLabel } from '@/components/typography/mono-label';
 import {
   EVENTS,
@@ -489,13 +490,25 @@ export function Board({
                       ))}
                     </span>
 
-                    <span
-                      className="mt-4 inline-block self-start border px-2 py-1"
-                      style={{ borderColor: src.color, background: src.bg }}
-                    >
-                      <MonoLabel size="caption" className="text-[10px]">
-                        <span style={{ color: src.color }}>{src.badge}</span>
-                      </MonoLabel>
+                    {/* Badge row. Zare's own option signs it with Zare's
+                        mark, here rather than beside the title so the
+                        three cards keep their top rows aligned. Hidden from
+                        assistive tech: the label already says ZARE, and the
+                        button's name should not repeat it. */}
+                    <span className="mt-4 flex items-center justify-between gap-3">
+                      <span
+                        className="inline-block border px-2 py-1"
+                        style={{ borderColor: src.color, background: src.bg }}
+                      >
+                        <MonoLabel size="caption" className="text-[10px]">
+                          <span style={{ color: src.color }}>{src.badge}</span>
+                        </MonoLabel>
+                      </span>
+                      {src.key === 'emb' && (
+                        <span aria-hidden="true" className="shrink-0 text-on-dark-strong">
+                          <ZareLogo className="h-8 w-auto" />
+                        </span>
+                      )}
                     </span>
                   </button>
                 );
