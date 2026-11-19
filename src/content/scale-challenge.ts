@@ -118,12 +118,18 @@ export const MISSIONS: Mission[] = [
   { name: 'Expand Operations Fast', glyph: '03', icon: 'expand', iconBg: 'linear-gradient(135deg,#10cfd1,#0e8f91)', desc: 'New market, new region. Stand up an operations backbone in one quarter.', budget: 80000, days: 75, goal: 'Ops live in new region', roles: ['pm', 'ops', 'da', 'be', 'cs1'], stars: 3 },
 ];
 
+/**
+ * The embedded option is Zare's own offering, so it carries the name — and,
+ * wherever it is offered as a card, the Zare logo (the start screen's option
+ * card in game.tsx, the choice cards' badge row in board.tsx). Renamed from the mockup's 'EMBEDDED TALENT' on request,
+ * 2026-11-19; the other two stay generic on purpose.
+ */
 export const SOURCES: [Source, Source, Source] = [
   { key: 'local', label: 'LOCAL FULL-TIME HIRE', tagline: 'Recruit and employ directly.', short: 'Own the hire.', badge: 'PERMANENT', mgmt: 'Client-managed', color: '#94a3b8', bg: 'rgba(148,163,184,.13)', per: '/month',
     steps: ['Job posted', 'Candidate search', 'Interviewing', 'Offer', 'Onboarding'] },
   { key: 'out', label: 'PROJECT OUTSOURCING', tagline: 'Give the project to an external team.', short: 'Outsource the outcome.', badge: 'AGENCY MANAGED', mgmt: 'Agency manages execution', color: '#f5b458', bg: 'rgba(245,180,88,.13)', per: '/month equivalent',
     steps: ['Project brief', 'Agency team assembled', 'External delivery', 'Milestone', 'Handoff'] },
-  { key: 'emb', label: 'EMBEDDED TALENT', tagline: 'Add vetted talent directly to your team.', short: 'Extend your team.', badge: 'WORKS INSIDE YOUR TEAM', mgmt: 'You direct the work · provider supports the talent', color: '#40c1c7', bg: 'rgba(64,193,199,.15)', per: '/month',
+  { key: 'emb', label: 'ZARE EMBEDDED TALENT', tagline: 'Add vetted talent directly to your team.', short: 'Extend your team.', badge: 'WORKS INSIDE YOUR TEAM', mgmt: 'You direct the work · provider supports the talent', color: '#40c1c7', bg: 'rgba(64,193,199,.15)', per: '/month',
     steps: ['Role requested', 'Pre-vetted match found', 'Client interview', 'Deployed'] },
 ];
 
