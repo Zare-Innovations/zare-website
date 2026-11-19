@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import { IconCalendarEvent, IconMail } from '@tabler/icons-react';
 
+import { cn } from '@/lib/utils';
+import { linkSurface, panelSurface } from '@/components/content/surface';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Section } from '@/components/layout/section';
@@ -9,7 +12,7 @@ import { Heading } from '@/components/typography/heading';
 import { Eyebrow } from '@/components/typography/eyebrow';
 import { MonoLabel } from '@/components/typography/mono-label';
 import { isPathway, type Pathway } from '@/lib/inquiry-schema';
-import { pathways, whatHappensNext } from '@/content/contact';
+import { pathways } from '@/content/contact';
 import { officePhotos } from '@/content/office';
 import {
   addressEthiopia,
@@ -72,6 +75,7 @@ export default async function ContactPage({ searchParams }: Props) {
   const params = await searchParams;
   const pathway: Pathway = isPathway(params.pathway) ? params.pathway : 'project';
   const copy = pathways[pathway];
+  const [emailUser, emailDomain] = email.split('@');
 
   const defaultTeamType =
     params.type === 'operations'
@@ -121,69 +125,75 @@ export default async function ContactPage({ searchParams }: Props) {
               </div>
             </div>
 
-            <aside className="flex flex-col gap-12">
-              {/* The room the scoping call (step 03) happens in, with these
-                  people — not a sales layer. It leads the column. */}
-              <Image
-                src={officePhotos.boardroomPresentation.src}
-                alt={officePhotos.boardroomPresentation.alt}
-                placeholder="blur"
-                sizes="(min-width: 1024px) 40vw, 100vw"
-                className="aspect-[16/9] w-full border border-[var(--rule-color)] object-cover"
-              />
+            <aside className="flex flex-col gap-4">
+              {/* Prefer to talk: the room the scoping call happens in, with
+                  these people, and the way to book it. A dark plate on the
+                  light band — data-tone gives everything inside it the ink
+                  tone's heading, eyebrow and muted colours. */}
+              <div
+                data-tone="ink"
+                className="relative isolate flex min-h-[26rem] flex-col justify-end overflow-hidden bg-surface-ink p-6 text-on-dark sm:p-8"
+              >
+                <Image
+                  src={officePhotos.boardroomPresentation.src}
+                  alt={officePhotos.boardroomPresentation.alt}
+                  placeholder="blur"
+                  fill
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  className="-z-20 object-cover object-[62%_35%]"
+                />
+                {/* Fades the bright table into ink so the copy reads. */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 -z-10 bg-gradient-to-t from-surface-ink via-surface-ink/80 to-surface-ink/10"
+                />
 
-              <div>
-                <Eyebrow>What happens next</Eyebrow>
-                <ol className="mt-8 flex flex-col">
-                  {whatHappensNext.map((step) => (
-                    <li
-                      key={step.n}
-                      className="grid gap-3 border-t border-[var(--rule-color)] py-6 first:border-t-0 first:pt-0 sm:grid-cols-[auto_1fr] sm:gap-6"
-                    >
-                      <MonoLabel className="text-[var(--accent-text)]">
-                        {step.n}
-                      </MonoLabel>
-                      <div>
-                        <h3 className="font-display text-heading text-[var(--heading-color)]">
-                          {step.title}
-                        </h3>
-                        <p className="mt-1.5 text-body-sm text-[var(--muted-color)]">
-                          {step.body}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div className="border-t border-[var(--rule-color)] pt-8">
                 <Eyebrow>Prefer to talk</Eyebrow>
-                <p className="mt-5 max-w-[30em] text-body-sm text-[var(--muted-color)]">
-                  Book a 30-minute call directly. Same people, same reply
-                  window, no form.
-                </p>
+                <Heading level={2} size="heading" className="mt-4 max-w-[18em]">
+                  Thirty minutes, with the people who would do the work.
+                </Heading>
                 <a
                   href={consultationLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex h-12 items-center rounded-md border border-[var(--rule-color)] px-6 text-[14.5px] font-semibold text-[var(--heading-color)] no-underline transition-colors hover:border-accent"
+                  className="mt-7 inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-accent px-6 text-[14.5px] font-bold text-accent-contrast no-underline transition-colors hover:bg-accent-bright"
                 >
+                  <IconCalendarEvent size={18} stroke={1.9} aria-hidden="true" className="shrink-0" />
                   Book a call →
                 </a>
               </div>
 
               {/* Explicit fallback, not a primary path. Some corporate mail
-                  clients have no mailto handler; the form above is the route
-                  that always works. */}
-              <div className="border-t border-[var(--rule-color)] pt-8">
-                <Eyebrow>Or email us</Eyebrow>
-                <a
-                  href={`mailto:${email}`}
-                  className="mt-4 block font-mono text-body-sm text-[var(--accent-text)] hover:underline"
+                  clients have no mailto handler; the form is the route that
+                  always works. */}
+              <a
+                href={`mailto:${email}`}
+                className={cn(panelSurface, linkSurface, 'group flex items-center gap-4 p-5 no-underline')}
+              >
+                <span
+                  aria-hidden="true"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent/10 text-[var(--accent-text)]"
                 >
-                  {email}
-                </a>
-              </div>
+                  <IconMail size={20} stroke={1.9} />
+                </span>
+                <span className="flex min-w-0 flex-col gap-1">
+                  <MonoLabel muted>Or email us</MonoLabel>
+                  {/* On the narrowest phones the address may still wrap:
+                      the <wbr> makes it break after the @, not mid-word. */}
+                  <span className="font-mono text-body-sm text-[var(--accent-text)] [overflow-wrap:anywhere] group-hover:underline">
+                    {emailUser}@<wbr />
+                    {emailDomain}
+                  </span>
+                </span>
+                {/* The whole card is the link; on phones the arrow would cost
+                    the address its single line. */}
+                <span
+                  aria-hidden="true"
+                  className="ml-auto hidden shrink-0 text-[22px] text-[var(--accent-text)] transition-transform duration-150 group-hover:translate-x-1 sm:block"
+                >
+                  →
+                </span>
+              </a>
             </aside>
           </div>
         </Section>
