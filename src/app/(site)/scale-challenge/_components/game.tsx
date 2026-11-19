@@ -4,6 +4,7 @@ import { useReducer, useSyncExternalStore } from 'react';
 
 import { IconRocket, IconHeadset, IconWorld } from '@tabler/icons-react';
 
+import { ZareLogo } from '@/components/layout/logo';
 import { MonoLabel } from '@/components/typography/mono-label';
 import {
   EVENTS, MISSIONS, SOURCES, TALENT,
@@ -203,9 +204,18 @@ function Intro({ onStart }: { onStart: () => void }) {
               } as React.CSSProperties
             }
           >
-            <MonoLabel size="caption" muted className="block">
-              Option {i + 1}
-            </MonoLabel>
+            <span className="flex min-h-8 items-center justify-between gap-3">
+              <MonoLabel size="caption" muted className="block">
+                Option {i + 1}
+              </MonoLabel>
+              {/* Zare's own option carries Zare's mark; the label below
+                  already names it, so the logo stays out of the a11y tree. */}
+              {s.key === 'emb' && (
+                <span aria-hidden="true" className="text-on-dark-strong">
+                  <ZareLogo className="h-8 w-auto" />
+                </span>
+              )}
+            </span>
             <MonoLabel size="caption" className="mt-2 block">
               <span style={{ color: s.color }}>{s.label}</span>
             </MonoLabel>
