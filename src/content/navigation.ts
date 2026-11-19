@@ -10,13 +10,13 @@
  * never claims a destination that does not exist.
  *
  * Two panel groups — the offering (What we do) and the entity (Company) —
- * then two PLAIN LINKS, Work and the Scale Challenge: the proof and the
- * game each need one click, not a submenu. The CTA slot is the commercial
- * ask, 'Build with Zare'. See the 2026-08-15 header audit for the panel
- * reasoning, and NAV_CHALLENGE / NAV_CTA below for the copy.
+ * then a PLAIN LINK, Work: the proof needs one click, not a submenu. The bar
+ * ends in two asks: book a call, and 'Build with Zare'. See the 2026-08-15
+ * header audit for the panel reasoning, and NAV_CALL / NAV_CTA below for the
+ * copy. The Scale Challenge is reached from the footer.
  */
 
-import { SCALE_CHALLENGE_ENABLED } from '@/constants';
+import { consultationLink } from '@/constants';
 import { servicePaths } from '@/content/services';
 import { ABOUT_KICKER } from '@/content/about';
 import { RESPONSE_PROMISE } from '@/content/contact';
@@ -108,15 +108,13 @@ export const NAV_WORK = {
   href: '/work',
 } as const;
 
-/** The Scale Challenge — the OUTLINED half of the header's button pair,
- *  phrased as an invitation rather than a title: 'Scale Challenge' names a
- *  page, 'Try our Scale Challenge' asks for the click. Null while the
- *  challenge is hidden, which is what removes the button from both the
- *  desktop bar and the mobile menu. */
-export const NAV_CHALLENGE: { label: string; href: string } | null =
-  SCALE_CHALLENGE_ENABLED
-    ? { label: 'Try our Scale Challenge', href: '/scale-challenge' }
-    : null;
+/** Booking a call — the OUTLINED half of the header's button pair. The
+ *  lighter ask: thirty minutes with a person, no form. It opens the same
+ *  scheduler as the contact page's 'Book a call', in a new tab. */
+export const NAV_CALL: { label: string; href: string } = {
+  label: 'Book a call',
+  href: consultationLink,
+};
 
 /** The commercial ask, and the FILLED half of the pair — the first call
  *  to action carries the weight. 'Build with Zare' rather than 'Contact'
