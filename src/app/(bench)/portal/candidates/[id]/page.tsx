@@ -15,10 +15,13 @@ import {
   Phone,
   PhoneCall,
   ShieldAlert,
+  Trash2,
 } from 'lucide-react';
 
 import {
   archiveCandidate,
+  deleteCandidate,
+  useCandidateDeleteImpact,
   exportBlockReason,
   IMMEDIATE,
   scoreLabel,
@@ -66,14 +69,33 @@ export default function CandidatePage() {
   const { id } = useParams<{ id: string }>();
   const v = useCandidate(id);
   const [erasedRef, setErasedRef] = useState<string | null>(null);
+  const [deletedName, setDeletedName] = useState<string | null>(null);
 
   if (erasedRef) return <Erased refCode={erasedRef} />;
+  if (deletedName) return <Deleted name={deletedName} />;
   if (!v) return <NotFound />;
 
-  return <CandidateRecord v={v} onErased={() => setErasedRef(v.ref_code)} />;
+  return (
+    <CandidateRecord
+      v={v}
+      onErased={() => setErasedRef(v.ref_code)}
+      onDeleted={() => setDeletedName(v.full_name ?? v.ref_code)}
+      onDeleteFailed={() => setDeletedName(null)}
+    />
+  );
 }
 
-function CandidateRecord({ v, onErased }: { v: CandidateView; onErased: () => void }) {
+function CandidateRecord({
+  v,
+  onErased,
+  onDeleted,
+  onDeleteFailed,
+}: {
+  v: CandidateView;
+  onErased: () => void;
+  onDeleted: () => void;
+  onDeleteFailed: () => void;
+}) {
   const users = useUsers();
   const calls = useCandidateCalls(v.id);
   const seen = useSeenByClients(v.id);
@@ -205,6 +227,7 @@ function CandidateRecord({ v, onErased }: { v: CandidateView; onErased: () => vo
           </Panel>
 
           <ArchivePanel v={v} onErased={onErased} />
+          <DeletePanel v={v} onDeleted={onDeleted} onDeleteFailed={onDeleteFailed} />
         </div>
       </div>
     </div>
@@ -825,6 +848,84 @@ function ArchivePanel({ v, onErased }: { v: CandidateView; onErased: () => void 
   );
 }
 
+/**
+ * Deleting for good, open to any staff member. Not an archive reason: archiving keeps the
+ * record (and Do not contact keeps the ref code), this removes the record and
+ * everything attached to it, so the confirmation names what goes.
+ */
+function DeletePanel({
+  v,
+  onDeleted,
+  onDeleteFailed,
+}: {
+  v: CandidateView;
+  onDeleted: () => void;
+  onDeleteFailed: () => void;
+}) {
+  const impact = useCandidateDeleteImpact(v.id);
+  const [confirming, setConfirming] = useState(false);
+
+  const who = v.full_name ?? v.ref_code;
+  const attached = [
+    impact.calls && plural(impact.calls, 'call', 'calls'),
+    impact.shortlists &&
+      plural(impact.shortlists, 'shortlist entry', 'shortlist entries') +
+        (impact.sentShortlists ? ` (${impact.sentShortlists} already sent to a client)` : ''),
+    impact.pipelines && plural(impact.pipelines, 'request pipeline entry', 'request pipeline entries'),
+    impact.placements && plural(impact.placements, 'placement', 'placements'),
+  ].filter(Boolean) as string[];
+
+  async function remove() {
+    // Switch to the Deleted screen first: once the row is gone the record
+    // would otherwise flash Not found.
+    onDeleted();
+    try {
+      await deleteCandidate(v.id);
+    } catch (err) {
+      onDeleteFailed();
+      alert(err instanceof Error ? err.message : 'Could not delete the candidate.');
+    }
+  }
+
+  return (
+    <section className="rounded-lg border border-bench-line bg-bench-surface">
+      {!confirming ? (
+        <button
+          type="button"
+          onClick={() => setConfirming(true)}
+          className="flex w-full items-center gap-2 px-4 py-3 text-left text-[12.5px] text-bench-ink-faint transition-colors hover:text-bench-critical"
+        >
+          <Trash2 size={13} /> Delete permanently
+        </button>
+      ) : (
+        <div className="px-4 py-3">
+          <div className="text-[12.5px] font-medium text-bench-critical">Delete {who} permanently?</div>
+          <p className="mt-1 text-[12px] leading-relaxed text-bench-ink-dim">
+            The record is removed from the bench for good, with nothing kept, not even {v.ref_code}.
+            {attached.length > 0 && <> It also removes {attached.join(', ')}.</>} This cannot be undone.
+          </p>
+          <div className="mt-3 flex gap-2">
+            <button
+              type="button"
+              onClick={() => void remove()}
+              className="rounded-md border border-bench-critical/40 bg-bench-critical/10 px-3 py-1.5 text-[12px] font-medium text-bench-critical hover:bg-bench-critical/20"
+            >
+              Delete permanently
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirming(false)}
+              className="px-2 py-1.5 text-[12px] text-bench-ink-faint hover:text-bench-ink"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 // ---------------------------------------------------------- empty states --
 
 function NotFound() {
@@ -851,6 +952,23 @@ function Erased({ refCode }: { refCode: string }) {
       <p className="mx-auto mt-1 max-w-sm text-[12.5px] text-bench-ink-dim">
         {refCode} will not be contacted again. Their personal details are gone, and the
         record no longer appears on any screen, count or export.
+      </p>
+      <Link href="/portal/candidates" className="mt-4 inline-block text-[12.5px] text-accent hover:text-accent-bright">
+        Back to candidates
+      </Link>
+    </div>
+  );
+}
+
+function Deleted({ name }: { name: string }) {
+  return (
+    <div className="px-5 py-16 text-center">
+      <div className="mx-auto mb-3 grid h-10 w-10 place-items-center rounded-full bg-bench-critical/10">
+        <Trash2 size={16} className="text-bench-critical" />
+      </div>
+      <div className="text-[15px] font-medium">Candidate deleted</div>
+      <p className="mx-auto mt-1 max-w-sm text-[12.5px] text-bench-ink-dim">
+        {name} and everything attached to the record have been removed from the bench.
       </p>
       <Link href="/portal/candidates" className="mt-4 inline-block text-[12.5px] text-accent hover:text-accent-bright">
         Back to candidates
