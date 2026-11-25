@@ -964,6 +964,77 @@ export async function archiveCandidate(
   return done ? callId : null;
 }
 
+/** What a permanent delete takes with it, for the confirmation to spell out. */
+export interface DeleteImpact {
+  calls: number;
+  shortlists: number;
+  /** Of `shortlists`, how many were already sent to a client. */
+  sentShortlists: number;
+  pipelines: number;
+  placements: number;
+}
+
+export function candidateDeleteImpact(s: Snapshot, candidateId: string): DeleteImpact {
+  const entries = s.shortlistCandidates.filter((x) => x.candidate_id === candidateId);
+  const sent = new Set(s.shortlists.filter((sl) => sl.exported_at).map((sl) => sl.id));
+  return {
+    calls: s.calls.filter((x) => x.candidate_id === candidateId).length,
+    shortlists: entries.length,
+    sentShortlists: entries.filter((x) => sent.has(x.shortlist_id)).length,
+    pipelines: s.requestCandidates.filter((x) => x.candidate_id === candidateId).length,
+    placements: s.placements.filter((x) => x.candidate_id === candidateId).length,
+  };
+}
+
+export function useCandidateDeleteImpact(candidateId: string): DeleteImpact {
+  return useStore((s) => derive(s, `deleteImpact:${version}:${candidateId}`, () => candidateDeleteImpact(s, candidateId)));
+}
+
+/**
+ * Deletes a candidate for good: the record and every row that points at it —
+ * call log, shortlist entries (sent ones included), request pipelines and
+ * placements. Unlike archiving, nothing remains, not even the ref code, and
+ * there is no undo. Any signed-in staff member may do it, exec or recruiter,
+ * as the API allows.
+ *
+ * The store's sync mirrors each removed row as a DELETE, children before
+ * the candidate, which is the order the API's foreign keys need.
+ */
+export async function deleteCandidate(candidateId: string): Promise<void> {
+  const s = getSnapshot();
+  if (!s.candidates.some((c) => c.id === candidateId)) return;
+
+  write((draft) => {
+    // Open requests that lose a shortlisted or pipeline candidate may need
+    // to move back from shortlisting to open.
+    const touched = new Set<string>();
+    const shortlistRequest = new Map(draft.shortlists.map((sl) => [sl.id, sl.request_id]));
+    for (const sc of draft.shortlistCandidates) {
+      if (sc.candidate_id === candidateId) {
+        const requestId = shortlistRequest.get(sc.shortlist_id);
+        if (requestId) touched.add(requestId);
+      }
+    }
+    for (const rc of draft.requestCandidates) {
+      if (rc.candidate_id === candidateId) touched.add(rc.request_id);
+    }
+
+    const callIds = new Set(draft.calls.filter((x) => x.candidate_id === candidateId).map((x) => x.id));
+    for (const id of callIds) undoable.delete(id);
+
+    draft.calls = draft.calls.filter((x) => x.candidate_id !== candidateId);
+    draft.shortlistCandidates = draft.shortlistCandidates.filter((x) => x.candidate_id !== candidateId);
+    draft.requestCandidates = draft.requestCandidates.filter((x) => x.candidate_id !== candidateId);
+    draft.placements = draft.placements.filter((x) => x.candidate_id !== candidateId);
+    draft.candidates = draft.candidates.filter((x) => x.id !== candidateId);
+
+    for (const requestId of touched) {
+      const req = draft.requests.find((r) => r.id === requestId);
+      if (req && req.status !== 'closed') syncRequestStatus(draft, requestId);
+    }
+  });
+}
+
 export type ContactResult =
   | { ok: true; id: string }
   | { ok: false; errors: ContactErrors & { form?: string }; duplicate?: CandidateView };
