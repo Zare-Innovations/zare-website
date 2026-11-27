@@ -101,6 +101,10 @@ export interface Candidate {
   email: string | null;
   location: string | null;
   linkedin_url: string | null;
+  /** GitHub profile. Optional. */
+  github_url: string | null;
+  /** Google Drive link to an audio recording of the candidate. Optional. */
+  audio_url: string | null;
 
   // assessment — permanent, does not expire
   years_experience: number | null;

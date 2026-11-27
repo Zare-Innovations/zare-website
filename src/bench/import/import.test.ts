@@ -135,6 +135,22 @@ describe('matching columns and checking rows', () => {
     expect(mappingProblem(guessColumns(['Name']))).toMatch(/Phone/);
   });
 
+  it('reads GitHub and audio columns, and checks them like the form does', () => {
+    const sheet = {
+      headers: ['Name', 'Phone', 'GitHub', 'Audio Link'],
+      rows: [
+        { line: 2, cells: ['Hanna Tesfaye', '0912 000 111', 'https://github.com/hanna', 'https://drive.google.com/file/d/1/view'] },
+        { line: 3, cells: ['Sara Alemu', '0912 000 333', 'github.com/sara', ''] },
+        { line: 4, cells: ['Abel Girma', '0912 000 444', '', 'https://dropbox.com/s/1'] },
+      ],
+    };
+    const map = guessColumns(sheet.headers);
+    expect(map).toMatchObject({ github_url: 2, audio_url: 3 });
+    const rows = buildImportRows(sheet, map, bench());
+    expect(rows[0].contact).toMatchObject({ github_url: 'https://github.com/hanna', audio_url: 'https://drive.google.com/file/d/1/view' });
+    expect(rows.map((r) => r.problem?.split(':')[0] ?? null)).toEqual([null, 'GitHub', 'Audio']);
+  });
+
   it('skips bad and duplicate rows with the reason, and keeps the rest', () => {
     const all = bench();
     const onBench = all.find((v) => v.phone)!;

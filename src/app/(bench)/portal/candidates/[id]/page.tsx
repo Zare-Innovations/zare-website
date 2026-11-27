@@ -6,6 +6,7 @@ import { useState } from 'react';
 import {
   Archive,
   ArrowLeft,
+  AudioLines,
   CheckCircle2,
   ClipboardCheck,
   FileText,
@@ -17,6 +18,7 @@ import {
   ShieldAlert,
   Trash2,
 } from 'lucide-react';
+import { IconBrandGithub } from '@tabler/icons-react';
 
 import {
   archiveCandidate,
@@ -639,6 +641,25 @@ function ContactPanel({ v }: { v: CandidateView }) {
             <span className="text-bench-ink-faint">No profile linked</span>
           )}
         </ContactRow>
+        {/* Lucide no longer ships brand marks; Tabler's GitHub mark, at Lucide's size and stroke. */}
+        <ContactRow icon={<IconBrandGithub size={12} stroke={2} />}>
+          {v.github_url ? (
+            <a href={v.github_url} target="_blank" rel="noreferrer" className="truncate hover:text-accent">
+              GitHub
+            </a>
+          ) : (
+            <span className="text-bench-ink-faint">No GitHub linked</span>
+          )}
+        </ContactRow>
+        <ContactRow icon={<AudioLines size={12} />}>
+          {v.audio_url ? (
+            <a href={v.audio_url} target="_blank" rel="noreferrer" className="truncate hover:text-accent">
+              Listen to recording
+            </a>
+          ) : (
+            <span className="text-bench-ink-faint">No recording linked</span>
+          )}
+        </ContactRow>
         <ContactRow icon={<FileText size={12} />}>
           {v.cv_url ? (
             <a href={v.cv_url} target="_blank" rel="noreferrer" className="hover:text-accent">
@@ -669,6 +690,8 @@ function EditContact({ v, onDone }: { v: CandidateView; onDone: () => void }) {
     email: v.email ?? '',
     location: v.location ?? '',
     linkedin_url: v.linkedin_url ?? '',
+    github_url: v.github_url ?? '',
+    audio_url: v.audio_url ?? '',
   });
   const [ack, setAck] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -678,7 +701,7 @@ function EditContact({ v, onDone }: { v: CandidateView; onDone: () => void }) {
   const blocked = duplicates.phone.length > 0 || (duplicates.similar.length > 0 && !ack);
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
-    if (k !== 'location' && k !== 'linkedin_url') setAck(false);
+    if (k !== 'location' && k !== 'linkedin_url' && k !== 'github_url' && k !== 'audio_url') setAck(false);
   };
 
   const fields: [keyof typeof form, string, string][] = [
@@ -687,6 +710,8 @@ function EditContact({ v, onDone }: { v: CandidateView; onDone: () => void }) {
     ['email', 'Email', 'email'],
     ['location', 'Location', 'text'],
     ['linkedin_url', 'LinkedIn', 'url'],
+    ['github_url', 'GitHub', 'url'],
+    ['audio_url', 'Audio recording (Google Drive link)', 'url'],
   ];
 
   return (
