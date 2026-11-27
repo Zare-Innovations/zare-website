@@ -15,6 +15,8 @@ export type ImportField =
   | 'email'
   | 'location'
   | 'linkedin_url'
+  | 'github_url'
+  | 'audio_url'
   | 'notes';
 
 export const IMPORT_FIELDS: { key: ImportField; label: string; hint?: string; aliases: string[] }[] = [
@@ -25,6 +27,8 @@ export const IMPORT_FIELDS: { key: ImportField; label: string; hint?: string; al
   { key: 'email', label: 'Email', aliases: ['email', 'emailaddress', 'mail'] },
   { key: 'location', label: 'Location', aliases: ['location', 'city', 'address', 'region', 'country'] },
   { key: 'linkedin_url', label: 'LinkedIn', aliases: ['linkedin', 'linkedinurl', 'linkedinprofile'] },
+  { key: 'github_url', label: 'GitHub', aliases: ['github', 'githuburl', 'githubprofile', 'githublink'] },
+  { key: 'audio_url', label: 'Audio recording', hint: 'Google Drive link', aliases: ['audio', 'audiourl', 'audiolink', 'audiorecording', 'recording', 'voicerecording', 'voicenote'] },
   { key: 'notes', label: 'Notes', aliases: ['notes', 'note', 'comments', 'comment', 'remarks', 'source'] },
 ];
 
@@ -83,6 +87,8 @@ export function buildImportRows(sheet: Sheet, map: ColumnMap, bench: CandidateVi
       email: cell(cells, 'email'),
       location: cell(cells, 'location'),
       linkedin_url: cell(cells, 'linkedin_url'),
+      github_url: cell(cells, 'github_url'),
+      audio_url: cell(cells, 'audio_url'),
     };
 
     const errors = validateContact(contact);
@@ -95,6 +101,8 @@ export function buildImportRows(sheet: Sheet, map: ColumnMap, bench: CandidateVi
     else if (phone && seen.has(phone)) problem = `Same phone as row ${seen.get(phone)}.`;
     else if (errors.email) problem = `Email: ${errors.email}`;
     else if (errors.linkedin_url) problem = `LinkedIn: ${errors.linkedin_url}`;
+    else if (errors.github_url) problem = `GitHub: ${errors.github_url}`;
+    else if (errors.audio_url) problem = `Audio: ${errors.audio_url}`;
     // Only a row that will be imported claims its number.
     if (phone && !problem) seen.set(phone, line);
 

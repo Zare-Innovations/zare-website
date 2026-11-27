@@ -33,7 +33,7 @@ import { cn } from '@/bench/utils';
  * people from the same search.
  */
 
-const EMPTY = { fullName: '', phone: '+251 ', email: '', location: 'Addis Ababa', linkedin: '', notes: '' };
+const EMPTY = { fullName: '', phone: '+251 ', email: '', location: 'Addis Ababa', linkedin: '', github: '', audio: '', notes: '' };
 
 export default function NewCandidatePage() {
   const router = useRouter();
@@ -47,6 +47,8 @@ export default function NewCandidatePage() {
   const [email, setEmail] = useState(EMPTY.email);
   const [location, setLocation] = useState(EMPTY.location);
   const [linkedin, setLinkedin] = useState(EMPTY.linkedin);
+  const [github, setGithub] = useState(EMPTY.github);
+  const [audio, setAudio] = useState(EMPTY.audio);
   const [ownerId, setOwnerId] = useState(me.id);
   const [notes, setNotes] = useState(EMPTY.notes);
   const [touched, setTouched] = useState(false);
@@ -57,7 +59,7 @@ export default function NewCandidatePage() {
   const lastAdded = useCandidate(added.at(-1) ?? '');
   const nameInput = useRef<HTMLInputElement>(null);
 
-  const contact = { full_name: fullName, phone, email, location, linkedin_url: linkedin };
+  const contact = { full_name: fullName, phone, email, location, linkedin_url: linkedin, github_url: github, audio_url: audio };
   const duplicates = useDuplicateCandidates(contact);
   const [serverErrors, setServerErrors] = useState<ContactErrors & { form?: string }>({});
 
@@ -69,6 +71,8 @@ export default function NewCandidatePage() {
     phone: contactErrors.phone ?? serverErrors.phone ?? null,
     email: contactErrors.email ?? null,
     linkedin: contactErrors.linkedin_url ?? null,
+    github: contactErrors.github_url ?? null,
+    audio: contactErrors.audio_url ?? null,
   };
   const valid = Object.values(errors).every((e) => e === null);
   const blockedByDuplicate = duplicates.phone.length > 0 || (duplicates.similar.length > 0 && !ackDuplicate);
@@ -90,6 +94,8 @@ export default function NewCandidatePage() {
       setEmail(EMPTY.email);
       setLocation(EMPTY.location);
       setLinkedin(EMPTY.linkedin);
+      setGithub(EMPTY.github);
+      setAudio(EMPTY.audio);
       setNotes(EMPTY.notes);
       setTouched(false);
       setAckDuplicate(false);
@@ -216,6 +222,28 @@ export default function NewCandidatePage() {
                 onChange={(e) => setLinkedin(e.target.value)}
                 placeholder="https://www.linkedin.com/in/…"
                 aria-invalid={Boolean(err(errors.linkedin))}
+                className={inputCls}
+              />
+            </FormField>
+            <FormField label="GitHub" hint="Optional" htmlFor="github" error={err(errors.github)}>
+              <input
+                id="github"
+                type="url"
+                value={github}
+                onChange={(e) => setGithub(e.target.value)}
+                placeholder="https://github.com/…"
+                aria-invalid={Boolean(err(errors.github))}
+                className={inputCls}
+              />
+            </FormField>
+            <FormField label="Audio recording" hint="Optional · Google Drive link" htmlFor="audio" error={err(errors.audio)}>
+              <input
+                id="audio"
+                type="url"
+                value={audio}
+                onChange={(e) => setAudio(e.target.value)}
+                placeholder="https://drive.google.com/…"
+                aria-invalid={Boolean(err(errors.audio))}
                 className={inputCls}
               />
             </FormField>
