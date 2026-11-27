@@ -522,7 +522,14 @@ export interface ContactInput {
   email: string;
   location: string;
   linkedin_url: string;
+  /** Optional, so callers that never collect it (applicant moves) can leave it out. */
+  github_url?: string;
+  /** A Google Drive link to an audio recording. Optional, as above. */
+  audio_url?: string;
 }
+
+export const GITHUB_URL = /^https:\/\/(www\.)?github\.com\/\S+$/i;
+export const AUDIO_URL = /^https:\/\/(drive|docs)\.google\.com\/\S+$/i;
 
 export type ContactErrors = Partial<Record<keyof ContactInput, string>>;
 
@@ -537,6 +544,10 @@ export function validateContact(input: ContactInput): ContactErrors {
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Enter a valid email address.';
   const url = input.linkedin_url.trim();
   if (url && !/^https:\/\/([a-z]+\.)?linkedin\.com\/\S+$/i.test(url)) e.linkedin_url = 'Paste the full https://linkedin.com profile link.';
+  const github = (input.github_url ?? '').trim();
+  if (github && !GITHUB_URL.test(github)) e.github_url = 'Paste the full https://github.com profile link.';
+  const audio = (input.audio_url ?? '').trim();
+  if (audio && !AUDIO_URL.test(audio)) e.audio_url = 'Paste the Google Drive link to the recording (https://drive.google.com/…).';
   if (input.location.trim().length > 120) e.location = '120 characters at most.';
   return e;
 }

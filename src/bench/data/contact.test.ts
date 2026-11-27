@@ -49,6 +49,36 @@ describe('M6: phone numbers and duplicates', () => {
   });
 });
 
+describe('GitHub and audio links', () => {
+  const base = { full_name: 'Abebe Kebede', phone: '0911 234 567', email: '', location: '', linkedin_url: '' };
+
+  it('are optional', () => {
+    expect(validateContact(base)).toEqual({});
+    expect(validateContact({ ...base, github_url: '', audio_url: '  ' })).toEqual({});
+  });
+
+  it('accept a GitHub profile and a Google Drive link', () => {
+    expect(
+      validateContact({
+        ...base,
+        github_url: 'https://github.com/abebe',
+        audio_url: 'https://drive.google.com/file/d/1AbC/view?usp=sharing',
+      }),
+    ).toEqual({});
+    expect(validateContact({ ...base, github_url: 'https://www.github.com/abebe' })).toEqual({});
+    expect(validateContact({ ...base, audio_url: 'https://docs.google.com/uc?id=1AbC' })).toEqual({});
+  });
+
+  it('reject anything else', () => {
+    for (const github_url of ['github.com/abebe', 'http://github.com/abebe', 'https://gitlab.com/abebe', 'https://github.com/']) {
+      expect(validateContact({ ...base, github_url }).github_url, github_url).toMatch(/github\.com/);
+    }
+    for (const audio_url of ['drive.google.com/file/d/1', 'https://dropbox.com/s/1', 'https://drive.google.com/']) {
+      expect(validateContact({ ...base, audio_url }).audio_url, audio_url).toMatch(/Google Drive/);
+    }
+  });
+});
+
 describe('M7: tags compare the same everywhere', () => {
   it('ignores case, spaces and dots', () => {
     expect(new Set(['Node.js', 'NodeJS', 'node js', ' NODE.JS '].map(normalizeTag)).size).toBe(1);

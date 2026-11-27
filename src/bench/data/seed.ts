@@ -387,6 +387,8 @@ export function seedCandidates(now: number): { candidates: Candidate[]; calls: C
         : `${s.name.toLowerCase().replace(/[^a-z]+/g, '.')}@example.com`,
       location: isDeleted ? null : s.location,
       linkedin_url: null,
+      github_url: null,
+      audio_url: null,
       years_experience: s.years ?? null,
       seniority: s.seniority ?? null,
       stack: s.stack ?? [],

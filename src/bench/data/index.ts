@@ -947,6 +947,8 @@ export async function archiveCandidate(
       c.phone = null;
       c.email = null;
       c.linkedin_url = null;
+      c.github_url = null;
+      c.audio_url = null;
       c.location = null;
       c.notes = null;
       c.cv_url = null;
@@ -1071,6 +1073,8 @@ export async function createCandidate(
     email: input.email.trim().toLowerCase() || null,
     location: input.location.trim() || null,
     linkedin_url: input.linkedin_url.trim() || null,
+    github_url: input.github_url?.trim() || null,
+    audio_url: input.audio_url?.trim() || null,
     owner_id: input.owner_id ?? s.currentUserId,
     notes: input.notes?.trim() || null,
     source: input.source ?? 'manual',
@@ -1139,6 +1143,9 @@ export async function updateContact(id: string, input: ContactInput): Promise<Co
     email: input.email.trim().toLowerCase() || null,
     location: input.location.trim() || null,
     linkedin_url: input.linkedin_url.trim() || null,
+    // Left as they are when the caller did not collect them.
+    ...(input.github_url !== undefined && { github_url: input.github_url.trim() || null }),
+    ...(input.audio_url !== undefined && { audio_url: input.audio_url.trim() || null }),
   });
   return { ok: true, id };
 }
